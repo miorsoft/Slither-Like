@@ -26,6 +26,7 @@ Begin VB.Form fMain
       Left            =   13320
       TabIndex        =   4
       Top             =   1080
+      Value           =   1  'Checked
       Width           =   1455
    End
    Begin VB.CheckBox chkJPG 
@@ -115,6 +116,9 @@ Private Sub Form_Load()
     Level = 1
 
     Set MultipleSounds = New clsSounds
+    
+DoBackGround = True
+
 
 
 End Sub

@@ -21,7 +21,7 @@ Private Token() As tPosAndVel
 Private Const MaxNtok As Long = 199
 
 Public Ntokens As Long
-
+Private InvNtokens As Double
 
 'Public MySIZE  As Double
 
@@ -37,6 +37,8 @@ Private DirChange As geoVector2D
 Private EyEANG As Double
 Private oldANG As Double
 Public Diam As Double
+Public InvDiam As Double
+
 
 
 Public IsDying As Long
@@ -60,6 +62,7 @@ Public Property Let SetSize(V As Double)
     fLength = V
     'DIAM = 5 * (fLength + 10) ^ (0.4)
     Diam = 5 * (fLength + 15) ^ (0.45)
+InvDiam = 1 / Diam
 
 End Property
 
@@ -178,7 +181,7 @@ Private Sub RandomizeMe()
     SetSize = 2
 
     Ntokens = fLength
-
+InvNtokens = 1 / Ntokens
 
     ReDim Token(MaxNtok)
 
@@ -238,10 +241,12 @@ Public Sub DRAW(DrawBoundingBox As Long)
     Dim C   As Double
     Dim S   As Double
     Dim K   As Double
-    Dim InvNotkens
+    '  Dim InvNtokens
     Dim CADD As Double
 
     Dim StepD As Long
+
+
 
 
 
@@ -255,7 +260,11 @@ Public Sub DRAW(DrawBoundingBox As Long)
 
     'If MyIDX = PLAYER Then Stop
 
+    '    StepD = 1 + Diam * 0.0125
     StepD = 1 + Diam * 0.0125
+
+
+
     'If StepD <> 1 Then Stop
 
 
@@ -272,32 +281,65 @@ Public Sub DRAW(DrawBoundingBox As Long)
                 .Fill
             Next
 
-            If (CNT - DyingTime > 104) Then
+            If (CNT - DyingTime > 40) Then '104
                 CreateFoodFromDeadSnake MyIDX
                 RandomizeMe
             End If
 
         Else
-            '.SetSourceColor Color, 0.9
-            '.SetSourceRGBA ColorR, ColorG, ColorB, 0.9
 
-            InvNotkens = 1# / (Ntokens)
+
+            '            InvNtokens = 1# / (Ntokens)
+            '            K = 0
+            '            For I = tokIDX + 1 To tokIDX + Ntokens - 1 Step StepD   'Senza -1 disegna anche testa
+            '
+            '                J = I Mod Ntokens
+            '                P = Token(J).POS
+            '                K = K + StepD
+            '
+            '                CADD = Cos((-K * InvNtokens) * PI2 * 5#) * 0.2
+            '
+            '                .SetSourceRGBA ColorR + CADD, ColorG + CADD, ColorB + CADD    ', 0.9
+            '
+            '                .Ellipse P.x, P.y, Diam, Diam
+            '                .Fill
+            '            Next
+
+            .SetLineWidth Diam
+
             K = 0
-            For I = tokIDX + 1 To tokIDX + Ntokens - 1 Step StepD   'Senza -1 disegna anche testa
+            I = tokIDX + StepD * 1 + 1
+            J = I Mod Ntokens
+            P = Token(J).POS
+            K = K + StepD
+            CADD = Cos((-K * InvNtokens) * PI2 * 5#) * 0.2
+            .MoveTo P.x, P.y
+
+            For I = tokIDX + StepD * 1 + 2 To tokIDX + Ntokens Step StepD    'Senza -1 disegna anche testa
 
                 J = I Mod Ntokens
                 P = Token(J).POS
                 K = K + StepD
 
-                CADD = Cos((-K * InvNotkens) * PI2 * 5#) * 0.2
+                CADD = Cos((-K * InvNtokens) * PI2 * 5#) * 0.2
 
                 .SetSourceRGBA ColorR + CADD, ColorG + CADD, ColorB + CADD    ', 0.9
 
-                .Ellipse P.x, P.y, Diam, Diam
-                .Fill
 
+
+                'To Avoid Head->Queue Line:
+                If J <> (tokIDX + StepD) Mod Ntokens Then
+                    .LineTo P.x, P.y
+                    .Stroke
+                End If
+
+                .MoveTo P.x, P.y
 
             Next
+
+            .LineTo HEAD.POS.x, HEAD.POS.y
+            .Stroke
+
         End If
 
 
@@ -305,6 +347,9 @@ Public Sub DRAW(DrawBoundingBox As Long)
 
         '........................................
         'Drawhead EYES
+
+        .SetLineWidth 1
+
         ANG = Atan2(HEAD.Vel.x, HEAD.Vel.y)
 
         '--------Tongue
@@ -318,6 +363,7 @@ Public Sub DRAW(DrawBoundingBox As Long)
         .SetSourceRGBA 1, 0.6, 0.6, 0.4
         .Ellipse X1, Y1, Diam * 0.67, Diam * 0.67
         .Fill
+        'Draw Head
         .SetSourceRGBA ColorR + CADD, ColorG + CADD, ColorB + CADD
         .Ellipse HEAD.POS.x, HEAD.POS.y, Diam, Diam
         .Fill
@@ -395,28 +441,30 @@ Public Sub MOVE()
 
 
     If MyIDX = PLAYER Then    'Player
-        DirChange = VectorMUL(MousePos, 0.002)    '.004
+'        DirChange = VectorMUL(MousePos, 0.01 * InvDiam)  '.001
+        DirChange = VectorMUL(VectorNormalize(MousePos), 3 * InvDiam)
 
         ''   DirChange = VectorSUM(DirChange, AvoidEnemy(MyIDX, HEAD.POS, HEAD.Vel))
 
         HEAD.Vel = VectorNormalize(VectorSUM(HEAD.Vel, DirChange))
 
-
-
     Else    'Other Snakes
 
         oldANG = Atan2(HEAD.Vel.x, HEAD.Vel.y)
 
-        If Cos((CNT + MyIDX * 50500) * 0.0075) < -0.0625 Then
+        If Cos((CNT + MyIDX * 50500) * 0.0075) < -0.125 Then ''' Ramble -0.0625
             DirChange.x = Rnd * 2 - 1
             DirChange.y = Rnd * 2 - 1
-            DirChange = VectorSUM(DirChange, AvoidEnemy(MyIDX, HEAD.POS, HEAD.Vel))
+            'Commented to make AI sometimes not to Work
+            'DirChange = VectorSUM(DirChange, AvoidEnemy(MyIDX, HEAD.POS, HEAD.Vel))
         Else
             DirChange = PointToNearestFood(HEAD.POS)
             DirChange = VectorSUM(DirChange, AvoidEnemy(MyIDX, HEAD.POS, HEAD.Vel))
         End If
 
-        DirChange = VectorMUL(DirChange, 0.15)    '.3
+        'DirChange = VectorMUL(DirChange, 0.15)
+        DirChange = VectorMUL(DirChange, 3 * InvDiam)
+        
         HEAD.Vel = VectorNormalize(VectorSUM(HEAD.Vel, DirChange))
 
         If FASTspeed Then
@@ -443,7 +491,7 @@ Public Sub MOVE()
 
     If FASTspeedCOUNT > 20 Then
         FASTspeedCOUNT = 0
-        AddFoodParticle Token((tokIDX + 1) Mod Ntokens).POS
+        AddFoodParticle Token((tokIDX + 1) Mod Ntokens).POS, False
         SetSize = GetSize - FoodLengthValue
     End If
 
@@ -465,15 +513,17 @@ Public Sub MOVE()
     Token(tokIDX).POS = HEAD.POS
 
 
+
     For I = tokIDX + Ntokens - 1 To tokIDX + 1 Step -1
         J = I Mod Ntokens
         J2 = J - 1
         If J2 < 0 Then J2 = J2 + Ntokens
         If J2 <> tokIDX Then Token(J).POS = VectorSUM(VectorMUL(Token(J).POS, 0.18), VectorMUL(Token(J2).POS, 0.82))
-
     Next
     If fLength \ 1 < Ntokens Then
         Ntokens = Ntokens - 1
+        InvNtokens = 1 / Ntokens
+
     End If
 
     ' fLength = fLength + 0.002 * Rnd
@@ -489,6 +539,7 @@ Public Sub MOVE()
                 Token(J).POS = Token(J2).POS
             Next
         End If
+        InvNtokens = 1 / Ntokens
     End If
 
 

@@ -8,9 +8,12 @@ End Type
 
 Public FOOD() As tPosAndVel
 Public FOODcolor() As Long
+Public FoodAge() As Double
 
 
 Public NFood As Long
+Public MaxFood As Long
+
 
 Public Const FoodSize As Double = 9
 
@@ -22,14 +25,18 @@ Public Sub InitFOOD(HowMuch As Long)
     Dim I   As Long
 
     NFood = HowMuch
+MaxFood = NFood
 
     ReDim FOOD(NFood)
+    ReDim FoodAge(NFood)
+    
     For I = 0 To NFood
 
         With FOOD(I)
             .POS.x = wMinX + Rnd * (wMaxX - wMinX)
             .POS.y = wMinY + Rnd * (wMaxY - wMinY)
         End With
+        FoodAge(I) = 0 '1
     Next
 
 End Sub
@@ -39,20 +46,28 @@ Private Sub RemoveFood(wF As Long)
     NFood = NFood - 1
     For I = wF To NFood
         FOOD(I) = FOOD(I + 1)
+        FoodAge(I) = FoodAge(I + 1)
     Next
 
 End Sub
 
-Public Sub AddFoodParticle(POS As geoVector2D)
+Public Sub AddFoodParticle(POS As geoVector2D, IsWhite As Long)
 
     NFood = NFood + 1
-    ReDim Preserve FOOD(NFood)
+    If NFood > MaxFood Then
+        MaxFood = NFood + 20
+
+        ReDim Preserve FOOD(MaxFood)
+        ReDim Preserve FoodAge(MaxFood)
+    End If
+
     With FOOD(NFood)
         .Vel.x = 0
         .Vel.y = 0
         .POS = POS
     End With
 
+If IsWhite Then FoodAge(NFood) = 1 Else: FoodAge(NFood) = 0
 
 End Sub
 
@@ -75,8 +90,11 @@ Public Sub DrawFOOD()
 
             If InsideBB(CameraBB, FOOD(I).POS) Then
                 vbDRAW.CC.RenderSurfaceContent "FoodIcon", .POS.x - FoodSize, .POS.y - FoodSize, , , CAIRO_FILTER_FAST, 0.75
+                If FoodAge(I) > 0 Then vbDRAW.CC.RenderSurfaceContent "FoodIconLight", .POS.x - FoodSize * 3, .POS.y - FoodSize * 3, , , CAIRO_FILTER_FAST, FoodAge(I)
+                
             End If
         End With
+        FoodAge(I) = FoodAge(I) - 0.002
     Next
 
 
@@ -135,6 +153,7 @@ Public Sub FoodMoveAndCheckEaten()
                                 ' MultipleSounds.playsound "eatfruit.wav"
 
                                 MultipleSounds.PlaySound SoundPlayerChomp
+                                
                             End If
                         Else
                             HeadPosition = Snake(PLAYER).GetHEADPos
@@ -143,12 +162,11 @@ Public Sub FoodMoveAndCheckEaten()
                             D = Sqr(dx * dx + dy * dy)
                             'MultipleSounds.PlaySound SoundEnemyChomp, ClampLong(-dx * 3, -10000, 10000), ClampLong(-D * 0.8, -10000, 0)
                             MultipleSounds.PlaySound SoundEnemyChomp, ClampLong(-dx * 2, -10000, 10000), ClampLong(-D * 1, -10000, 0)
-
+ 
                         End If
 
                         'Snake(J).fLength = Snake(J).fLength + 1
                         Snake(J).SetSize = Snake(J).GetSize + FoodLengthValue
-
                         '   FoodToRNDPosition I
                         RemoveFood I
                     End If
@@ -175,12 +193,19 @@ Public Sub CreateFoodFromDeadSnake(wS As Long)
     Dim I   As Long
     For I = 0 To Snake(wS).Ntokens - 2    '1
         NFood = NFood + 1
-        ReDim Preserve FOOD(NFood)
+        If NFood > MaxFood Then
+        MaxFood = NFood + 20
+        ReDim Preserve FOOD(MaxFood)
+        ReDim Preserve FoodAge(MaxFood)
+        
+        End If
+        
         With FOOD(NFood)
             .POS = Snake(wS).GetTokenPos(I)
             .Vel.x = (Rnd * 2 - 1) * 0.125
             .Vel.y = (Rnd * 2 - 1) * 0.125
         End With
+        FoodAge(NFood) = 1
     Next
 End Sub
 
@@ -240,7 +265,8 @@ Public Function AvoidEnemy(Idx As Long, POS As geoVector2D, Vel As geoVector2D) 
     Dmin = 1E+28
 
 
-    Diam = (Diam + 30) * 8
+
+    Diam = (Diam + 30) * 3    ' 8 '''' Distance Sense
     Diam = Diam * Diam
 
     'If Idx = PLAYER Then Stop
@@ -253,14 +279,13 @@ Public Function AvoidEnemy(Idx As Long, POS As geoVector2D, Vel As geoVector2D) 
 
                 TP = Snake(I).GetTokenPos(J)
 
-
-                If Sgn((TP.x - POS.x) * Vel.x) + Sgn((TP.y - POS.y) * Vel.y) > 1 Then
+                'If Sgn((TP.x - POS.x) * Vel.x) + Sgn((TP.y - POS.y) * Vel.y) > 1 Then 'ERROR
+                If Sgn((TP.x - POS.x) * Vel.x + (TP.y - POS.y) * Vel.y) > 0 Then    'Correct!
 
                     D1 = DistFromPointSQU(TP, TPleft)
                     D2 = DistFromPointSQU(TP, TPRight)
 
                     If (D1 < Diam) Or (D2 < Diam) Then
-
 
                         If D1 < Dmin Or D2 < Dmin Then
                             If D1 < D2 Then

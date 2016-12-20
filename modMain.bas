@@ -90,7 +90,9 @@ Public Sub MainLoop()
 
     Do
 
-        If Timing - pTime > 0.01333 Then    '75 FPS computed
+        If Timing - pTime > 0.01334 Then    '75 FPS computed
+            'If Timing - pTime > 0.01666 Then    '60 FPS computed
+
             pTime = Timing
 
             For I = 0 To NSnakes
@@ -100,7 +102,8 @@ Public Sub MainLoop()
             FoodMoveAndCheckEaten    '------------------------------------
 
 
-            If CNT Mod 3 = 0 Then    '' 75 / 3 FPS =25 FPS Drawn
+            If CNT Mod 4 = 0 Then    '' 75 / 3 FPS =25 FPS Drawn
+                'If CNT Mod 3 = 0 Then    '' 60 / 3 FPS =20 FPS Drawn
 
                 '                CheckCollisionsOnlyPlayer
                 CheckCollisionsALLtoALL

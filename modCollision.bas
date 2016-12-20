@@ -170,7 +170,7 @@ Public Sub CheckCollisionsALLtoALL()
                                 dy = HeadPosI.y - TokenPosition.y
                                 D = Sqr(dx * dx + dy * dy)
                                 'MultipleSounds.PlaySound SoundEnenmyKilled, ClampLong(-dx * 3, -10000, 10000), ClampLong(-D * 0.8, -10000, 0)
-                                MultipleSounds.PlaySound SoundEnenmyKilled, ClampLong(-dx * 2, -10000, 10000), ClampLong(-D * 1, -10000, 0)
+                                MultipleSounds.PlaySound SoundEnenmyKilled, ClampLong(-dx * 2, -10000, 10000), ClampLong(-D * 0.5, -10000, 0)
 
                                 HeadPosI = Snake(I).GetHEADPos
                             End If
@@ -223,7 +223,7 @@ Public Sub CheckCollisionsALLtoALL()
                                     dy = HeadPosI.y - TokenPosition.y
                                     D = Sqr(dx * dx + dy * dy)
                                     'MultipleSounds.PlaySound SoundEnenmyKilled, ClampLong(-dx * 3, -10000, 10000), ClampLong(-D * 0.8, -10000, 0)
-                                    MultipleSounds.PlaySound SoundEnenmyKilled, ClampLong(-dx * 2, -10000, 10000), ClampLong(-D * 1, -10000, 0)
+                                    MultipleSounds.PlaySound SoundEnenmyKilled, ClampLong(-dx * 2, -10000, 10000), ClampLong(-D * 0.5, -10000, 0)
 
                                     HeadPosI = Snake(I).GetHEADPos
                                 End If
