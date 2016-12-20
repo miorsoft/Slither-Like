@@ -17,8 +17,8 @@ Option Explicit
 
 
 Private Type tMyBuff
-    Buffer     As IDirectSoundBuffer8
-    FileName   As String
+    Buffer As IDirectSoundBuffer8
+    FileName As String
 End Type
 
 Private DirectSound As DirectSound8
@@ -30,8 +30,8 @@ Private SoundsSET() As tMyBuff
 
 
 Private Sub Class_Initialize()
-    Dim desc   As DSBUFFERDESC
-    Dim I      As Long
+    Dim desc As DSBUFFERDESC
+    Dim I As Long
 
     Set DirectSound = New DirectSound8
     DirectSound.Initialize ByVal 0
@@ -54,8 +54,8 @@ End Sub
 
 
 Public Sub PlaySoundOLD(S As String, Optional Pan As Long = 0, Optional Volume As Long = 0)
-    Dim desc   As DSBUFFERDESC
-    Dim I      As Long
+    Dim desc As DSBUFFERDESC
+    Dim I As Long
 
     desc.dwFlags = DSBCAPS_CTRLVOLUME Or DSBCAPS_CTRLPAN
 
@@ -92,8 +92,8 @@ End Sub
 
 
 Public Sub PlaySound(S As String, Optional Pan As Long = 0, Optional Volume As Long = 0)
-    Dim desc   As DSBUFFERDESC
-    Dim I      As Long
+    Dim desc As DSBUFFERDESC
+    Dim I As Long
     Dim CanExitSub As Long
 
     desc.dwFlags = DSBCAPS_CTRLVOLUME Or DSBCAPS_CTRLPAN
@@ -134,7 +134,7 @@ Public Sub PlaySound(S As String, Optional Pan As Long = 0, Optional Volume As L
 End Sub
 
 Private Sub Class_Terminate()
-    Dim I      As Long
+    Dim I As Long
 
     For I = 0 To BUFFLEN
         Set SoundsSET(I).Buffer = Nothing

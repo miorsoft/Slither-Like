@@ -10,25 +10,25 @@ Option Explicit
 
 Public Srf As cCairoSurface, CC As cCairoContext    'Srf is similar to a DIB, the derived CC similar to a hDC
 Attribute CC.VB_VarUserMemId = 1073741824
-Public vbDRAW  As cVBDraw
+Public vbDRAW As cVBDraw
 Attribute vbDRAW.VB_VarUserMemId = 1073741826
-Public CONS    As cConstructor
+Public CONS As cConstructor
 Attribute CONS.VB_VarUserMemId = 1610809344
 
-Public PicHDC  As Long
+Public PicHDC As Long
 Attribute PicHDC.VB_VarUserMemId = 1073741828
-Public MaxW    As Long
+Public MaxW As Long
 Attribute MaxW.VB_VarUserMemId = 1073741829
-Public maxH    As Long
+Public maxH As Long
 Attribute maxH.VB_VarUserMemId = 1073741830
 
-Public CenX    As Double
-Public CenY    As Double
+Public CenX As Double
+Public CenY As Double
 
-Public wMinX   As Double
-Public wMinY   As Double
-Public wMaxX   As Double
-Public wMaxY   As Double
+Public wMinX As Double
+Public wMinY As Double
+Public wMaxX As Double
+Public wMaxY As Double
 
 
 
@@ -102,13 +102,13 @@ End Sub
 
 
 Public Sub InitResources()
-    Dim Srf    As cCairoSurface
-    Dim CC     As cCairoContext
-    Dim size   As Double
-    Dim I      As Long
-    Dim x      As Double
-    Dim y      As Double
-    Dim Gray   As Double
+    Dim Srf As cCairoSurface
+    Dim CC As cCairoContext
+    Dim size As Double
+    Dim I As Long
+    Dim x As Double
+    Dim y As Double
+    Dim Gray As Double
 
     '    Cairo.ImageList.AddImage "FoodIcon", App.Path & "\Resources\Orb.png", 16, 16
     Cairo.ImageList.AddImage "FoodIcon", App.Path & "\Resources\greenlight.png", FoodSize * 2, FoodSize * 2
@@ -131,7 +131,7 @@ Public Sub InitResources()
     For x = 0 To Srf.Width * 1.2 Step size * Cos(Pi / 6)
         I = I + 1
         For y = -Srf.Width * 0.2 To Srf.Height * 1.2 Step size
-            CC.DrawRegularPolygon x, y + (I Mod 2) * size * 0.5, size * 0.4, 6, splSmallest 'splNone
+            CC.DrawRegularPolygon x, y + (I Mod 2) * size * 0.5, size * 0.4, 6, splSmallest    'splNone
             CC.Fill
         Next
     Next
@@ -143,10 +143,10 @@ Public Sub InitResources()
         For y = -Srf.Width * 0.2 To Srf.Height * 1.2 Step size
 
             CC.SetSourceColor RGB(Gray * 1.3, Gray * 1.3, Gray * 1.3)
-            CC.DrawRegularPolygon x - size * 0.02, -size * 0.02 + y + (I Mod 2) * size * 0.5, size * 0.3, 6, splSmallest 'splNone
+            CC.DrawRegularPolygon x - size * 0.02, -size * 0.02 + y + (I Mod 2) * size * 0.5, size * 0.3, 6, splSmallest    'splNone
             CC.Fill
             CC.SetSourceColor RGB(Gray * 0.9, Gray * 0.9, Gray * 0.9)
-            CC.DrawRegularPolygon x + size * 0.02, size * 0.02 + y + (I Mod 2) * size * 0.5, size * 0.3, 6, splSmallest 'splNone
+            CC.DrawRegularPolygon x + size * 0.02, size * 0.02 + y + (I Mod 2) * size * 0.5, size * 0.3, 6, splSmallest    'splNone
             CC.Fill
 
             CC.SetSourceColor RGB(Gray * 1.16, Gray * 1.16, Gray * 1.16)

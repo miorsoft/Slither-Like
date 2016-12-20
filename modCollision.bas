@@ -1,10 +1,10 @@
 Attribute VB_Name = "modCollision"
 Option Explicit
 Public Type tBB
-    minX       As Double
-    minY       As Double
-    maxX       As Double
-    maxY       As Double
+    minX As Double
+    minY As Double
+    maxX As Double
+    maxY As Double
 End Type
 
 Public Function InsideBB(BB As tBB, P As geoVector2D) As Boolean
@@ -115,20 +115,20 @@ End Function
 'End Sub
 
 Public Sub CheckCollisionsALLtoALL()
-    Dim Ri     As Double
-    Dim Rj     As Double
-    Dim I      As Long
-    Dim J      As Long
+    Dim Ri As Double
+    Dim Rj As Double
+    Dim I As Long
+    Dim J As Long
 
-    Dim K      As Long
+    Dim K As Long
 
 
     Dim TokenPosition As geoVector2D
-    Dim dx     As Double
-    Dim dy     As Double
-    Dim D      As Double
-    Dim MIND   As Double
-    Dim BB     As tBB
+    Dim dx As Double
+    Dim dy As Double
+    Dim D As Double
+    Dim MIND As Double
+    Dim BB As tBB
 
 
     Dim HeadPosI As geoVector2D
@@ -171,7 +171,7 @@ Public Sub CheckCollisionsALLtoALL()
                                 D = Sqr(dx * dx + dy * dy)
                                 'MultipleSounds.PlaySound SoundEnenmyKilled, ClampLong(-dx * 3, -10000, 10000), ClampLong(-D * 0.8, -10000, 0)
                                 MultipleSounds.PlaySound SoundEnenmyKilled, ClampLong(-dx * 2, -10000, 10000), ClampLong(-D * 1, -10000, 0)
-                                
+
                                 HeadPosI = Snake(I).GetHEADPos
                             End If
 
@@ -212,7 +212,7 @@ Public Sub CheckCollisionsALLtoALL()
                                     D = Sqr(dx * dx + dy * dy)
                                     'MultipleSounds.PlaySound SoundEnenmyKilledByMe, ClampLong(-dx * 3, -10000, 10000), ClampLong(-D * 0.8, -10000, 0)
                                     MultipleSounds.PlaySound SoundEnenmyKilledByMe, ClampLong(-dx * 2, -10000, 10000), ClampLong(-D * 1, -10000, 0)
-                                    
+
                                     HeadPosJ = Snake(J).GetHEADPos
                                 End If
 
@@ -224,7 +224,7 @@ Public Sub CheckCollisionsALLtoALL()
                                     D = Sqr(dx * dx + dy * dy)
                                     'MultipleSounds.PlaySound SoundEnenmyKilled, ClampLong(-dx * 3, -10000, 10000), ClampLong(-D * 0.8, -10000, 0)
                                     MultipleSounds.PlaySound SoundEnenmyKilled, ClampLong(-dx * 2, -10000, 10000), ClampLong(-D * 1, -10000, 0)
-                                    
+
                                     HeadPosI = Snake(I).GetHEADPos
                                 End If
                             End If
@@ -248,13 +248,13 @@ End Sub
 
 Public Function NewSnakePosition(Idx As Long) As geoVector2D
 
-    Dim BB     As tBB
-    Dim POS    As geoVector2D
+    Dim BB As tBB
+    Dim POS As geoVector2D
     Dim PlayerHeadPOS As geoVector2D
-    Dim dx     As Double
-    Dim dy     As Double
-    Dim C      As Long
-    Dim InsBB  As Boolean
+    Dim dx As Double
+    Dim dy As Double
+    Dim C As Long
+    Dim InsBB As Boolean
 
 
     If Idx = PLAYER Then

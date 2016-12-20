@@ -2,15 +2,15 @@ Attribute VB_Name = "modFOOD"
 Option Explicit
 
 Public Type tPosAndVel
-    POS        As geoVector2D
-    Vel        As geoVector2D
+    POS As geoVector2D
+    Vel As geoVector2D
 End Type
 
-Public FOOD()  As tPosAndVel
+Public FOOD() As tPosAndVel
 Public FOODcolor() As Long
 
 
-Public NFood   As Long
+Public NFood As Long
 
 Public Const FoodSize As Double = 9
 
@@ -19,7 +19,7 @@ Public Const FoodLengthValue As Double = 1
 
 
 Public Sub InitFOOD(HowMuch As Long)
-    Dim I      As Long
+    Dim I As Long
 
     NFood = HowMuch
 
@@ -34,7 +34,7 @@ Public Sub InitFOOD(HowMuch As Long)
 
 End Sub
 Private Sub RemoveFood(wF As Long)
-    Dim I      As Long
+    Dim I As Long
 
     NFood = NFood - 1
     For I = wF To NFood
@@ -64,7 +64,7 @@ Private Sub FoodToRNDPosition(wF As Long)
     End With
 End Sub
 Public Sub DrawFOOD()
-    Dim I      As Long
+    Dim I As Long
 
     ' vbDRAW.CC.SetSourceColor vbGreen
 
@@ -83,20 +83,20 @@ Public Sub DrawFOOD()
 End Sub
 
 Public Sub FoodMoveAndCheckEaten()
-    Dim I      As Long
-    Dim J      As Double
+    Dim I As Long
+    Dim J As Double
     Dim HeadPosition As geoVector2D
-    Dim Hvel   As geoVector2D
+    Dim Hvel As geoVector2D
 
-    Dim D      As Double
-    Dim dx     As Double
-    Dim dy     As Double
-    Dim vD     As Double
-    Dim vDx    As Double
-    Dim vDy    As Double
+    Dim D As Double
+    Dim dx As Double
+    Dim dy As Double
+    Dim vD As Double
+    Dim vDx As Double
+    Dim vDy As Double
 
 
-    Dim GrabR  As Double
+    Dim GrabR As Double
 
 
     For I = 0 To NFood
@@ -143,7 +143,7 @@ Public Sub FoodMoveAndCheckEaten()
                             D = Sqr(dx * dx + dy * dy)
                             'MultipleSounds.PlaySound SoundEnemyChomp, ClampLong(-dx * 3, -10000, 10000), ClampLong(-D * 0.8, -10000, 0)
                             MultipleSounds.PlaySound SoundEnemyChomp, ClampLong(-dx * 2, -10000, 10000), ClampLong(-D * 1, -10000, 0)
-                            
+
                         End If
 
                         'Snake(J).fLength = Snake(J).fLength + 1
@@ -172,7 +172,7 @@ Public Sub FoodMoveAndCheckEaten()
 End Sub
 
 Public Sub CreateFoodFromDeadSnake(wS As Long)
-    Dim I      As Long
+    Dim I As Long
     For I = 0 To Snake(wS).Ntokens - 2    '1
         NFood = NFood + 1
         ReDim Preserve FOOD(NFood)
@@ -186,12 +186,12 @@ End Sub
 
 
 Public Function PointToNearestFood(HeadPos As geoVector2D) As geoVector2D
-    Dim I      As Long
-    Dim J      As Long
-    Dim D      As Double
-    Dim dx     As Double
-    Dim dy     As Double
-    Dim MIND   As Double
+    Dim I As Long
+    Dim J As Long
+    Dim D As Double
+    Dim dx As Double
+    Dim dy As Double
+    Dim MIND As Double
 
     MIND = 1E+32
 
@@ -210,22 +210,22 @@ Public Function PointToNearestFood(HeadPos As geoVector2D) As geoVector2D
 End Function
 
 Public Function AvoidEnemy(Idx As Long, POS As geoVector2D, Vel As geoVector2D) As geoVector2D
-    Dim I      As Long
-    Dim J      As Long
+    Dim I As Long
+    Dim J As Long
 
     Dim TPleft As geoVector2D
     Dim TPRight As geoVector2D
-    Dim TP     As geoVector2D
+    Dim TP As geoVector2D
 
-    Dim C      As Double
-    Dim S      As Double
-    Dim A      As Double
+    Dim C As Double
+    Dim S As Double
+    Dim A As Double
 
-    Dim tEsc   As geoVector2D
-    Dim Dmin   As Double
-    Dim D1     As Double
-    Dim D2     As Double
-    Dim Diam   As Double
+    Dim tEsc As geoVector2D
+    Dim Dmin As Double
+    Dim D1 As Double
+    Dim D2 As Double
+    Dim Diam As Double
 
     Diam = Snake(Idx).Diam
 
@@ -240,40 +240,40 @@ Public Function AvoidEnemy(Idx As Long, POS As geoVector2D, Vel As geoVector2D) 
     Dmin = 1E+28
 
 
-Diam = (Diam + 30) * 8
-Diam = Diam * Diam
+    Diam = (Diam + 30) * 8
+    Diam = Diam * Diam
 
-'If Idx = PLAYER Then Stop
+    'If Idx = PLAYER Then Stop
 
     For I = 0 To NSnakes
         If I <> Idx Then
 
             For J = 1 To Snake(I).Ntokens - 1
-            
-            
+
+
                 TP = Snake(I).GetTokenPos(J)
 
 
-If Sgn((TP.x - POS.x) * Vel.x) + Sgn((TP.y - POS.y) * Vel.y) > 1 Then
+                If Sgn((TP.x - POS.x) * Vel.x) + Sgn((TP.y - POS.y) * Vel.y) > 1 Then
 
-                D1 = DistFromPointSQU(TP, TPleft)
-                D2 = DistFromPointSQU(TP, TPRight)
+                    D1 = DistFromPointSQU(TP, TPleft)
+                    D2 = DistFromPointSQU(TP, TPRight)
 
-                If (D1 < Diam) Or (D2 < Diam) Then
+                    If (D1 < Diam) Or (D2 < Diam) Then
 
 
-                    If D1 < Dmin Or D2 < Dmin Then
-                        If D1 < D2 Then
-                            tEsc.x = Cos(A - 0.25) * 8
-                            tEsc.y = Sin(A - 0.25) * 8
-                        Else
-                            tEsc.x = Cos(A + 0.25) * 8
-                            tEsc.y = Sin(A + 0.25) * 8
+                        If D1 < Dmin Or D2 < Dmin Then
+                            If D1 < D2 Then
+                                tEsc.x = Cos(A - 0.25) * 8
+                                tEsc.y = Sin(A - 0.25) * 8
+                            Else
+                                tEsc.x = Cos(A + 0.25) * 8
+                                tEsc.y = Sin(A + 0.25) * 8
+                            End If
+                            If D1 < Dmin Then Dmin = D1 Else: Dmin = D2
                         End If
-                        If D1 < Dmin Then Dmin = D1 Else: Dmin = D2
                     End If
                 End If
-End If
 
             Next
         End If

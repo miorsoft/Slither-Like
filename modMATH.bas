@@ -13,32 +13,32 @@ Public Const PI2 As Double = 6.28318530717959    'PI * 2
 Public Const PIh As Double = 1.5707963267949    ' PI * 0.5
 
 Public Type geoVector2D
-    x          As Double
-    y          As Double
-    Bool       As Boolean
+    x As Double
+    y As Double
+    Bool As Boolean
 End Type
 
 Public Type geoLine
-    P1         As geoVector2D
-    P2         As geoVector2D
-    ANG        As Double
-    Bool       As Boolean
+    P1 As geoVector2D
+    P2 As geoVector2D
+    ANG As Double
+    Bool As Boolean
 End Type
 
 Public Type geoCircle
-    Center     As geoVector2D
-    Radius     As Double
-    Bool       As Boolean
+    Center As geoVector2D
+    Radius As Double
+    Bool As Boolean
 End Type
 
 Public Type geoARC
-    Circle     As geoCircle
-    A1         As Double
-    A2         As Double
-    X1         As Double
-    Y1         As Double
-    x2         As Double
-    Y2         As Double
+    Circle As geoCircle
+    A1 As Double
+    A2 As Double
+    X1 As Double
+    Y1 As Double
+    x2 As Double
+    Y2 As Double
 End Type
 
 
@@ -50,8 +50,8 @@ Public Function mkPoint(x As Double, y As Double) As geoVector2D
 End Function
 
 Public Function mkLine(P1 As geoVector2D, P2 As geoVector2D) As geoLine
-    Dim dx     As Double
-    Dim dy     As Double
+    Dim dx As Double
+    Dim dy As Double
 
     mkLine.P1 = P1
     mkLine.P2 = P2
@@ -60,8 +60,8 @@ Public Function mkLine(P1 As geoVector2D, P2 As geoVector2D) As geoLine
     mkLine.ANG = Atan2(dx, dy)
 End Function
 Public Sub UpdateLineAng(ByRef L As geoLine)
-    Dim dx     As Double
-    Dim dy     As Double
+    Dim dx As Double
+    Dim dy As Double
     dx = L.P2.x - L.P1.x
     dy = L.P2.y - L.P1.y
     L.ANG = Atan2(dx, dy)
@@ -79,8 +79,8 @@ Public Sub UpdateArcPts(ByRef A As geoARC)
 End Sub
 
 Public Function mkLine2(X1 As Double, Y1 As Double, x2 As Double, Y2 As Double) As geoLine
-    Dim dx     As Double
-    Dim dy     As Double
+    Dim dx As Double
+    Dim dy As Double
 
     mkLine2.P1.x = X1
     mkLine2.P1.y = Y1
@@ -210,9 +210,9 @@ Public Function FowlerAngle(ByRef dx As Double, ByRef dy As Double) As Double
 '   (  0,  45,  90, 135, 180, 225, 270, 315, 360) degrees, measured
 '   counter-clockwise from the positive x axis.
 
-    Dim Adx    As Double   'Absolute Values of Dx and Dy
-    Dim Ady    As Double
-    Dim Code   As Long      'Angular Region Classification Code
+    Dim Adx As Double    'Absolute Values of Dx and Dy
+    Dim Ady As Double
+    Dim Code As Long    'Angular Region Classification Code
 
     Const K = PI2 * 0.125
 
@@ -255,10 +255,10 @@ Public Function Atan2Fast1(ByRef x As Double, ByRef y As Double) As Double
 'maximum error slightly larger than 4 degrees.
 'public double aTan2(double y, double x)
 '{   double coeff_1 = Math.PI / 4d;  double coeff_2 = 3d * coeff_1;  double abs_y = Math.abs(y); double angle;   if (x >= 0d) {      double r = (x - abs_y) / (x + abs_y);       angle = coeff_1 - coeff_1 * r;  } else {        double r = (x + abs_y) / (abs_y - x);       angle = coeff_2 - coeff_1 * r;  }   return y < 0d ? -angle : angle;}
-    Const C1   As Double = 0.785398163397448  'atn(1)
-    Const C2   As Double = 2.35619449019234  'atn(1)*3
-    Dim AbsY   As Double
-    Dim R      As Double
+    Const C1 As Double = 0.785398163397448    'atn(1)
+    Const C2 As Double = 2.35619449019234    'atn(1)*3
+    Dim AbsY As Double
+    Dim R As Double
 
     AbsY = Abs(y)
     If (x >= 0) Then
@@ -276,7 +276,7 @@ Public Function Atan2Fast2(ByRef x As Double, ByRef y As Double) As Double
 'http://lists.apple.com/archives/perfoptimization-dev/2005/Jan/msg00051.html
 '|error| < 0.005 radians
 
-    Dim Z      As Double
+    Dim Z As Double
 
     If x = 0 Then
         If (y > 0) Then Atan2Fast2 = PIh: Exit Function
@@ -316,24 +316,24 @@ End Function
 
 
 Public Function LineLen(ByRef L As geoLine) As Double
-    Dim dx     As Double
-    Dim dy     As Double
+    Dim dx As Double
+    Dim dy As Double
     dx = L.P2.x - L.P1.x
     dy = L.P2.y - L.P1.y
     LineLen = Sqr(dx * dx + dy * dy)
 End Function
 
 Public Function DistFromPoint(ByRef P1 As geoVector2D, ByRef P2 As geoVector2D) As Double
-    Dim dx     As Double
-    Dim dy     As Double
+    Dim dx As Double
+    Dim dy As Double
     dx = P2.x - P1.x
     dy = P2.y - P1.y
     DistFromPoint = Sqr(dx * dx + dy * dy)
 End Function
 
 Public Function DistFromPoint2(ByRef P As geoVector2D, x As Double, y As Double) As Double
-    Dim dx     As Double
-    Dim dy     As Double
+    Dim dx As Double
+    Dim dy As Double
     dx = x - P.x
     dy = y - P.y
     DistFromPoint2 = Sqr(dx * dx + dy * dy)
@@ -341,8 +341,8 @@ End Function
 
 
 Public Function DistFromPointSQU(ByRef P1 As geoVector2D, ByRef P2 As geoVector2D) As Double
-    Dim dx     As Double
-    Dim dy     As Double
+    Dim dx As Double
+    Dim dy As Double
     dx = P2.x - P1.x
     dy = P2.y - P1.y
     DistFromPointSQU = (dx * dx + dy * dy)
@@ -410,15 +410,15 @@ Public Function NearestFromLine(ByRef P As geoVector2D, ByRef L As geoLine) As g
 
 End Function
 Public Function IntersectOfLines(ByRef L1 As geoLine, ByRef L2 As geoLine) As geoVector2D
-    Dim D      As Double
-    Dim NA     As Double
-    Dim NB     As Double
-    Dim DX1    As Double
-    Dim DX2    As Double
-    Dim DY1    As Double
-    Dim DY2    As Double
-    Dim uA     As Double
-    Dim uB     As Double
+    Dim D As Double
+    Dim NA As Double
+    Dim NB As Double
+    Dim DX1 As Double
+    Dim DX2 As Double
+    Dim DY1 As Double
+    Dim DY2 As Double
+    Dim uA As Double
+    Dim uB As Double
 
     DX1 = L1.P2.x - L1.P1.x
     DY1 = L1.P2.y - L1.P1.y
@@ -471,15 +471,15 @@ Public Function IntersectOfLines2(ByRef L1 As geoLine, ByRef L2 As geoLine) As g
 '*  Intersection of LINES (not segments)    *
 '********************************************
 
-    Dim D      As Double
-    Dim NA     As Double
-    Dim NB     As Double
-    Dim DX1    As Double
-    Dim DX2    As Double
-    Dim DY1    As Double
-    Dim DY2    As Double
-    Dim uA     As Double
-    Dim uB     As Double
+    Dim D As Double
+    Dim NA As Double
+    Dim NB As Double
+    Dim DX1 As Double
+    Dim DX2 As Double
+    Dim DY1 As Double
+    Dim DY2 As Double
+    Dim uA As Double
+    Dim uB As Double
 
     DX1 = L1.P2.x - L1.P1.x
     DY1 = L1.P2.y - L1.P1.y
@@ -523,13 +523,13 @@ Public Sub IntersectCircleLine(ByRef C As geoCircle, _
                                ByRef Sol2 As geoVector2D)
 
 
-    Dim dx     As Double
-    Dim dy     As Double
-    Dim I      As Double
-    Dim AA     As Double
-    Dim BB     As Double
-    Dim CC     As Double
-    Dim mu     As Double
+    Dim dx As Double
+    Dim dy As Double
+    Dim I As Double
+    Dim AA As Double
+    Dim BB As Double
+    Dim CC As Double
+    Dim mu As Double
 
     Sol1.Bool = False
     Sol2.Bool = False
@@ -548,7 +548,7 @@ Public Sub IntersectCircleLine(ByRef C As geoCircle, _
     CC = (C.Center.x) ^ 2 + (C.Center.y) ^ 2 + _
          (L.P1.x) ^ 2 + _
          (L.P1.y) ^ 2 - _
-         2 * (C.Center.x * L.P1.x + C.Center.y * L.P1.y) - (C.Radius) ^ 2
+       2 * (C.Center.x * L.P1.x + C.Center.y * L.P1.y) - (C.Radius) ^ 2
 
     I = BB * BB - 4 * AA * CC
 
@@ -590,14 +590,14 @@ Public Sub IntersectOfCircles(ByRef C1 As geoCircle, _
                               ByRef Sol1 As geoVector2D, _
                               ByRef Sol2 As geoVector2D)
 
-    Dim D      As Double
-    Dim c1R    As Double
-    Dim c2R    As Double
-    Dim M      As Double
-    Dim N      As Double
-    Dim A      As Double
-    Dim H      As Double
-    Dim P      As geoVector2D
+    Dim D As Double
+    Dim c1R As Double
+    Dim c2R As Double
+    Dim M As Double
+    Dim N As Double
+    Dim A As Double
+    Dim H As Double
+    Dim P As geoVector2D
 
     'Calculate distance between centres of circle
     D = DistFromPoint(C1.Center, C2.Center)
@@ -645,8 +645,8 @@ End Sub
 
 Public Function VectorProject(ByRef V As geoVector2D, ByRef Vto As geoVector2D) As geoVector2D
 'Poject Vector V to vector Vto
-    Dim K      As Double
-    Dim D      As Double
+    Dim K As Double
+    Dim D As Double
 
     D = Sqr(Vto.x * Vto.x + Vto.y * Vto.y)
     If D = 0 Then Exit Function
@@ -664,10 +664,10 @@ Public Function VectorReflect(ByRef V As geoVector2D, ByRef wall As geoVector2D)
 'Vector "Wall" represent the angle of a wall where the point Bounces.
 'Returns the vector velocity that the point takes after the rebound
 
-    Dim vDot   As Double
-    Dim D      As Double
-    Dim NwX    As Double
-    Dim NwY    As Double
+    Dim vDot As Double
+    Dim D As Double
+    Dim NwX As Double
+    Dim NwY As Double
 
     D = Sqr(wall.x * wall.x + wall.y * wall.y)
     If D = 0 Then Exit Function
@@ -720,7 +720,7 @@ Public Function VectorMAG(ByRef V As geoVector2D) As Double
 End Function
 Public Function VectorNormalize(ByRef V As geoVector2D) As geoVector2D
 'convert vector to UNIT length
-    Dim M      As Double
+    Dim M As Double
     M = VectorMAG(V)
     If M = 0 Then Exit Function
     VectorNormalize.x = V.x / M
@@ -739,17 +739,17 @@ Public Sub TangentTwoCircles(ByRef C1 As geoCircle, ByRef C2 As geoCircle, _
                              ByRef retL1 As geoLine, ByRef retL2 As geoLine)
 'by Roberto Mior (reexre)
 
-    Dim C3     As geoCircle
-    Dim R3     As Double
-    Dim CM     As geoCircle
+    Dim C3 As geoCircle
+    Dim R3 As Double
+    Dim CM As geoCircle
 
-    Dim L1P1   As geoVector2D
-    Dim L1P2   As geoVector2D
-    Dim L2P1   As geoVector2D
-    Dim L2P2   As geoVector2D
+    Dim L1P1 As geoVector2D
+    Dim L1P2 As geoVector2D
+    Dim L2P1 As geoVector2D
+    Dim L2P2 As geoVector2D
 
-    Dim A1     As Double
-    Dim A2     As Double
+    Dim A1 As Double
+    Dim A2 As Double
     Dim Offset As Double
 
     CM.Center.x = (C1.Center.x + C2.Center.x) * 0.5
@@ -800,9 +800,9 @@ End Sub
 
 
 Public Function LineOffset(L As geoLine, D As Double, Optional LeftSide As Boolean = False) As geoLine
-    Dim iX     As Double
-    Dim iY     As Double
-    Dim S      As Double
+    Dim iX As Double
+    Dim iY As Double
+    Dim S As Double
 
     UpdateLineAng L
 
@@ -824,22 +824,22 @@ Public Function Fillet(ByRef L1 As geoLine, ByRef L2 As geoLine, Radius As Doubl
 'by Roberto Mior (reexre)
 'Find Arc (of a given radius) tangent to two lines
 
-    Dim tmpL1  As geoLine
-    Dim tmpL2  As geoLine
-    Dim P      As geoVector2D
+    Dim tmpL1 As geoLine
+    Dim tmpL2 As geoLine
+    Dim P As geoVector2D
     Dim IntesectP As geoVector2D
     Dim ArcCenterP As geoVector2D
-    Dim I      As Long
-    Dim J      As Long
+    Dim I As Long
+    Dim J As Long
 
     Dim L(1 To 4) As geoLine
 
-    Dim A1     As Double
-    Dim A2     As Double
-    Dim A3     As Double
+    Dim A1 As Double
+    Dim A2 As Double
+    Dim A3 As Double
 
-    Dim arcP1  As geoVector2D
-    Dim arcP2  As geoVector2D
+    Dim arcP1 As geoVector2D
+    Dim arcP2 As geoVector2D
 
 
     IntesectP = IntersectOfLines2(L1, L2)

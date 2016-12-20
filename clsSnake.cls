@@ -15,7 +15,7 @@ Option Explicit
 
 
 
-Private HEAD   As tPosAndVel
+Private HEAD As tPosAndVel
 
 Private Token() As tPosAndVel
 Private Const MaxNtok As Long = 199
@@ -25,10 +25,10 @@ Public Ntokens As Long
 
 'Public MySIZE  As Double
 
-Public tokIDX  As Long
-Public MyIDX   As Long
+Public tokIDX As Long
+Public MyIDX As Long
 
-Private Color  As Long
+Private Color As Long
 Private ColorR As Double
 Private ColorG As Double
 Private ColorB As Double
@@ -36,13 +36,13 @@ Private ColorB As Double
 Private DirChange As geoVector2D
 Private EyEANG As Double
 Private oldANG As Double
-Public Diam    As Double
+Public Diam As Double
 
 
 Public IsDying As Long
 Private DyingTime As Long
 
-Private BB     As tBB
+Private BB As tBB
 
 Public TongueOut As Double
 Public TongueLen As Double
@@ -104,7 +104,7 @@ End Function
 '
 'End Function
 Public Sub UpdateBB()
-    Dim I      As Long
+    Dim I As Long
     BB.minX = wMaxX * 2
     BB.minY = wMaxY * 2
     BB.maxX = wMinX * 2
@@ -121,7 +121,7 @@ Public Sub UpdateBB()
 
 End Sub
 Public Sub Init(x As Double, y As Double, Idx As Long, Leng As Double)
-    Dim I      As Long
+    Dim I As Long
 
     'fLength = Leng
     SetSize = Leng
@@ -165,12 +165,12 @@ Public Sub Init(x As Double, y As Double, Idx As Long, Leng As Double)
 End Sub
 
 Private Sub RandomizeMe()
-    Dim x      As Double
-    Dim y      As Double
+    Dim x As Double
+    Dim y As Double
 
-    Dim POS    As geoVector2D
+    Dim POS As geoVector2D
 
-    Dim I      As Long
+    Dim I As Long
 
     IsDying = 0    ' False
 
@@ -214,34 +214,34 @@ End Sub
 
 
 Public Sub DRAW(DrawBoundingBox As Long)
-    Dim ANG    As Double
-    Dim A      As Double
-    Dim A2     As Double
+    Dim ANG As Double
+    Dim A As Double
+    Dim A2 As Double
 
 
-    Dim Reye   As Double
-    Dim Reye2  As Double
+    Dim Reye As Double
+    Dim Reye2 As Double
 
-    Dim DEye   As Double
+    Dim DEye As Double
 
-    Dim I      As Long
-    Dim J      As Long
-    Dim P      As geoVector2D
+    Dim I As Long
+    Dim J As Long
+    Dim P As geoVector2D
 
-    Dim X1     As Double
-    Dim Y1     As Double
-    Dim x2     As Double
-    Dim Y2     As Double
-    Dim dx     As Double
-    Dim dy     As Double
+    Dim X1 As Double
+    Dim Y1 As Double
+    Dim x2 As Double
+    Dim Y2 As Double
+    Dim dx As Double
+    Dim dy As Double
 
-    Dim C      As Double
-    Dim S      As Double
-    Dim K      As Double
+    Dim C As Double
+    Dim S As Double
+    Dim K As Double
     Dim InvNotkens
-    Dim CADD   As Double
+    Dim CADD As Double
 
-Dim StepD As Long
+    Dim StepD As Long
 
 
 
@@ -253,10 +253,10 @@ Dim StepD As Long
     DEye = Reye * 1.65    '2
 
 
-'If MyIDX = PLAYER Then Stop
+    'If MyIDX = PLAYER Then Stop
 
-StepD = 1 + Diam * 0.0125
-'If StepD <> 1 Then Stop
+    StepD = 1 + Diam * 0.0125
+    'If StepD <> 1 Then Stop
 
 
 
@@ -290,7 +290,7 @@ StepD = 1 + Diam * 0.0125
                 K = K + StepD
 
                 CADD = Cos((-K * InvNotkens) * PI2 * 5#) * 0.2
-                
+
                 .SetSourceRGBA ColorR + CADD, ColorG + CADD, ColorB + CADD    ', 0.9
 
                 .Ellipse P.x, P.y, Diam, Diam
@@ -383,9 +383,9 @@ End Sub
 
 
 Public Sub MOVE()
-    Dim I      As Long
-    Dim J      As Long
-    Dim J2     As Long
+    Dim I As Long
+    Dim J As Long
+    Dim J2 As Long
 
 
     If IsDying Then Exit Sub
@@ -396,13 +396,13 @@ Public Sub MOVE()
 
     If MyIDX = PLAYER Then    'Player
         DirChange = VectorMUL(MousePos, 0.002)    '.004
-        
-    ''   DirChange = VectorSUM(DirChange, AvoidEnemy(MyIDX, HEAD.POS, HEAD.Vel))
-        
+
+        ''   DirChange = VectorSUM(DirChange, AvoidEnemy(MyIDX, HEAD.POS, HEAD.Vel))
+
         HEAD.Vel = VectorNormalize(VectorSUM(HEAD.Vel, DirChange))
-        
-       
-        
+
+
+
     Else    'Other Snakes
 
         oldANG = Atan2(HEAD.Vel.x, HEAD.Vel.y)
@@ -419,11 +419,11 @@ Public Sub MOVE()
         DirChange = VectorMUL(DirChange, 0.15)    '.3
         HEAD.Vel = VectorNormalize(VectorSUM(HEAD.Vel, DirChange))
 
-If FASTspeed Then
-If Rnd < 0.025 Then FASTspeed = False
-Else
-If Rnd < 0.00625 Then FASTspeed = True
-End If
+        If FASTspeed Then
+            If Rnd < 0.025 Then FASTspeed = False
+        Else
+            If Rnd < 0.00625 Then FASTspeed = True
+        End If
 
 
     End If

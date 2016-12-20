@@ -6,15 +6,15 @@ Public MultipleSounds As clsSounds
 Public Snake() As clsSnake
 Public NSnakes As Long
 
-Public DoLOOP  As Boolean
+Public DoLOOP As Boolean
 
 Public MousePos As geoVector2D
 
-Public CNT     As Long
+Public CNT As Long
 
-Public Level   As Long
+Public Level As Long
 
-Public Camera  As geoVector2D
+Public Camera As geoVector2D
 Public CameraBB As tBB
 
 
@@ -33,9 +33,9 @@ Public Const SoundEnenmyKilled As String = "uohm.wav"
 
 Public Const SoundPlayerDeath As String = "death.wav"
 
-Public DrawBB  As Long
+Public DrawBB As Long
 Public SaveFrames As Long
-Private Frame  As Long
+Private Frame As Long
 Private Const JPGframeRate As Long = 3    ''''75/3= 25 FPS ' Multiple of 3  ( cnt mod 3)
 
 Public DoBackGround As Long
@@ -47,7 +47,7 @@ Public invZOOM As Double
 
 Public Sub InitPool(ByVal NoSnakes As Long)
 
-    Dim I      As Long
+    Dim I As Long
     NSnakes = NoSnakes
 
     ReDim Snake(NSnakes)
@@ -65,8 +65,8 @@ End Sub
 
 
 Public Sub MainLoop()
-    Dim I      As Long
-    Dim pTime  As Double
+    Dim I As Long
+    Dim pTime As Double
 
 
 
@@ -122,9 +122,9 @@ Public Sub MainLoop()
                     '-...................................................
                     If DoBackGround Then
                         ' USE BACKGOUND --->>> Slow with ZOOM
-                       .RenderSurfaceContent "BK", wMinX, wMinY, , , CAIRO_FILTER_FAST
-'                        .Rectangle wMinX, wMinY, wMaxX - wMinX, wMaxY - wMinY
-'                        .Fill True, Cairo.cr
+                        .RenderSurfaceContent "BK", wMinX, wMinY, , , CAIRO_FILTER_FAST
+                        '                        .Rectangle wMinX, wMinY, wMaxX - wMinX, wMaxY - wMinY
+                        '                        .Fill True, Cairo.cr
                     Else
                         .SetSourceColor &H404040
                         .Rectangle wMinX, wMinY, wMaxX - wMinX, wMaxY - wMinY
