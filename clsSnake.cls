@@ -61,7 +61,9 @@ End Property
 Public Property Let SetSize(V As Double)
     fLength = V
     'DIAM = 5 * (fLength + 10) ^ (0.4)
-    Diam = 5 * (fLength + 15) ^ (0.45)
+    'Diam = 5 * (fLength + 15) ^ (0.45)
+    Diam = 5 * (fLength + 15) ^ (0.5)
+    
 InvDiam = 1 / Diam
 
 End Property

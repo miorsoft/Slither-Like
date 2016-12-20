@@ -9,9 +9,8 @@ Option Explicit
 
 
 Public Srf As cCairoSurface, CC As cCairoContext    'Srf is similar to a DIB, the derived CC similar to a hDC
-Attribute CC.VB_VarUserMemId = 1073741824
+
 Public vbDRAW As cVBDraw
-Attribute vbDRAW.VB_VarUserMemId = 1073741826
 Public CONS As cConstructor
 Attribute CONS.VB_VarUserMemId = 1610809344
 
@@ -33,8 +32,8 @@ Public wMaxY As Double
 
 
 Public Sub InitRC()
-    Set Srf = Cairo.CreateSurface(400, 400)    'size of our rendering-area in Pixels
-    Set CC = Srf.CreateContext    'create a Drawing-Context from the PixelSurface above
+   ' Set Srf = Cairo.CreateSurface(400, 400)    'size of our rendering-area in Pixels
+   ' Set CC = Srf.CreateContext    'create a Drawing-Context from the PixelSurface above
 
 
     MaxW = fMain.PIC.Width
@@ -49,22 +48,20 @@ Public Sub InitRC()
     wMaxX = CenX + MaxW * 2.2
     wMaxY = CenY + maxH + 2.2
 
-
-
-
     Set vbDRAW = Cairo.CreateVBDrawingObject
-    Set vbDRAW.Srf = Cairo.CreateSurface(400, 400)    'size of our rendering-area in Pixels
+'    Set vbDRAW.Srf = Cairo.CreateSurface(400, 400)    'size of our rendering-area in Pixels
+    Set vbDRAW.Srf = Cairo.CreateSurface(fMain.PIC.Width, fMain.PIC.Height)    'size of our rendering-area in Pixels
 
-    Set vbDRAW.CC = Srf.CreateContext    'create a Drawing-Context from the PixelSurface above
+    Set vbDRAW.CC = vbDRAW.Srf.CreateContext    'create a Drawing-Context from the PixelSurface above
 
 
-    vbDRAW.BindTo fMain.PIC
+    'vbDRAW.BindTo fMain.PIC
 
     With vbDRAW
 
         .CC.AntiAlias = CAIRO_ANTIALIAS_GRAY
 
-        .CC.SetSourceSurface Srf
+        '.CC.SetSourceSurface Srf
         .CC.SetLineCap CAIRO_LINE_CAP_ROUND
         .CC.SetLineJoin CAIRO_LINE_JOIN_ROUND
 
@@ -82,9 +79,6 @@ Public Sub InitRC()
     '    fMain.PIC.Cls
     '    fMain.PIC.Height = 640    '480    '360    ' 480
     '    fMain.PIC.Width = Int(fMain.PIC.Height * 4 / 3)
-
-
-
 
 
 End Sub
@@ -110,6 +104,10 @@ Public Sub InitResources()
     Dim y   As Double
     Dim Gray As Double
 
+Const LowResScale As Double = 0.33
+
+
+
     '    Cairo.ImageList.AddImage "FoodIcon", App.Path & "\Resources\Orb.png", 16, 16
     Cairo.ImageList.AddImage "FoodIcon", App.Path & "\Resources\greenlight.png", FoodSize * 2, FoodSize * 2
  Cairo.ImageList.AddImage "FoodIconLight", App.Path & "\Resources\whitelight.png", FoodSize * 6, FoodSize * 6
@@ -117,16 +115,21 @@ Public Sub InitResources()
 
 
 
-    Gray = 45    '60
+    Gray = 30 '45    '60
 
-    Set Srf = New_c.Cairo.CreateSurface(wMaxX - wMinX, wMaxY - wMinY, ImageSurface)
+    'Set Srf = New_c.Cairo.CreateSurface(wMaxX - wMinX, wMaxY - wMinY, ImageSurface)
+    'Lower Res
+    Set Srf = New_c.Cairo.CreateSurface((wMaxX - wMinX) * LowResScale, (wMaxY - wMinY) * LowResScale, ImageSurface)
+    
     Set CC = Srf.CreateContext
     CC.SetSourceColor RGB(Gray * 0.8, Gray * 0.8, Gray * 0.8)
     CC.Paint
 
     CC.RotateDrawings PIh / 12
 
-    size = 200    ' 140
+    size = 200 * LowResScale '
+    
+    
     I = 0
     CC.SetSourceColor RGB(Gray, Gray, Gray)
     For x = 0 To Srf.Width * 1.2 Step size * Cos(Pi / 6)
@@ -154,12 +157,11 @@ Public Sub InitResources()
             CC.DrawRegularPolygon x, y + (I Mod 2) * size * 0.5, size * 0.3, 6, splNone
             CC.Fill
 
-
-
         Next
     Next
 
     CC.Restore
+
 
     Srf.WriteContentToJpgFile App.Path & "\Resources\BK.jpg"
     ' Cairo.ImageList.AddSurface "BK", Srf

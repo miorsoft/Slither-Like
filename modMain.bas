@@ -86,8 +86,6 @@ Public Sub MainLoop()
     vbDRAW.CC.AntiAlias = CAIRO_ANTIALIAS_GRAY
 
 
-
-
     Do
 
         If Timing - pTime > 0.01334 Then    '75 FPS computed
@@ -113,19 +111,24 @@ Public Sub MainLoop()
                     .Paint
                     .Save
 
-                    ZOOMtoGO = 30# / Snake(PLAYER).Diam
+                    'ZOOMtoGO = 30# * Snake(PLAYER).InvDiam
+                    ZOOMtoGO = 28# * Snake(PLAYER).InvDiam
+                    
                     ZOOM = ZOOM * 0.98 + ZOOMtoGO * 0.02
                     invZOOM = 1# / ZOOM
 
                     .TranslateDrawings -Camera.x * ZOOM + CenX, -Camera.y * ZOOM + CenY
-
 
                     .ScaleDrawings ZOOM, ZOOM
 
                     '-...................................................
                     If DoBackGround Then
                         ' USE BACKGOUND --->>> Slow with ZOOM
-                        .RenderSurfaceContent "BK", wMinX, wMinY, , , CAIRO_FILTER_FAST
+                        '.RenderSurfaceContent "BK", wMinX, wMinY, , , CAIRO_FILTER_FAST
+                        
+                        'Lower Res
+                        .RenderSurfaceContent "BK", wMinX, wMinY, (wMaxX - wMinX), (wMaxY - wMinY), CAIRO_FILTER_FAST
+                        
                         '                        .Rectangle wMinX, wMinY, wMaxX - wMinX, wMaxY - wMinY
                         '                        .Fill True, Cairo.cr
                     Else

@@ -106,6 +106,7 @@ End Sub
 Private Sub Form_Load()
 
     PIC.Width = PIC.Height * 4 / 3
+PIC.Refresh
 
     If Dir(App.Path & "\Frames", vbDirectory) = vbNullString Then MkDir App.Path & "\Frames"
     If Dir(App.Path & "\Frames\*.*") <> vbNullString Then Kill App.Path & "\Frames\*.*"
