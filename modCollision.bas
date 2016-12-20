@@ -1,10 +1,10 @@
 Attribute VB_Name = "modCollision"
 Option Explicit
 Public Type tBB
-    minX As Double
-    minY As Double
-    maxX As Double
-    maxY As Double
+    minX    As Double
+    minY    As Double
+    maxX    As Double
+    maxY    As Double
 End Type
 
 Public Function InsideBB(BB As tBB, P As geoVector2D) As Boolean
@@ -115,20 +115,20 @@ End Function
 'End Sub
 
 Public Sub CheckCollisionsALLtoALL()
-    Dim Ri As Double
-    Dim Rj As Double
-    Dim I As Long
-    Dim J As Long
+    Dim Ri  As Double
+    Dim Rj  As Double
+    Dim I   As Long
+    Dim J   As Long
 
-    Dim K As Long
+    Dim K   As Long
 
 
     Dim TokenPosition As geoVector2D
-    Dim dx As Double
-    Dim dy As Double
-    Dim D As Double
+    Dim dx  As Double
+    Dim dy  As Double
+    Dim D   As Double
     Dim MIND As Double
-    Dim BB As tBB
+    Dim BB  As tBB
 
 
     Dim HeadPosI As geoVector2D
@@ -248,12 +248,12 @@ End Sub
 
 Public Function NewSnakePosition(Idx As Long) As geoVector2D
 
-    Dim BB As tBB
+    Dim BB  As tBB
     Dim POS As geoVector2D
     Dim PlayerHeadPOS As geoVector2D
-    Dim dx As Double
-    Dim dy As Double
-    Dim C As Long
+    Dim dx  As Double
+    Dim dy  As Double
+    Dim C   As Long
     Dim InsBB As Boolean
 
 

@@ -2,8 +2,8 @@ Attribute VB_Name = "modFOOD"
 Option Explicit
 
 Public Type tPosAndVel
-    POS As geoVector2D
-    Vel As geoVector2D
+    POS     As geoVector2D
+    Vel     As geoVector2D
 End Type
 
 Public FOOD() As tPosAndVel
@@ -19,7 +19,7 @@ Public Const FoodLengthValue As Double = 1
 
 
 Public Sub InitFOOD(HowMuch As Long)
-    Dim I As Long
+    Dim I   As Long
 
     NFood = HowMuch
 
@@ -34,7 +34,7 @@ Public Sub InitFOOD(HowMuch As Long)
 
 End Sub
 Private Sub RemoveFood(wF As Long)
-    Dim I As Long
+    Dim I   As Long
 
     NFood = NFood - 1
     For I = wF To NFood
@@ -64,7 +64,7 @@ Private Sub FoodToRNDPosition(wF As Long)
     End With
 End Sub
 Public Sub DrawFOOD()
-    Dim I As Long
+    Dim I   As Long
 
     ' vbDRAW.CC.SetSourceColor vbGreen
 
@@ -83,15 +83,15 @@ Public Sub DrawFOOD()
 End Sub
 
 Public Sub FoodMoveAndCheckEaten()
-    Dim I As Long
-    Dim J As Double
+    Dim I   As Long
+    Dim J   As Double
     Dim HeadPosition As geoVector2D
     Dim Hvel As geoVector2D
 
-    Dim D As Double
-    Dim dx As Double
-    Dim dy As Double
-    Dim vD As Double
+    Dim D   As Double
+    Dim dx  As Double
+    Dim dy  As Double
+    Dim vD  As Double
     Dim vDx As Double
     Dim vDy As Double
 
@@ -172,7 +172,7 @@ Public Sub FoodMoveAndCheckEaten()
 End Sub
 
 Public Sub CreateFoodFromDeadSnake(wS As Long)
-    Dim I As Long
+    Dim I   As Long
     For I = 0 To Snake(wS).Ntokens - 2    '1
         NFood = NFood + 1
         ReDim Preserve FOOD(NFood)
@@ -186,11 +186,11 @@ End Sub
 
 
 Public Function PointToNearestFood(HeadPos As geoVector2D) As geoVector2D
-    Dim I As Long
-    Dim J As Long
-    Dim D As Double
-    Dim dx As Double
-    Dim dy As Double
+    Dim I   As Long
+    Dim J   As Long
+    Dim D   As Double
+    Dim dx  As Double
+    Dim dy  As Double
     Dim MIND As Double
 
     MIND = 1E+32
@@ -210,21 +210,21 @@ Public Function PointToNearestFood(HeadPos As geoVector2D) As geoVector2D
 End Function
 
 Public Function AvoidEnemy(Idx As Long, POS As geoVector2D, Vel As geoVector2D) As geoVector2D
-    Dim I As Long
-    Dim J As Long
+    Dim I   As Long
+    Dim J   As Long
 
     Dim TPleft As geoVector2D
     Dim TPRight As geoVector2D
-    Dim TP As geoVector2D
+    Dim TP  As geoVector2D
 
-    Dim C As Double
-    Dim S As Double
-    Dim A As Double
+    Dim C   As Double
+    Dim S   As Double
+    Dim A   As Double
 
     Dim tEsc As geoVector2D
     Dim Dmin As Double
-    Dim D1 As Double
-    Dim D2 As Double
+    Dim D1  As Double
+    Dim D2  As Double
     Dim Diam As Double
 
     Diam = Snake(Idx).Diam

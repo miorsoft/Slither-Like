@@ -5,7 +5,7 @@ Private Declare Function QueryPerformanceCounter Lib "kernel32" (x As Currency) 
 Private Declare Function QueryPerformanceFrequency Lib "kernel32" (x As Currency) As Boolean
 Private Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 
-Dim m_Time As Double
+Dim m_Time  As Double
 Dim m_TimeFreq As Double
 Dim m_TimeStart As Currency
 

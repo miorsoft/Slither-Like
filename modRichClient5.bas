@@ -103,11 +103,11 @@ End Sub
 
 Public Sub InitResources()
     Dim Srf As cCairoSurface
-    Dim CC As cCairoContext
+    Dim CC  As cCairoContext
     Dim size As Double
-    Dim I As Long
-    Dim x As Double
-    Dim y As Double
+    Dim I   As Long
+    Dim x   As Double
+    Dim y   As Double
     Dim Gray As Double
 
     '    Cairo.ImageList.AddImage "FoodIcon", App.Path & "\Resources\Orb.png", 16, 16

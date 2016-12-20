@@ -42,7 +42,7 @@ Public Diam As Double
 Public IsDying As Long
 Private DyingTime As Long
 
-Private BB As tBB
+Private BB  As tBB
 
 Public TongueOut As Double
 Public TongueLen As Double
@@ -104,7 +104,7 @@ End Function
 '
 'End Function
 Public Sub UpdateBB()
-    Dim I As Long
+    Dim I   As Long
     BB.minX = wMaxX * 2
     BB.minY = wMaxY * 2
     BB.maxX = wMinX * 2
@@ -121,7 +121,7 @@ Public Sub UpdateBB()
 
 End Sub
 Public Sub Init(x As Double, y As Double, Idx As Long, Leng As Double)
-    Dim I As Long
+    Dim I   As Long
 
     'fLength = Leng
     SetSize = Leng
@@ -165,12 +165,12 @@ Public Sub Init(x As Double, y As Double, Idx As Long, Leng As Double)
 End Sub
 
 Private Sub RandomizeMe()
-    Dim x As Double
-    Dim y As Double
+    Dim x   As Double
+    Dim y   As Double
 
     Dim POS As geoVector2D
 
-    Dim I As Long
+    Dim I   As Long
 
     IsDying = 0    ' False
 
@@ -215,8 +215,8 @@ End Sub
 
 Public Sub DRAW(DrawBoundingBox As Long)
     Dim ANG As Double
-    Dim A As Double
-    Dim A2 As Double
+    Dim A   As Double
+    Dim A2  As Double
 
 
     Dim Reye As Double
@@ -224,20 +224,20 @@ Public Sub DRAW(DrawBoundingBox As Long)
 
     Dim DEye As Double
 
-    Dim I As Long
-    Dim J As Long
-    Dim P As geoVector2D
+    Dim I   As Long
+    Dim J   As Long
+    Dim P   As geoVector2D
 
-    Dim X1 As Double
-    Dim Y1 As Double
-    Dim x2 As Double
-    Dim Y2 As Double
-    Dim dx As Double
-    Dim dy As Double
+    Dim X1  As Double
+    Dim Y1  As Double
+    Dim x2  As Double
+    Dim Y2  As Double
+    Dim dx  As Double
+    Dim dy  As Double
 
-    Dim C As Double
-    Dim S As Double
-    Dim K As Double
+    Dim C   As Double
+    Dim S   As Double
+    Dim K   As Double
     Dim InvNotkens
     Dim CADD As Double
 
@@ -383,9 +383,9 @@ End Sub
 
 
 Public Sub MOVE()
-    Dim I As Long
-    Dim J As Long
-    Dim J2 As Long
+    Dim I   As Long
+    Dim J   As Long
+    Dim J2  As Long
 
 
     If IsDying Then Exit Sub

@@ -10,7 +10,7 @@ Public DoLOOP As Boolean
 
 Public MousePos As geoVector2D
 
-Public CNT As Long
+Public CNT  As Long
 
 Public Level As Long
 
@@ -47,7 +47,7 @@ Public invZOOM As Double
 
 Public Sub InitPool(ByVal NoSnakes As Long)
 
-    Dim I As Long
+    Dim I   As Long
     NSnakes = NoSnakes
 
     ReDim Snake(NSnakes)
@@ -65,7 +65,7 @@ End Sub
 
 
 Public Sub MainLoop()
-    Dim I As Long
+    Dim I   As Long
     Dim pTime As Double
 
 

@@ -4,12 +4,12 @@ Option Explicit
 'Author: TheTrick
 
 Private Type CHUNK
-    id As Long
-    szData As Long
+    id      As Long
+    szData  As Long
 End Type
 
 Private Type curBuffer
-    b(15) As Currency
+    b(15)   As Currency
 End Type
 
 Private Type mp3Const
@@ -29,8 +29,8 @@ Private Type MPEGLAYER3WAVEFORMAT
     nAvgBytesPerSec As Long
     nBlockAlign As Integer
     wBitsPerSample As Integer
-    cbSize As Integer
-    wID As Integer
+    cbSize  As Integer
+    wID     As Integer
     fdwFlags As Long
     nBlockSize As Integer
     nFramesPerBlock As Integer
@@ -195,17 +195,17 @@ Public Function DSCreateSoundBufferFromMemory(ByVal ds As DirectSound8, _
             If subChnk.szData > chkData.szData - 8 Then GoTo ERROR_OUTOFMEMORY
 
             Select Case subChnk.id
-            Case FMT_SIGNATURE
+                Case FMT_SIGNATURE
 
-                If lpFmt Then GoTo ERROR_FORMAT
-                lpFmt = lpData
-                szFmt = subChnk.szData
+                    If lpFmt Then GoTo ERROR_FORMAT
+                    lpFmt = lpData
+                    szFmt = subChnk.szData
 
-            Case DATA_SIGNATURE
+                Case DATA_SIGNATURE
 
-                If lpDat Then GoTo ERROR_FORMAT
-                lpDat = lpData
-                szDat = subChnk.szData
+                    If lpDat Then GoTo ERROR_FORMAT
+                    lpDat = lpData
+                    szDat = subChnk.szData
 
             End Select
             lpData = lpData + subChnk.szData + (subChnk.szData And 1)
@@ -450,7 +450,7 @@ ERROR_FORMAT:
 End Function
 
 Private Sub Mp3Init()
-    Dim b As curBuffer
+    Dim b   As curBuffer
 
     b.b(0) = 450377142658.6656@: b.b(1) = 900743977448.248@: b.b(2) = 1351114248211.6672@
     b.b(3) = 1801487954948.9248@: b.b(4) = 2702228496423.3344@: b.b(5) = 3602975909897.8496@
