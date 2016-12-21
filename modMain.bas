@@ -36,7 +36,7 @@ Public Const SoundPlayerDeath As String = "death.wav"
 Public DrawBB As Long
 Public SaveFrames As Long
 Private Frame As Long
-Private Const JPGframeRate As Long = 4    ''''75/4= 25 FPS ' Multiple of 4  ( cnt mod 4)
+Private Const JPGframeRate As Long = 3    ''''75/3= 25 FPS ' Multiple of 3  ( cnt mod 3)
 
 Public DoBackGround As Long
 
@@ -67,6 +67,11 @@ End Sub
 Public Sub MainLoop()
     Dim I   As Long
     Dim pTime As Double
+    Dim pTime2 As Double
+    Dim FPS As Long
+    Dim pCnt As Long
+
+    Dim StrCaption As String
 
 
 
@@ -77,18 +82,28 @@ Public Sub MainLoop()
     DoLOOP = True
 
     Level = 1
-    fMain.Caption = "Level: " & Level & "  Snakes: " & NSnakes & "  Food: " & NFood
+    'fMain.Caption = "Level: " & Level & "  Snakes: " & NSnakes & "  Food: " & NFood
     MultipleSounds.PlaySound SoundINTRO
 
     Timing = 0
     pTime = Timing
+    pTime2 = Timing
 
     vbDRAW.CC.AntiAlias = CAIRO_ANTIALIAS_GRAY
 
 
     Do
 
-        If Timing - pTime > 0.01334 Then    '75 FPS computed
+        If Timing - pTime2 > 1 Then
+            FPS = CNT - pCnt
+            pCnt = CNT
+            pTime2 = Timing
+        End If
+
+
+
+
+        If Timing - pTime > 0.01333 Then    '75 FPS computed
             'If Timing - pTime > 0.01666 Then    '60 FPS computed
 
             pTime = Timing
@@ -100,7 +115,7 @@ Public Sub MainLoop()
             FoodMoveAndCheckEaten    '------------------------------------
 
 
-            If CNT Mod 4 = 0 Then    '' 75 / 3 FPS =25 FPS Drawn
+            If CNT Mod JPGframeRate = 0 Then    '' 75 / 3 FPS =25 FPS Drawn
                 'If CNT Mod 3 = 0 Then    '' 60 / 3 FPS =20 FPS Drawn
 
                 '                CheckCollisionsOnlyPlayer
@@ -113,7 +128,7 @@ Public Sub MainLoop()
 
                     'ZOOMtoGO = 30# * Snake(PLAYER).InvDiam
                     ZOOMtoGO = 28# * Snake(PLAYER).InvDiam
-                    
+
                     ZOOM = ZOOM * 0.98 + ZOOMtoGO * 0.02
                     invZOOM = 1# / ZOOM
 
@@ -125,10 +140,10 @@ Public Sub MainLoop()
                     If DoBackGround Then
                         ' USE BACKGOUND --->>> Slow with ZOOM
                         '.RenderSurfaceContent "BK", wMinX, wMinY, , , CAIRO_FILTER_FAST
-                        
+
                         'Lower Res
                         .RenderSurfaceContent "BK", wMinX, wMinY, (wMaxX - wMinX), (wMaxY - wMinY), CAIRO_FILTER_FAST
-                        
+
                         '                        .Rectangle wMinX, wMinY, wMaxX - wMinX, wMaxY - wMinY
                         '                        .Fill True, Cairo.cr
                     Else
@@ -162,6 +177,17 @@ Public Sub MainLoop()
                     Next
 
                     .Restore
+
+                    .TextOut 5, 5, StrCaption
+
+
+                    If SaveFrames Then
+                        .SetSourceRGBA 1, 0, 0, (1# + Sin(CNT * 0.01333 * PI2))
+                        .Ellipse MaxW - 20, 30, 18, 18
+                        .Fill
+                    End If
+
+
                 End With
 
 
@@ -170,12 +196,12 @@ Public Sub MainLoop()
 
 
                 If SaveFrames Then
-                    If CNT Mod JPGframeRate = 0 Then    'Multiple of 4 JPGframeRate
-                        If DoLOOP Then
-                            vbDRAW.Srf.WriteContentToJpgFile App.Path & "\Frames\" & format(Frame, "00000") & ".jpg", 100
-                            Frame = Frame + 1
-                        End If
+                    ' If CNT Mod JPGframeRate = 0 Then    'Multiple of 4 JPGframeRate
+                    If DoLOOP Then
+                        vbDRAW.Srf.WriteContentToJpgFile App.Path & "\Frames\" & format(Frame, "00000") & ".jpg", 100
+                        Frame = Frame + 1
                     End If
+                    ' End If
                 End If
 
             End If
@@ -188,13 +214,13 @@ Public Sub MainLoop()
                 InitPool NSnakes * 1.2
                 InitFOOD NSnakes * 20
                 Level = Level + 1
-                fMain.Caption = "Level: " & Level & "  Snakes: " & NSnakes & "  Food: " & NFood
+                StrCaption = "Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                     By MiorSoft"
                 MultipleSounds.PlaySound SoundINTRO
             End If
 
 
             If CNT Mod 100 = 0 Then
-                fMain.Caption = "Level: " & Level & "  Snakes: " & NSnakes & "  Food: " & NFood
+                StrCaption = "Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                     By MiorSoft"
             End If
 
         End If
