@@ -288,3 +288,86 @@ Public Function NewSnakePosition(Idx As Long) As geoVector2D
 
 
 End Function
+
+
+
+Public Function AvoidEnemy(Idx As Long, POS As geoVector2D, Vel As geoVector2D) As geoVector2D
+    Dim I   As Long
+    Dim J   As Long
+
+    Dim TPleft As geoVector2D
+    Dim TPRight As geoVector2D
+    Dim TP  As geoVector2D
+
+    Dim C   As Double
+    Dim S   As Double
+    Dim A   As Double
+
+    Dim tEsc As geoVector2D
+    Dim Dmin As Double
+    Dim D1  As Double
+    Dim D2  As Double
+    Dim Diam As Double
+
+    Diam = Snake(Idx).Diam
+
+
+    A = Atan2(Vel.x, Vel.y)
+
+    TPleft.x = POS.x - Cos(A - 0.5) * Diam
+    TPleft.y = POS.y - Sin(A - 0.5) * Diam
+    TPRight.x = POS.x - Cos(A + 0.5) * Diam
+    TPRight.y = POS.y - Sin(A + 0.5) * Diam
+
+    Dmin = 1E+28
+
+
+
+    Diam = (Diam + 30) * 3    ' 8 '''' Distance Sense
+    Diam = Diam * Diam
+
+    'If Idx = PLAYER Then Stop
+
+    For I = 0 To NSnakes
+        If I <> Idx Then
+
+            For J = 1 To Snake(I).Ntokens - 1
+
+
+                TP = Snake(I).GetTokenPos(J)
+
+                'If Sgn((TP.x - POS.x) * Vel.x) + Sgn((TP.y - POS.y) * Vel.y) > 1 Then 'ERROR
+                If Sgn((TP.x - POS.x) * Vel.x + (TP.y - POS.y) * Vel.y) > 0 Then    'Correct!
+
+                    D1 = DistFromPointSQU(TP, TPleft)
+                    D2 = DistFromPointSQU(TP, TPRight)
+
+                    If (D1 < Diam) Or (D2 < Diam) Then
+
+                        If D1 < Dmin Or D2 < Dmin Then
+                            If D1 < D2 Then
+                                tEsc.x = Cos(A - 0.25) * 8
+                                tEsc.y = Sin(A - 0.25) * 8
+                            Else
+                                tEsc.x = Cos(A + 0.25) * 8
+                                tEsc.y = Sin(A + 0.25) * 8
+                            End If
+                            If D1 < Dmin Then Dmin = D1 Else: Dmin = D2
+                        End If
+                    End If
+                End If
+
+            Next
+        End If
+    Next
+
+    AvoidEnemy = tEsc
+
+
+
+
+End Function
+
+
+
+

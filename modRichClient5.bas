@@ -50,7 +50,7 @@ Public Sub InitRC()
 
     Set vbDRAW = Cairo.CreateVBDrawingObject
 '    Set vbDRAW.Srf = Cairo.CreateSurface(400, 400)    'size of our rendering-area in Pixels
-    Set vbDRAW.Srf = Cairo.CreateSurface(fMain.PIC.Width, fMain.PIC.Height)    'size of our rendering-area in Pixels
+    Set vbDRAW.Srf = Cairo.CreateSurface(fMain.PIC.Width, fMain.PIC.Height, ImageSurface)       'size of our rendering-area in Pixels
 
     Set vbDRAW.CC = vbDRAW.Srf.CreateContext    'create a Drawing-Context from the PixelSurface above
 
@@ -115,7 +115,7 @@ Const LowResScale As Double = 0.33
 
 
 
-    Gray = 30 '45    '60
+    Gray = 40 '45    '60
 
     'Set Srf = New_c.Cairo.CreateSurface(wMaxX - wMinX, wMaxY - wMinY, ImageSurface)
     'Lower Res

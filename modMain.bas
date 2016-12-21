@@ -36,7 +36,7 @@ Public Const SoundPlayerDeath As String = "death.wav"
 Public DrawBB As Long
 Public SaveFrames As Long
 Private Frame As Long
-Private Const JPGframeRate As Long = 3    ''''75/3= 25 FPS ' Multiple of 3  ( cnt mod 3)
+Private Const JPGframeRate As Long = 4    ''''75/4= 25 FPS ' Multiple of 4  ( cnt mod 4)
 
 Public DoBackGround As Long
 
@@ -170,9 +170,7 @@ Public Sub MainLoop()
 
 
                 If SaveFrames Then
-
-
-                    If CNT Mod JPGframeRate = 0 Then    'Multiple of 3 JPGframeRate
+                    If CNT Mod JPGframeRate = 0 Then    'Multiple of 4 JPGframeRate
                         If DoLOOP Then
                             vbDRAW.Srf.WriteContentToJpgFile App.Path & "\Frames\" & format(Frame, "00000") & ".jpg", 100
                             Frame = Frame + 1

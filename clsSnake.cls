@@ -15,7 +15,7 @@ Option Explicit
 
 
 
-Private HEAD As tPosAndVel
+Private Head As tPosAndVel
 
 Private Token() As tPosAndVel
 Private Const MaxNtok As Long = 199
@@ -154,10 +154,10 @@ Public Sub Init(x As Double, y As Double, Idx As Long, Leng As Double)
         Token(I).POS.y = y
     Next
 
-    HEAD.POS.x = x
-    HEAD.POS.y = y
-    HEAD.Vel.x = Rnd * 2 - 1
-    HEAD.Vel.y = Rnd * 2 - 1
+    Head.POS.x = x
+    Head.POS.y = y
+    Head.Vel.x = Rnd * 2 - 1
+    Head.Vel.y = Rnd * 2 - 1
     'Color = RGB(120 + Rnd * 135, 120 + Rnd * 135, 120 + Rnd * 135)
     ColorR = 0.45 + Rnd * 0.5
     ColorG = 0.45 + Rnd * 0.5
@@ -180,7 +180,7 @@ Private Sub RandomizeMe()
     IsDying = 0    ' False
 
     'fLength = 2
-    SetSize = 2
+    SetSize = 3
 
     Ntokens = fLength
 InvNtokens = 1 / Ntokens
@@ -203,10 +203,10 @@ InvNtokens = 1 / Ntokens
         Token(I).POS.y = y
     Next
 
-    HEAD.POS.x = x
-    HEAD.POS.y = y
-    HEAD.Vel.x = Rnd * 2 - 1
-    HEAD.Vel.y = Rnd * 2 - 1
+    Head.POS.x = x
+    Head.POS.y = y
+    Head.Vel.x = Rnd * 2 - 1
+    Head.Vel.y = Rnd * 2 - 1
     'Color = RGB(120 + Rnd * 135, 120 + Rnd * 135, 120 + Rnd * 135)
     ColorR = 0.45 + Rnd * 0.5
     ColorG = 0.45 + Rnd * 0.5
@@ -262,18 +262,18 @@ Public Sub DRAW(DrawBoundingBox As Long)
 
     'If MyIDX = PLAYER Then Stop
 
-    '    StepD = 1 + Diam * 0.0125
-    StepD = 1 + Diam * 0.0125
+    'StepD = 1 + Diam * 0.0125
 
+    StepD = 1 + Diam * Diam * 0.00045
+ 
 
-
-    'If StepD <> 1 Then Stop
 
 
 
     With vbDRAW.CC
 
         If IsDying Then
+StepD = 1
 
             .SetSourceRGBA Rnd, Rnd, Rnd, 0.33
             For I = tokIDX + 1 To tokIDX + Ntokens - 1 Step StepD
@@ -314,7 +314,7 @@ Public Sub DRAW(DrawBoundingBox As Long)
             J = I Mod Ntokens
             P = Token(J).POS
             K = K + StepD
-            CADD = Cos((-K * InvNtokens) * PI2 * 5#) * 0.2
+            CADD = Cos((-K * InvNtokens) * PI2 * 5#) * 0.2 - FASTspeed * 0.25
             .MoveTo P.x, P.y
 
             For I = tokIDX + StepD * 1 + 2 To tokIDX + Ntokens Step StepD    'Senza -1 disegna anche testa
@@ -323,9 +323,9 @@ Public Sub DRAW(DrawBoundingBox As Long)
                 P = Token(J).POS
                 K = K + StepD
 
-                CADD = Cos((-K * InvNtokens) * PI2 * 5#) * 0.2
+                CADD = Cos((-K * InvNtokens) * PI2 * 5#) * 0.2 - FASTspeed * 0.25
 
-                .SetSourceRGBA ColorR + CADD, ColorG + CADD, ColorB + CADD    ', 0.9
+                .SetSourceRGBA ColorR + CADD, ColorG + CADD, ColorB + CADD
 
 
 
@@ -339,7 +339,7 @@ Public Sub DRAW(DrawBoundingBox As Long)
 
             Next
 
-            .LineTo HEAD.POS.x, HEAD.POS.y
+            .LineTo Head.POS.x, Head.POS.y
             .Stroke
 
         End If
@@ -352,7 +352,7 @@ Public Sub DRAW(DrawBoundingBox As Long)
 
         .SetLineWidth 1
 
-        ANG = Atan2(HEAD.Vel.x, HEAD.Vel.y)
+        ANG = Atan2(Head.Vel.x, Head.Vel.y)
 
         '--------Tongue
 
@@ -360,14 +360,14 @@ Public Sub DRAW(DrawBoundingBox As Long)
         TongueOut = TongueOut * 0.6
         C = Cos(ANG) * Diam * TongueLen * 0.45
         S = Sin(ANG) * Diam * TongueLen * 0.45
-        X1 = HEAD.POS.x + C
-        Y1 = HEAD.POS.y + S
+        X1 = Head.POS.x + C
+        Y1 = Head.POS.y + S
         .SetSourceRGBA 1, 0.6, 0.6, 0.4
         .Ellipse X1, Y1, Diam * 0.67, Diam * 0.67
         .Fill
         'Draw Head
         .SetSourceRGBA ColorR + CADD, ColorG + CADD, ColorB + CADD
-        .Ellipse HEAD.POS.x, HEAD.POS.y, Diam, Diam
+        .Ellipse Head.POS.x, Head.POS.y, Diam, Diam
         .Fill
         '---------------------------------
 
@@ -382,19 +382,19 @@ Public Sub DRAW(DrawBoundingBox As Long)
         A = ANG - PIh * 0.5
         C = Cos(A) * Reye
         S = Sin(A) * Reye
-        X1 = HEAD.POS.x + C
-        Y1 = HEAD.POS.y + S
+        X1 = Head.POS.x + C
+        Y1 = Head.POS.y + S
         .Ellipse X1, Y1, DEye, DEye
-        x2 = HEAD.POS.x - S
-        Y2 = HEAD.POS.y + C
+        x2 = Head.POS.x - S
+        Y2 = Head.POS.y + C
         .Ellipse x2, Y2, DEye, DEye
         .Fill
 
         .SetSourceRGBA 0, 0, 0, 0.5    'eye contour
         .Ellipse X1, Y1, DEye, DEye
         .Stroke
-        x2 = HEAD.POS.x - S
-        Y2 = HEAD.POS.y + C
+        x2 = Head.POS.x - S
+        Y2 = Head.POS.y + C
         .Ellipse x2, Y2, DEye, DEye
         .Stroke
 
@@ -448,26 +448,26 @@ Public Sub MOVE()
 
         ''   DirChange = VectorSUM(DirChange, AvoidEnemy(MyIDX, HEAD.POS, HEAD.Vel))
 
-        HEAD.Vel = VectorNormalize(VectorSUM(HEAD.Vel, DirChange))
+        Head.Vel = VectorNormalize(VectorSUM(Head.Vel, DirChange))
 
     Else    'Other Snakes
 
-        oldANG = Atan2(HEAD.Vel.x, HEAD.Vel.y)
+        oldANG = Atan2(Head.Vel.x, Head.Vel.y)
 
-        If Cos((CNT + MyIDX * 50500) * 0.0075) < -0.125 Then ''' Ramble -0.0625
+        If Cos((CNT + MyIDX * 50500) * 0.0075) < -0.75 Then ''' Ramble -0.0625
             DirChange.x = Rnd * 2 - 1
             DirChange.y = Rnd * 2 - 1
             'Commented to make AI sometimes not to Work
             'DirChange = VectorSUM(DirChange, AvoidEnemy(MyIDX, HEAD.POS, HEAD.Vel))
         Else
-            DirChange = PointToNearestFood(HEAD.POS)
-            DirChange = VectorSUM(DirChange, AvoidEnemy(MyIDX, HEAD.POS, HEAD.Vel))
+            DirChange = PointToNearestFood(Head)
+            DirChange = VectorSUM(DirChange, AvoidEnemy(MyIDX, Head.POS, Head.Vel))
         End If
 
         'DirChange = VectorMUL(DirChange, 0.15)
         DirChange = VectorMUL(DirChange, 3 * InvDiam)
         
-        HEAD.Vel = VectorNormalize(VectorSUM(HEAD.Vel, DirChange))
+        Head.Vel = VectorNormalize(VectorSUM(Head.Vel, DirChange))
 
         If FASTspeed Then
             If Rnd < 0.025 Then FASTspeed = False
@@ -484,9 +484,9 @@ Public Sub MOVE()
 
     If FASTspeed And fLength > 3 Then
         FASTspeedCOUNT = FASTspeedCOUNT + 1
-        HEAD.POS = VectorSUM(HEAD.POS, VectorMUL(HEAD.Vel, 6))
+        Head.POS = VectorSUM(Head.POS, VectorMUL(Head.Vel, 6))
     Else
-        HEAD.POS = VectorSUM(HEAD.POS, VectorMUL(HEAD.Vel, 3.5))
+        Head.POS = VectorSUM(Head.POS, VectorMUL(Head.Vel, 3.5))
     End If
 
 
@@ -505,14 +505,14 @@ Public Sub MOVE()
     '    If HEAD.Pos.X > wMaxX Then HEAD.Pos.X = wMinX
     '    If HEAD.Pos.Y > wMaxY Then HEAD.Pos.Y = wMinY
 
-    If HEAD.POS.x < wMinX Then HEAD.POS.x = wMinX: HEAD.Vel.x = -HEAD.Vel.x
-    If HEAD.POS.y < wMinY Then HEAD.POS.y = wMinY: HEAD.Vel.y = -HEAD.Vel.y
-    If HEAD.POS.x > wMaxX Then HEAD.POS.x = wMaxX: HEAD.Vel.x = -HEAD.Vel.x
-    If HEAD.POS.y > wMaxY Then HEAD.POS.y = wMaxY: HEAD.Vel.y = -HEAD.Vel.y
+    If Head.POS.x < wMinX Then Head.POS.x = wMinX: Head.Vel.x = -Head.Vel.x
+    If Head.POS.y < wMinY Then Head.POS.y = wMinY: Head.Vel.y = -Head.Vel.y
+    If Head.POS.x > wMaxX Then Head.POS.x = wMaxX: Head.Vel.x = -Head.Vel.x
+    If Head.POS.y > wMaxY Then Head.POS.y = wMaxY: Head.Vel.y = -Head.Vel.y
 
 
 
-    Token(tokIDX).POS = HEAD.POS
+    Token(tokIDX).POS = Head.POS
 
 
 
