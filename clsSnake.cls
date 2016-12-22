@@ -54,6 +54,9 @@ Private fLength As Double
 Public FASTspeed As Long
 Public FASTspeedCOUNT As Long
 
+Private Const SPEED As Double = 3.5
+
+
 
 Public Property Get GetSize() As Double
     GetSize = fLength
@@ -62,9 +65,11 @@ Public Property Let SetSize(V As Double)
     fLength = V
     'DIAM = 5 * (fLength + 10) ^ (0.4)
     'Diam = 5 * (fLength + 15) ^ (0.45)
-    Diam = 5 * (fLength + 15) ^ (0.5)
     
-InvDiam = 1 / Diam
+    'Diam = 5 * (fLength + 15) ^ (0.5) '------ 2nd video
+    Diam = 5# * (fLength + 16#) ^ (0.5) '------ 2nd video
+    
+InvDiam = 1# / Diam
 
 End Property
 
@@ -484,9 +489,9 @@ Public Sub MOVE()
 
     If FASTspeed And fLength > 3 Then
         FASTspeedCOUNT = FASTspeedCOUNT + 1
-        Head.POS = VectorSUM(Head.POS, VectorMUL(Head.Vel, 6))
+        Head.POS = VectorSUM(Head.POS, VectorMUL(Head.Vel, SPEED * 1.72))
     Else
-        Head.POS = VectorSUM(Head.POS, VectorMUL(Head.Vel, 3.5))
+        Head.POS = VectorSUM(Head.POS, VectorMUL(Head.Vel, SPEED))
     End If
 
 

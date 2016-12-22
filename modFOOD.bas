@@ -94,7 +94,7 @@ Public Sub DrawFOOD()
                 
             End If
         End With
-        FoodAge(I) = FoodAge(I) - 0.002
+        FoodAge(I) = FoodAge(I) - 0.0025
     Next
 
 

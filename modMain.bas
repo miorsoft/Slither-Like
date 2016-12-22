@@ -127,7 +127,8 @@ Public Sub MainLoop()
                     .Save
 
                     'ZOOMtoGO = 30# * Snake(PLAYER).InvDiam
-                    ZOOMtoGO = 28# * Snake(PLAYER).InvDiam
+                    'ZOOMtoGO = 28# * Snake(PLAYER).InvDiam '---2nd video
+                    ZOOMtoGO = 0.0625 + 25# * Snake(PLAYER).InvDiam
 
                     ZOOM = ZOOM * 0.98 + ZOOMtoGO * 0.02
                     invZOOM = 1# / ZOOM
@@ -181,7 +182,7 @@ Public Sub MainLoop()
                     .TextOut 5, 5, StrCaption
 
 
-                    If SaveFrames Then
+                    If SaveFrames Then 'Recorder Red DOT
                         .SetSourceRGBA 1, 0, 0, (1# + Sin(CNT * 0.01333 * PI2))
                         .Ellipse MaxW - 20, 30, 18, 18
                         .Fill
@@ -214,13 +215,13 @@ Public Sub MainLoop()
                 InitPool NSnakes * 1.2
                 InitFOOD NSnakes * 20
                 Level = Level + 1
-                StrCaption = "Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                     By MiorSoft"
+                StrCaption = "Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
                 MultipleSounds.PlaySound SoundINTRO
             End If
 
 
             If CNT Mod 100 = 0 Then
-                StrCaption = "Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                     By MiorSoft"
+                StrCaption = "Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
             End If
 
         End If
