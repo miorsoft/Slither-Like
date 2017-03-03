@@ -1,8 +1,8 @@
 Type=Exe
 Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#C:\Windows\system32\stdole2.tlb#OLE Automation
-Reference=*\G{93E767C8-1E6B-46CC-B452-3531146574EA}#1.0#0#dsvb.tlb#DirectSound8 for Visual Basic 6.0 type library by The trick v1.00
+Reference=*\G{93E767C8-1E6B-46CC-B452-3531146574EA}#1.0#0#..\..\VB6\____SNAKE\dsvb.tlb#DirectSound8 for Visual Basic 6.0 type library by The trick v1.00
 Reference=*\G{7C0FFAB0-CD84-11D0-949A-00A0C91110ED}#1.0#0#C:\Windows\system32\msdatsrc.tlb#Microsoft Data Source Interfaces
-Reference=*\G{C79C91A4-10F5-4F71-A490-3B7915514344}#2.6#0#..\..\_DROPBOX\Dropbox\VB6\____PhotoModularFX_0_3\vbRC5BaseDlls\vbRichClient5.dll#vbRichClient5
+Reference=*\G{C79C91A4-10F5-4F71-A490-3B7915514344}#2.6#0#..\..\VB6\____PhotoModularFX_0_3\vbRC5BaseDlls\vbRichClient5.dll#vbRichClient5
 Module=modRichClient5; modRichClient5.bas
 Form=fMain.frm
 Class=clsSnake; clsSnake.cls
@@ -24,7 +24,7 @@ HelpContextID="0"
 CompatibleMode="0"
 MajorVer=2
 MinorVer=0
-RevisionVer=157
+RevisionVer=227
 AutoIncrementVer=1
 ServerSupportFiles=0
 VersionCompanyName="Roberto Mior"
@@ -43,3 +43,6 @@ Unattended=0
 Retained=0
 ThreadPerObject=0
 MaxNumberOfThreads=1
+
+[fastBuild]
+fullPath=C:\ROBERTO\____DROPBOX\Dropbox\GITHUB\Slither-Like\Snake.exe

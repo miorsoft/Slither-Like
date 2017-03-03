@@ -22,6 +22,7 @@ Private Const MaxNtok As Long = 199
 
 Public Ntokens As Long
 Private InvNtokens As Double
+Private InvNtokens2 As Double
 
 'Public MySIZE  As Double
 
@@ -67,7 +68,7 @@ Public Property Let SetSize(V As Double)
     'Diam = 5 * (fLength + 15) ^ (0.45)
     
     'Diam = 5 * (fLength + 15) ^ (0.5) '------ 2nd video
-    Diam = 5# * (fLength + 16#) ^ (0.5) '------ 2nd video
+    Diam = 5# * (fLength + 16#) ^ (0.5)
     
 InvDiam = 1# / Diam
 
@@ -189,6 +190,7 @@ Private Sub RandomizeMe()
 
     Ntokens = fLength
 InvNtokens = 1 / Ntokens
+InvNtokens2 = 1 / (Ntokens - 1)
 
     ReDim Token(MaxNtok)
 
@@ -255,8 +257,6 @@ Public Sub DRAW(DrawBoundingBox As Long)
 
 
 
-
-
     If BBOverlapping(CameraBB, BB) = False Then Exit Sub
 
 
@@ -269,10 +269,8 @@ Public Sub DRAW(DrawBoundingBox As Long)
 
     'StepD = 1 + Diam * 0.0125
 
-    StepD = 1 + Diam * Diam * 0.00045
+    StepD = 1 + Diam * Diam * 0.0004 '0.00045
  
-
-
 
 
     With vbDRAW.CC
@@ -288,7 +286,7 @@ StepD = 1
                 .Fill
             Next
 
-            If (CNT - DyingTime > 40) Then '104
+            If (CNT - DyingTime > 40) Then '104 '' Blinking time
                 CreateFoodFromDeadSnake MyIDX
                 RandomizeMe
             End If
@@ -319,7 +317,7 @@ StepD = 1
             J = I Mod Ntokens
             P = Token(J).POS
             K = K + StepD
-            CADD = Cos((-K * InvNtokens) * PI2 * 5#) * 0.2 - FASTspeed * 0.25
+            
             .MoveTo P.x, P.y
 
             For I = tokIDX + StepD * 1 + 2 To tokIDX + Ntokens Step StepD    'Senza -1 disegna anche testa
@@ -327,15 +325,13 @@ StepD = 1
                 J = I Mod Ntokens
                 P = Token(J).POS
                 K = K + StepD
-
-                CADD = Cos((-K * InvNtokens) * PI2 * 5#) * 0.2 - FASTspeed * 0.25
-
-                .SetSourceRGBA ColorR + CADD, ColorG + CADD, ColorB + CADD
-
-
-
+  
                 'To Avoid Head->Queue Line:
                 If J <> (tokIDX + StepD) Mod Ntokens Then
+                
+                                'CADD = Cos((-K * InvNtokens) * PI2 * 5#) * 0.2 - FASTspeed * 0.25
+                CADD = Cos((K * InvNtokens2) * PI2 * 3.5) * 0.2 - FASTspeed * 0.25
+  .SetSourceRGB ColorR + CADD, ColorG + CADD, ColorB + CADD
                     .LineTo P.x, P.y
                     .Stroke
                 End If
@@ -343,7 +339,7 @@ StepD = 1
                 .MoveTo P.x, P.y
 
             Next
-
+                       
             .LineTo Head.POS.x, Head.POS.y
             .Stroke
 
@@ -371,7 +367,7 @@ StepD = 1
         .Ellipse X1, Y1, Diam * 0.67, Diam * 0.67
         .Fill
         'Draw Head
-        .SetSourceRGBA ColorR + CADD, ColorG + CADD, ColorB + CADD
+        .SetSourceRGB ColorR + CADD, ColorG + CADD, ColorB + CADD
         .Ellipse Head.POS.x, Head.POS.y, Diam, Diam
         .Fill
         '---------------------------------
@@ -443,13 +439,12 @@ Public Sub MOVE()
 
     If IsDying Then Exit Sub
 
-    tokIDX = tokIDX + 1
-    tokIDX = tokIDX Mod Ntokens
+    tokIDX = (tokIDX + 1) Mod Ntokens
 
 
-    If MyIDX = PLAYER Then    'Player
+    If MyIDX = PLAYER Then  'Player
 '        DirChange = VectorMUL(MousePos, 0.01 * InvDiam)  '.001
-        DirChange = VectorMUL(VectorNormalize(MousePos), 3 * InvDiam)
+        DirChange = VectorMUL(VectorNormalize(MousePos), 3.25 * InvDiam)
 
         ''   DirChange = VectorSUM(DirChange, AvoidEnemy(MyIDX, HEAD.POS, HEAD.Vel))
 
@@ -459,7 +454,9 @@ Public Sub MOVE()
 
         oldANG = Atan2(Head.Vel.x, Head.Vel.y)
 
-        If Cos((CNT + MyIDX * 50500) * 0.0075) < -0.75 Then ''' Ramble -0.0625
+        'If Cos((CNT + MyIDX * 50500) * 0.0075) < -0.98 Then  ''' Ramble -.75 -0.0625
+        If Cos((CNT + MyIDX * 50500) * 0.0075) < -1 * (NSnakes - MyIDX * 0.0625) * InvNSnakes Then ''' Ramble -.75 -0.0625
+        
             DirChange.x = Rnd * 2 - 1
             DirChange.y = Rnd * 2 - 1
             'Commented to make AI sometimes not to Work
@@ -470,7 +467,7 @@ Public Sub MOVE()
         End If
 
         'DirChange = VectorMUL(DirChange, 0.15)
-        DirChange = VectorMUL(DirChange, 3 * InvDiam)
+        DirChange = VectorMUL(DirChange, 3.25 * InvDiam)
         
         Head.Vel = VectorNormalize(VectorSUM(Head.Vel, DirChange))
 
@@ -496,14 +493,11 @@ Public Sub MOVE()
 
 
 
-    If FASTspeedCOUNT > 20 Then
+    If FASTspeedCOUNT > 25 Then '20
         FASTspeedCOUNT = 0
         AddFoodParticle Token((tokIDX + 1) Mod Ntokens).POS, False
         SetSize = GetSize - FoodLengthValue
     End If
-
-
-
 
     '    If HEAD.Pos.X < wMinX Then HEAD.Pos.X = wMaxX
     '    If HEAD.Pos.Y < wMinY Then HEAD.Pos.Y = wMaxY
@@ -520,17 +514,17 @@ Public Sub MOVE()
     Token(tokIDX).POS = Head.POS
 
 
-
     For I = tokIDX + Ntokens - 1 To tokIDX + 1 Step -1
         J = I Mod Ntokens
         J2 = J - 1
         If J2 < 0 Then J2 = J2 + Ntokens
-        If J2 <> tokIDX Then Token(J).POS = VectorSUM(VectorMUL(Token(J).POS, 0.18), VectorMUL(Token(J2).POS, 0.82))
+        'If J2 <> tokIDX Then Token(J).POS = VectorSUM(VectorMUL(Token(J).POS, 0.18), VectorMUL(Token(J2).POS, 0.82)) '2nd Video
+        If J2 <> tokIDX Then Token(J).POS = VectorSUM(VectorMUL(Token(J).POS, 0.17), VectorMUL(Token(J2).POS, 0.83))
     Next
     If fLength \ 1 < Ntokens Then
         Ntokens = Ntokens - 1
         InvNtokens = 1 / Ntokens
-
+InvNtokens2 = 1 / (Ntokens - 1)
     End If
 
     ' fLength = fLength + 0.002 * Rnd
@@ -547,6 +541,7 @@ Public Sub MOVE()
             Next
         End If
         InvNtokens = 1 / Ntokens
+        InvNtokens2 = 1 / (Ntokens - 1)
     End If
 
 

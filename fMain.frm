@@ -142,7 +142,7 @@ End Sub
 
 Private Sub Command1_Click()
     InitPool 6
-    InitFOOD 100
+    InitFOOD 6 * 25 '100
 
 
     MainLoop

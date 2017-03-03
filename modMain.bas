@@ -5,6 +5,7 @@ Public MultipleSounds As clsSounds
 
 Public Snake() As clsSnake
 Public NSnakes As Long
+Public InvNSnakes As Double
 
 Public DoLOOP As Boolean
 
@@ -49,6 +50,8 @@ Public Sub InitPool(ByVal NoSnakes As Long)
 
     Dim I   As Long
     NSnakes = NoSnakes
+    InvNSnakes = 1 / NSnakes
+    
 
     ReDim Snake(NSnakes)
 
@@ -128,7 +131,9 @@ Public Sub MainLoop()
 
                     'ZOOMtoGO = 30# * Snake(PLAYER).InvDiam
                     'ZOOMtoGO = 28# * Snake(PLAYER).InvDiam '---2nd video
+                    'ZOOMtoGO = 0.0625 + 25# * Snake(PLAYER + 1).InvDiam
                     ZOOMtoGO = 0.0625 + 25# * Snake(PLAYER).InvDiam
+                    
 
                     ZOOM = ZOOM * 0.98 + ZOOMtoGO * 0.02
                     invZOOM = 1# / ZOOM
@@ -158,6 +163,7 @@ Public Sub MainLoop()
                     DrawFOOD    '--------------------------------
 
 
+                   ' Camera = Snake(PLAYER + 1).GetHEADPos
                     Camera = Snake(PLAYER).GetHEADPos
 
                     '                    CameraBB.minX = Camera.x - CenX
@@ -211,9 +217,9 @@ Public Sub MainLoop()
             DoEvents
             CNT = CNT + 1
 
-            If NFood < 5 Then   'Next Level
+            If NFood < 10 Then  '5 'Next Level
                 InitPool NSnakes * 1.2
-                InitFOOD NSnakes * 20
+                InitFOOD NSnakes * 25 '20
                 Level = Level + 1
                 StrCaption = "Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
                 MultipleSounds.PlaySound SoundINTRO

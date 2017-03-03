@@ -18,12 +18,14 @@ Public Function InsideBB(BB As tBB, P As geoVector2D) As Boolean
 End Function
 
 Public Function BBOverlapping(BB1 As tBB, BB2 As tBB) As Boolean
-    BBOverlapping = True
 
-    If BB1.maxX < BB2.minX Then BBOverlapping = False: Exit Function
-    If BB1.maxY < BB2.minY Then BBOverlapping = False: Exit Function
-    If BB1.minX > BB2.maxX Then BBOverlapping = False: Exit Function
-    If BB1.minY > BB2.maxY Then BBOverlapping = False: Exit Function
+
+    If BB1.maxX < BB2.minX Then Exit Function
+    If BB1.maxY < BB2.minY Then Exit Function
+    If BB1.minX > BB2.maxX Then Exit Function
+    If BB1.minY > BB2.maxY Then Exit Function
+    
+    BBOverlapping = True
 
 End Function
 

@@ -94,7 +94,8 @@ Public Sub DrawFOOD()
                 
             End If
         End With
-        FoodAge(I) = FoodAge(I) - 0.0025
+        FoodAge(I) = FoodAge(I) - 0.002
+        If FoodAge(I) < 0# Then FoodAge(I) = 0#
     Next
 
 
@@ -228,9 +229,9 @@ Public Function PointToNearestFood(Head As tPosAndVel) As geoVector2D
         D = dx * dx + dy * dy
         
         Direct = -Sgn(dx * Head.Vel.x + dy * Head.Vel.y) '''' Consider nearer the ones in front
-        Direct = Direct + 2
-        D = D * Direct
-        
+        Direct = Direct + 2#
+        'D = D * Direct * (1# - FoodAge(I) * 0.95)
+        D = D * Direct * (1# - FoodAge(I) * 0.98)
         If D < MIND Then
             MIND = D
             J = I

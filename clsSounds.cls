@@ -28,7 +28,6 @@ Private Const BUFFLEN As Long = 31
 Private SoundsSET() As tMyBuff
 
 
-
 Private Sub Class_Initialize()
     Dim desc As DSBUFFERDESC
     Dim I   As Long
