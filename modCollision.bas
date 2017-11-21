@@ -49,13 +49,13 @@ End Function
 '
 '    'PLAYER to ENEMY
 '    HeadPosI = snake(player).GetHEADPos
-'    R = snake(player).DIAM * 0.5
+'    R = snake(player).radius
 '
 '    For I = 1 To NSnakes
 '
 '        If InsideBB(Snake(I).getBB, HeadPosI) Then
 '
-'            R2 = Snake(I).DIAM * 0.5
+'            R2 = Snake(I).radius
 '
 '            For J = 0 To Snake(I).Ntokens - 1
 '
@@ -81,13 +81,13 @@ End Function
 '    '----------------------------------
 '    'ENEMY to PLAYER
 '    BB = snake(player).getBB
-'    R2 = snake(player).DIAM * 0.5
+'    R2 = snake(player).radius
 '    For I = 1 To NSnakes
 '        HeadPosI = Snake(I).GetHEADPos
 '
 '        If InsideBB(BB, HeadPosI) Then
 '
-'            R = Snake(I).DIAM * 0.5
+'            R = Snake(I).radius
 '
 '            For J = 0 To snake(player).Ntokens - 1
 '                TokenPosition = snake(player).GetTokenPos(J)
@@ -142,13 +142,13 @@ Public Sub CheckCollisionsALLtoALL()
 
     For I = 0 To NSnakes - 1
         HeadPosI = Snake(I).GetHEADPos
-        Ri = Snake(I).Diam * 0.5
+        Ri = Snake(I).Radius
 
         For J = I + 1 To NSnakes
 
             If InsideBB(Snake(J).getBB, HeadPosI) Then
 
-                Rj = Snake(J).Diam * 0.5
+                Rj = Snake(J).Radius
                 MIND = Ri + Rj
                 MIND = MIND * MIND
 
@@ -184,10 +184,10 @@ Public Sub CheckCollisionsALLtoALL()
             End If
 
             HeadPosJ = Snake(J).GetHEADPos
-            Rj = Snake(J).Diam * 0.5
+            Rj = Snake(J).Radius
 
             If InsideBB(Snake(I).getBB, HeadPosJ) Then
-                ' Ri = Snake(I).DIAM * 0.5
+                ' Ri = Snake(I).radius
                 MIND = Ri + Rj
                 MIND = MIND * MIND
 

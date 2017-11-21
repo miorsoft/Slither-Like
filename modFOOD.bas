@@ -89,8 +89,8 @@ Public Sub DrawFOOD()
             'vbDRAW.CC.Fill
 
             If InsideBB(CameraBB, FOOD(I).POS) Then
-                vbDRAW.CC.RenderSurfaceContent "FoodIcon", .POS.x - FoodSize, .POS.y - FoodSize, , , CAIRO_FILTER_FAST, 0.75
-                If FoodAge(I) > 0 Then vbDRAW.CC.RenderSurfaceContent "FoodIconLight", .POS.x - FoodSize * 3, .POS.y - FoodSize * 3, , , CAIRO_FILTER_FAST, FoodAge(I)
+                vbDrawCC.RenderSurfaceContent "FoodIcon", .POS.x - FoodSize, .POS.y - FoodSize, , , CAIRO_FILTER_FAST, 0.75
+                If FoodAge(I) > 0 Then vbDrawCC.RenderSurfaceContent "FoodIconLight", .POS.x - FoodSize * 3, .POS.y - FoodSize * 3, , , CAIRO_FILTER_FAST, FoodAge(I)
                 
             End If
         End With
@@ -146,7 +146,7 @@ Public Sub FoodMoveAndCheckEaten()
 
 
                     'GrabR = Snake(J).DIAM * 0.7
-                    GrabR = Snake(J).Diam * 0.5 + FoodSize * 0.5
+                    GrabR = Snake(J).Radius + FoodSize * 0.5
                     GrabR = GrabR * GrabR
                     If D < GrabR Then
                         If J = PLAYER Then

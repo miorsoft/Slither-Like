@@ -11,6 +11,8 @@ Option Explicit
 Public Srf As cCairoSurface, CC As cCairoContext    'Srf is similar to a DIB, the derived CC similar to a hDC
 
 Public vbDRAW As cVBDraw
+Public vbDrawCC As cCairoContext
+
 Public CONS As cConstructor
 Attribute CONS.VB_VarUserMemId = 1610809344
 
@@ -52,24 +54,26 @@ Public Sub InitRC()
 '    Set vbDRAW.Srf = Cairo.CreateSurface(400, 400)    'size of our rendering-area in Pixels
     Set vbDRAW.Srf = Cairo.CreateSurface(fMain.PIC.Width, fMain.PIC.Height, ImageSurface)       'size of our rendering-area in Pixels
 
-    Set vbDRAW.CC = vbDRAW.Srf.CreateContext    'create a Drawing-Context from the PixelSurface above
+    Set vbDrawCC = vbDRAW.Srf.CreateContext    'create a Drawing-Context from the PixelSurface above
 
 
     'vbDRAW.BindTo fMain.PIC
 
-    With vbDRAW
 
-        .CC.AntiAlias = CAIRO_ANTIALIAS_GRAY
+    With vbDrawCC
+
+        .AntiAlias = CAIRO_ANTIALIAS_GRAY
 
         '.CC.SetSourceSurface Srf
-        .CC.SetLineCap CAIRO_LINE_CAP_ROUND
-        .CC.SetLineJoin CAIRO_LINE_JOIN_ROUND
+        .SetLineCap CAIRO_LINE_CAP_ROUND
+        .SetLineJoin CAIRO_LINE_JOIN_ROUND
 
 
-        .CC.SetLineWidth 1, True
+        
+        .SetLineWidth 1, True
 
 
-        .CC.SelectFont "Courier New", 9, vbWhite
+        .SelectFont "Courier New", 9, vbWhite
 
 
     End With

@@ -18,7 +18,7 @@ Option Explicit
 Private Head As tPosAndVel
 
 Private Token() As tPosAndVel
-Private Const MaxNtok As Long = 199
+Private Const MaxNtok As Long = 999 ' 199
 
 Public Ntokens As Long
 Private InvNtokens As Double
@@ -39,6 +39,8 @@ Private EyEANG As Double
 Private oldANG As Double
 Public Diam As Double
 Public InvDiam As Double
+Public Radius As Double
+
 
 
 
@@ -55,7 +57,7 @@ Private fLength As Double
 Public FASTspeed As Long
 Public FASTspeedCOUNT As Long
 
-Private Const SPEED As Double = 3.5
+Private Const SPEED As Double = 2.5 ' 3 '3.5
 
 
 
@@ -68,7 +70,12 @@ Public Property Let SetSize(V As Double)
     'Diam = 5 * (fLength + 15) ^ (0.45)
     
     'Diam = 5 * (fLength + 15) ^ (0.5) '------ 2nd video
-    Diam = 5# * (fLength + 16#) ^ (0.5)
+    
+    'Diam = 5# * (fLength + 16#) ^ (0.5) ''' OK
+    
+    Diam = 1 + 4.5 * (fLength) ^ 0.5
+    
+    Radius = Diam * 0.5
     
 InvDiam = 1# / Diam
 
@@ -186,7 +193,7 @@ Private Sub RandomizeMe()
     IsDying = 0    ' False
 
     'fLength = 2
-    SetSize = 3
+    SetSize = 8 '3
 
     Ntokens = fLength
 InvNtokens = 1 / Ntokens
@@ -227,7 +234,7 @@ End Sub
 
 Public Sub DRAW(DrawBoundingBox As Long)
     Dim ANG As Double
-    Dim A   As Double
+    Dim a   As Double
     Dim A2  As Double
 
 
@@ -273,7 +280,7 @@ Public Sub DRAW(DrawBoundingBox As Long)
  
 
 
-    With vbDRAW.CC
+    With vbDrawCC
 
         If IsDying Then
 StepD = 1
@@ -282,7 +289,9 @@ StepD = 1
             For I = tokIDX + 1 To tokIDX + Ntokens - 1 Step StepD
                 J = I Mod Ntokens
                 P = Token(J).POS
-                .Ellipse P.x, P.y, Diam, Diam
+                '.Ellipse P.x, P.y, Diam, Diam
+                .ARC P.x, P.y, Radius
+                
                 .Fill
             Next
 
@@ -322,7 +331,10 @@ StepD = 1
 
             For I = tokIDX + StepD * 1 + 2 To tokIDX + Ntokens Step StepD    'Senza -1 disegna anche testa
 
-                J = I Mod Ntokens
+                'J = I Mod Ntokens
+                DivRem I, Ntokens, J
+                
+                
                 P = Token(J).POS
                 K = K + StepD
   
@@ -351,7 +363,8 @@ StepD = 1
         '........................................
         'Drawhead EYES
 
-        .SetLineWidth 1
+        '.SetLineWidth 1 * Diam
+        .SetLineWidth 0.05 * Diam
 
         ANG = Atan2(Head.Vel.x, Head.Vel.y)
 
@@ -364,11 +377,13 @@ StepD = 1
         X1 = Head.POS.x + C
         Y1 = Head.POS.y + S
         .SetSourceRGBA 1, 0.6, 0.6, 0.4
-        .Ellipse X1, Y1, Diam * 0.67, Diam * 0.67
+        '.Ellipse X1, Y1, Diam * 0.67, Diam * 0.67
+        .ARC X1, Y1, Diam * 0.335
         .Fill
         'Draw Head
         .SetSourceRGB ColorR + CADD, ColorG + CADD, ColorB + CADD
-        .Ellipse Head.POS.x, Head.POS.y, Diam, Diam
+        '.Ellipse Head.POS.x, Head.POS.y, Diam, Diam
+        .ARC Head.POS.x, Head.POS.y, Radius
         .Fill
         '---------------------------------
 
@@ -379,24 +394,29 @@ StepD = 1
         End If
         If IsDying Then EyEANG = (CNT + DyingTime) * 0.3
 
-        .SetSourceRGB 1, 1, 0.8    'EYEBALLS
-        A = ANG - PIh * 0.5
-        C = Cos(A) * Reye
-        S = Sin(A) * Reye
+        .SetSourceRGB 1, 1, 0.85    'EYEBALLS
+        a = ANG - PIh * 0.5
+        C = Cos(a) * Reye
+        S = Sin(a) * Reye
         X1 = Head.POS.x + C
         Y1 = Head.POS.y + S
-        .Ellipse X1, Y1, DEye, DEye
+        '.Ellipse X1, Y1, DEye, DEye
+        .ARC X1, Y1, DEye * 0.5
+        
         x2 = Head.POS.x - S
         Y2 = Head.POS.y + C
-        .Ellipse x2, Y2, DEye, DEye
+        '.Ellipse x2, Y2, DEye, DEye
+        .ARC x2, Y2, DEye * 0.5
         .Fill
 
-        .SetSourceRGBA 0, 0, 0, 0.5    'eye contour
-        .Ellipse X1, Y1, DEye, DEye
+        .SetSourceRGBA 0, 0, 0, 0.55    'eye contour
+        '.Ellipse X1, Y1, DEye, DEye
+         .ARC X1, Y1, DEye * 0.5
         .Stroke
         x2 = Head.POS.x - S
         Y2 = Head.POS.y + C
-        .Ellipse x2, Y2, DEye, DEye
+        '.Ellipse x2, Y2, DEye, DEye
+         .ARC x2, Y2, DEye * 0.5
         .Stroke
 
 
@@ -404,8 +424,10 @@ StepD = 1
         .SetSourceColor 0    'PUPILS
         dx = Cos(EyEANG) * (Reye * 0.5)
         dy = Sin(EyEANG) * (Reye * 0.5)
-        .Ellipse X1 + dx, Y1 + dy, Reye2, Reye2
-        .Ellipse x2 + dx, Y2 + dy, Reye2, Reye2
+        '.Ellipse X1 + dx, Y1 + dy, Reye2, Reye2
+        .ARC X1 + dx, Y1 + dy, Reye2 * 0.5
+        '.Ellipse x2 + dx, Y2 + dy, Reye2, Reye2
+        .ARC x2 + dx, Y2 + dy, Reye2 * 0.5
         .Fill
         '........................................
 

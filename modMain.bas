@@ -92,7 +92,7 @@ Public Sub MainLoop()
     pTime = Timing
     pTime2 = Timing
 
-    vbDRAW.CC.AntiAlias = CAIRO_ANTIALIAS_GRAY
+    
 
 
     Do
@@ -124,7 +124,7 @@ Public Sub MainLoop()
                 '                CheckCollisionsOnlyPlayer
                 CheckCollisionsALLtoALL
 
-                With vbDRAW.CC
+                With vbDrawCC
                     .SetSourceColor 0
                     .Paint
                     .Save
@@ -132,7 +132,11 @@ Public Sub MainLoop()
                     'ZOOMtoGO = 30# * Snake(PLAYER).InvDiam
                     'ZOOMtoGO = 28# * Snake(PLAYER).InvDiam '---2nd video
                     'ZOOMtoGO = 0.0625 + 25# * Snake(PLAYER + 1).InvDiam
-                    ZOOMtoGO = 0.0625 + 25# * Snake(PLAYER).InvDiam
+                    
+                    
+                    'ZOOMtoGO = 0.0625 + 25# * Snake(PLAYER).InvDiam   'ok
+                    
+                    ZOOMtoGO = 0.05 + 10 * Snake(PLAYER).InvDiam ^ 0.7
                     
 
                     ZOOM = ZOOM * 0.98 + ZOOMtoGO * 0.02
@@ -217,7 +221,7 @@ Public Sub MainLoop()
             DoEvents
             CNT = CNT + 1
 
-            If NFood < 10 Then  '5 'Next Level
+            If NFood < NSnakes Then  '5 'Next Level
                 InitPool NSnakes * 1.2
                 InitFOOD NSnakes * 25 '20
                 Level = Level + 1
