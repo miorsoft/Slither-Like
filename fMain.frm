@@ -105,6 +105,10 @@ End Sub
 
 Private Sub Form_Load()
 
+
+
+'MsgBox Cairo.CalcArc(2, 3)
+
     PIC.Width = PIC.Height * 4 / 3
 PIC.Refresh
 

@@ -83,6 +83,7 @@ Public Sub DrawFOOD()
 
     ' vbDRAW.CC.SetSourceColor vbGreen
 
+
     For I = 0 To NFood
         With FOOD(I)
             'vbDRAW.CC.Ellipse .Pos.X, .Pos.y, 5, 5
@@ -90,13 +91,15 @@ Public Sub DrawFOOD()
 
             If InsideBB(CameraBB, FOOD(I).POS) Then
                 vbDrawCC.RenderSurfaceContent "FoodIcon", .POS.x - FoodSize, .POS.y - FoodSize, , , CAIRO_FILTER_FAST, 0.75
-                If FoodAge(I) > 0 Then vbDrawCC.RenderSurfaceContent "FoodIconLight", .POS.x - FoodSize * 3, .POS.y - FoodSize * 3, , , CAIRO_FILTER_FAST, FoodAge(I)
+       '         If FoodAge(I) > 0 Then vbDrawCC.RenderSurfaceContent "FoodIconLight", .POS.x - FoodSize * 3, .POS.y - FoodSize * 3, , , CAIRO_FILTER_FAST, FoodAge(I)
+                If FoodAge(I) > 0 Then vbDrawCC.RenderSurfaceContent "FoodIconLight", .POS.x - FoodSize * 2, .POS.y - FoodSize * 2, , , CAIRO_FILTER_FAST, FoodAge(I)
                 
             End If
         End With
         FoodAge(I) = FoodAge(I) - 0.002
         If FoodAge(I) < 0# Then FoodAge(I) = 0#
     Next
+
 
 
 End Sub

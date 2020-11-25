@@ -62,8 +62,9 @@ Public Sub InitRC()
 
     With vbDrawCC
 
-        .AntiAlias = CAIRO_ANTIALIAS_GRAY
-
+        '.AntiAlias = CAIRO_ANTIALIAS_GRAY
+        .AntiAlias = CAIRO_ANTIALIAS_FAST
+        
         '.CC.SetSourceSurface Srf
         .SetLineCap CAIRO_LINE_CAP_ROUND
         .SetLineJoin CAIRO_LINE_JOIN_ROUND
@@ -114,7 +115,7 @@ Const LowResScale As Double = 0.33
 
     '    Cairo.ImageList.AddImage "FoodIcon", App.Path & "\Resources\Orb.png", 16, 16
     Cairo.ImageList.AddImage "FoodIcon", App.Path & "\Resources\greenlight.png", FoodSize * 2, FoodSize * 2
- Cairo.ImageList.AddImage "FoodIconLight", App.Path & "\Resources\whitelight.png", FoodSize * 6, FoodSize * 6
+ Cairo.ImageList.AddImage "FoodIconLight", App.Path & "\Resources\whitelight.png", FoodSize * 4, FoodSize * 4
 
 
 
