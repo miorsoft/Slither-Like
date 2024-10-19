@@ -1,10 +1,11 @@
 VERSION 5.00
 Begin VB.Form fMain 
+   BorderStyle     =   1  'Fixed Single
    Caption         =   "Slither Game"
    ClientHeight    =   9975
-   ClientLeft      =   60
-   ClientTop       =   450
-   ClientWidth     =   14355
+   ClientLeft      =   -15
+   ClientTop       =   375
+   ClientWidth     =   15540
    BeginProperty Font 
       Name            =   "Tahoma"
       Size            =   9.75
@@ -15,43 +16,58 @@ Begin VB.Form fMain
       Strikethrough   =   0   'False
    EndProperty
    LinkTopic       =   "Form1"
+   MaxButton       =   0   'False
+   MinButton       =   0   'False
    ScaleHeight     =   665
    ScaleMode       =   3  'Pixel
-   ScaleWidth      =   957
+   ScaleWidth      =   1036
    StartUpPosition =   1  'CenterOwner
    WindowState     =   2  'Maximized
-   Begin VB.CheckBox chkBG 
-      Caption         =   "BackGround"
-      Height          =   495
-      Left            =   13320
-      TabIndex        =   4
-      Top             =   1080
-      Value           =   1  'Checked
-      Width           =   1455
-   End
-   Begin VB.CheckBox chkJPG 
-      Caption         =   "Save Jpg Frames"
-      Height          =   495
-      Left            =   13320
-      TabIndex        =   3
-      Top             =   2640
-      Width           =   1455
-   End
-   Begin VB.CheckBox chkBB 
-      Caption         =   "Draw BB"
-      Height          =   495
-      Left            =   13320
-      TabIndex        =   2
-      Top             =   1800
-      Width           =   1455
-   End
-   Begin VB.CommandButton Command1 
-      Caption         =   "START"
-      Height          =   615
-      Left            =   13200
+   Begin VB.PictureBox PicPanel 
+      Appearance      =   0  'Flat
+      BackColor       =   &H80000005&
+      ForeColor       =   &H80000008&
+      Height          =   4095
+      Left            =   13440
+      ScaleHeight     =   271
+      ScaleMode       =   3  'Pixel
+      ScaleWidth      =   127
       TabIndex        =   1
-      Top             =   120
-      Width           =   1695
+      Top             =   240
+      Width           =   1935
+      Begin VB.CommandButton Command1 
+         Caption         =   "START"
+         Height          =   615
+         Left            =   120
+         TabIndex        =   5
+         Top             =   120
+         Width           =   1695
+      End
+      Begin VB.CheckBox chkBB 
+         Caption         =   "Draw BB"
+         Height          =   495
+         Left            =   240
+         TabIndex        =   4
+         Top             =   1800
+         Width           =   1455
+      End
+      Begin VB.CheckBox chkJPG 
+         Caption         =   "Save Jpg Frames"
+         Height          =   495
+         Left            =   240
+         TabIndex        =   3
+         Top             =   2640
+         Width           =   1455
+      End
+      Begin VB.CheckBox chkBG 
+         Caption         =   "BackGround"
+         Height          =   495
+         Left            =   240
+         TabIndex        =   2
+         Top             =   1080
+         Value           =   1  'Checked
+         Width           =   1455
+      End
    End
    Begin VB.PictureBox PIC 
       Appearance      =   0  'Flat
@@ -110,6 +126,8 @@ Private Sub Form_Load()
 'MsgBox Cairo.CalcArc(2, 3)
 
     PIC.Width = PIC.Height * 4 / 3
+'    Stop
+    
 PIC.Refresh
 
     If Dir(App.Path & "\Frames", vbDirectory) = vbNullString Then MkDir App.Path & "\Frames"
@@ -130,6 +148,20 @@ End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     DoLOOP = False
+
+End Sub
+
+Private Sub Form_Resize()
+
+PIC.Width = Me.ScaleWidth - 16
+PIC.Height = Me.ScaleHeight - 16
+
+PicPanel.Top = PIC.Top
+
+PicPanel.Left = PIC.Left + PIC.Width - PicPanel.Width
+
+
+InitRC
 
 End Sub
 

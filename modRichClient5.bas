@@ -45,10 +45,18 @@ Public Sub InitRC()
     CenY = maxH * 0.5
 
 
-    wMinX = CenX - MaxW * 2.2    'Must be<0
-    wMinY = CenY - maxH * 2.2
-    wMaxX = CenX + MaxW * 2.2
-    wMaxY = CenY + maxH + 2.2
+'    wMinX = CenX - MaxW * 2.2    'Must be<0
+'    wMinY = CenY - maxH * 2.2
+'    wMaxX = CenX + MaxW * 2.2
+'    wMaxY = CenY + maxH + 2.2
+
+wMinX = CenX - 840 * 2
+wMaxX = CenX + 840 * 2
+wMinY = CenY - 640 * 2
+wMaxY = CenY + 640 * 2
+
+
+
 
     Set vbDRAW = Cairo.CreateVBDrawingObject
 '    Set vbDRAW.Srf = Cairo.CreateSurface(400, 400)    'size of our rendering-area in Pixels

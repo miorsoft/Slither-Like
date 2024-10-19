@@ -42,8 +42,9 @@ Private Sub Class_Initialize()
     desc.dwFlags = DSBCAPS_CTRLVOLUME Or DSBCAPS_CTRLPAN    'Or DSBCAPS_CTRLFREQUENCY Or DSBCAPS_CTRLFX
 
 
+
     For I = 0 To BUFFLEN
-        SoundsSET(I).FileName = SoundPlayerChomp
+        SoundsSET(I).FileName = "reloj-34721.MP3"
         Set SoundsSET(I).Buffer = DSCreateSoundBufferFromFile(DirectSound, App.Path & "\snd\" & SoundPlayerChomp, desc)
     Next
 

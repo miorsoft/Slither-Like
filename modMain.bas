@@ -86,6 +86,8 @@ Public Sub MainLoop()
 
     Level = 1
     'fMain.Caption = "Level: " & Level & "  Snakes: " & NSnakes & "  Food: " & NFood
+
+    
     MultipleSounds.PlaySound SoundINTRO
 
     Timing = 0
