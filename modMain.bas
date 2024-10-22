@@ -82,17 +82,18 @@ End Sub
 
 
 Public Sub MainLoop()
-    Dim I   As Long
-    Dim pTime As Double
-    Dim pTime2 As Double
-    Dim FPS As Long
-    Dim pCnt As Long
+    Dim I         As Long
+    Dim pTime     As Double
+    Dim pTime2    As Double
+    Dim FPS       As Long
+    Dim pCnt      As Long
+Dim J As Long
 
     Dim StrCaption As String
 
 
 
-    Dim ZOOMtoGO As Double
+    Dim ZOOMtoGO  As Double
 
 
 
@@ -101,14 +102,14 @@ Public Sub MainLoop()
     Level = 1
     'fMain.Caption = "Level: " & Level & "  Snakes: " & NSnakes & "  Food: " & NFood
 
-    
+
     MultipleSounds.PlaySound SoundINTRO
 
     Timing = 0
     pTime = Timing
     pTime2 = Timing
 
-    
+
 
 
     Do
@@ -131,7 +132,7 @@ Public Sub MainLoop()
                 Snake(I).MOVE
             Next
 
-            FoodMoveAndCheckEaten    '------------------------------------
+            FoodMoveAndCheckEaten       '------------------------------------
 
 
             If CNT Mod JPGframeRate = 0 Then    '' 75 / 3 FPS =25 FPS Drawn
@@ -148,12 +149,12 @@ Public Sub MainLoop()
                     'ZOOMtoGO = 30# * Snake(PLAYER).InvDiam
                     'ZOOMtoGO = 28# * Snake(PLAYER).InvDiam '---2nd video
                     'ZOOMtoGO = 0.0625 + 25# * Snake(PLAYER + 1).InvDiam
-                    
-                    
+
+
                     'ZOOMtoGO = 0.0625 + 25# * Snake(PLAYER).InvDiam   'ok
-                    
+
                     ZOOMtoGO = 0.05 + 10 * Snake(PLAYER).InvDiam ^ 0.7
-                    
+
 
                     ZOOM = ZOOM * 0.98 + ZOOMtoGO * 0.02
                     invZOOM = 1# / ZOOM
@@ -180,10 +181,10 @@ Public Sub MainLoop()
 
 
 
-                    DrawFOOD    '--------------------------------
+                    DrawFOOD            '--------------------------------
 
 
-                   ' Camera = Snake(PLAYER + 1).GetHEADPos
+                    ' Camera = Snake(PLAYER + 1).GetHEADPos
                     Camera = Snake(PLAYER).GetHEADPos
 
                     '                    CameraBB.minX = Camera.x - CenX
@@ -208,8 +209,21 @@ Public Sub MainLoop()
                     .TextOut 5, 5, StrCaption
                     .DrawText MaxW - 300, 5, 400, 1000, StrScore
 
+For I = 0 To NSnakes
+J = ScoresIdx(I)
+.SetSourceRGBA Snake(J).ColorR, Snake(J).ColorG, Snake(J).ColorB, 0.5
+.Rectangle MaxW - 305, 5 + (I + 2) * 15, 90, 14
+.Fill
+Next
+.SetSourceRGBA 0, 1, 0, 0.3
+.Rectangle MaxW - 305, 2, 90 * (1 - (NFood - NSnakes2) * FoodDiv), 31
+.Fill
 
-                    If SaveFrames Then 'Recorder Red DOT
+
+
+
+
+                    If SaveFrames Then  'Recorder Red DOT
                         .SetSourceRGBA 1, 0, 0, (1# + Sin(CNT * 0.01333 * PI2))
                         .Ellipse MaxW - 20, 30, 18, 18
                         .Fill
@@ -238,9 +252,10 @@ Public Sub MainLoop()
             DoEvents
             CNT = CNT + 1
 
-            If NFood <= NSnakes2 Then '5 'Next Level
-                InitPool NSnakes * 1.2
-                InitFOOD NSnakes * 25 '20
+
+            If NFood <= NSnakes2 Then  '5 'Next Level
+                InitPool NSnakes * 1.18    '1.2
+                InitFOOD NSnakes * 25
                 Level = Level + 1
                 StrCaption = "Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
                 MultipleSounds.PlaySound SoundINTRO
@@ -249,9 +264,7 @@ Public Sub MainLoop()
 
             If CNT Mod 100 = 0 Then
                 StrCaption = "Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
-            
-            UpdateSCORESString
-            
+                UpdateSCORESString
             End If
 
 
@@ -301,7 +314,7 @@ AG: '- SORT------------------
     If SW Then GoTo AG
 
 
-    StrScore = "Scores:" & vbCrLf & vbCrLf
+    StrScore = "SCORES:" & vbCrLf & vbCrLf
     For I = 0 To NSnakes
         If ScoresIdx(I) = 0& Then
             S = "PLYR"

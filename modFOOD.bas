@@ -14,6 +14,7 @@ Public FoodAge() As Double
 
 Public NFood As Long
 Public MaxFood As Long
+Public FoodDiv As Double
 
 
 Public Const FoodSize As Double = 9
@@ -24,11 +25,15 @@ Public COStable(-360 To 360) As Double
 Public SINtable(-360 To 360) As Double
 
 
+
 Public Sub InitFOOD(HowMuch As Long)
     Dim I         As Long
 
     NFood = HowMuch
     MaxFood = NFood
+    
+    FoodDiv = 1 / (MaxFood - NSnakes2)
+    
 
     ReDim FOOD(NFood)
     ReDim FoodAge(NFood)

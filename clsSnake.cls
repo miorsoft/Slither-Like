@@ -30,9 +30,9 @@ Public tokIDX As Long
 Public MyIDX As Long
 
 Private Color As Long
-Private ColorR As Double
-Private ColorG As Double
-Private ColorB As Double
+Public ColorR As Double
+Public ColorG As Double
+Public ColorB As Double
 
 Private DirChange As geoVector2D
 Private EyEANG As Double
