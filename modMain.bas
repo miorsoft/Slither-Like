@@ -1,6 +1,11 @@
 Attribute VB_Name = "modMain"
 Option Explicit
 
+Private Scores() As Long
+Private ScoresIdx() As Long
+
+
+
 Public MultipleSounds As cSounds
 
 Public Snake() As clsSnake
@@ -49,6 +54,9 @@ Public invZOOM As Double
 
 Public AIcontrol As Boolean
 
+Private StrScore As String
+
+
 Public Sub InitPool(ByVal NoSnakes As Long)
 
     Dim I   As Long
@@ -58,6 +66,8 @@ Public Sub InitPool(ByVal NoSnakes As Long)
     
 
     ReDim Snake(NSnakes)
+    ReDim Scores(NSnakes)
+    ReDim ScoresIdx(NSnakes)
 
     For I = 0 To NSnakes
         If Snake(I) Is Nothing Then Set Snake(I) = New clsSnake
@@ -196,6 +206,7 @@ Public Sub MainLoop()
                     .Restore
 
                     .TextOut 5, 5, StrCaption
+                    .DrawText MaxW - 300, 5, 400, 1000, StrScore
 
 
                     If SaveFrames Then 'Recorder Red DOT
@@ -238,6 +249,9 @@ Public Sub MainLoop()
 
             If CNT Mod 100 = 0 Then
                 StrCaption = "Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
+            
+            UpdateSCORESString
+            
             End If
 
 
@@ -259,3 +273,44 @@ Public Function ClampLong(V As Double, Min As Long, maX As Long) As Long
 
 
 End Function
+
+Private Sub UpdateSCORESString()
+    Dim I As Long, J As Long
+    Dim SW        As Long
+    Dim TMP&
+    Dim S         As String
+
+
+    For I = 0 To NSnakes
+        Scores(I) = Snake(I).GetSize * 10
+        ScoresIdx(I) = I
+    Next
+
+
+AG: '- SORT------------------
+    SW = 0
+    For I = 0 To NSnakes - 1
+        For J = I + 1 To NSnakes
+            If Scores(I) < Scores(J) Then    'SWAP
+                TMP = Scores(I): Scores(I) = Scores(J): Scores(J) = TMP
+                TMP = ScoresIdx(I): ScoresIdx(I) = ScoresIdx(J): ScoresIdx(J) = TMP
+                SW = SW + 1
+            End If
+        Next
+    Next
+    If SW Then GoTo AG
+
+
+    StrScore = "Scores:" & vbCrLf & vbCrLf
+    For I = 0 To NSnakes
+        If ScoresIdx(I) = 0& Then
+            S = "PLYR"
+        Else
+            S = ScoresIdx(I)
+        End If
+        StrScore = StrScore & S & Space(11 - Len(S) - Len(CStr(Scores(I)))) & Scores(I) & vbCrLf
+    Next
+
+
+End Sub
+

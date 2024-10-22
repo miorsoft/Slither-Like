@@ -4,6 +4,7 @@ Option Explicit
 Public Type tPosAndVel
     POS     As geoVector2D
     Vel     As geoVector2D
+    RotSign As Long
 End Type
 
 Public FOOD() As tPosAndVel
@@ -19,8 +20,8 @@ Public Const FoodSize As Double = 9
 
 Public Const FoodLengthValue As Double = 1
 
-Public COStable(360) As Double
-Public SINtable(360) As Double
+Public COStable(-360 To 360) As Double
+Public SINtable(-360 To 360) As Double
 
 
 Public Sub InitFOOD(HowMuch As Long)
@@ -37,27 +38,40 @@ Public Sub InitFOOD(HowMuch As Long)
         With FOOD(I)
             .POS.x = wMinX + Rnd * (wMaxX - wMinX)
             .POS.y = wMinY + Rnd * (wMaxY - wMinY)
+
+            FoodAge(I) = 0
+
+            .RotSign = Int(Rnd * 2)
+            If .RotSign = 0 Then .RotSign = -1    '1
+
         End With
-        FoodAge(I) = 0                  '1
     Next
 
 
 
-    For I = 0 To 360
-        COStable(I) = Cos(I / 360 * PI2) '* 0.002
-        SINtable(I) = Sin(I / 360 * PI2) '* 0.002
+    For I = -360 To 360
+        COStable(I) = Cos(I / 360 * PI2)    '* 0.002
+        SINtable(I) = Sin(I / 360 * PI2)    '* 0.002
     Next
 
 
 End Sub
 Private Sub RemoveFood(wF As Long)
-    Dim I   As Long
+    Dim I         As Long
 
+    '    NFood = NFood - 1
+    '    For I = wF To NFood
+    '        FOOD(I) = FOOD(I + 1)
+    '        FoodAge(I) = FoodAge(I + 1)
+    '    Next
+
+    '---With No Loop '--2024
+    FOOD(wF) = FOOD(NFood)
+    FoodAge(wF) = FoodAge(NFood)
     NFood = NFood - 1
-    For I = wF To NFood
-        FOOD(I) = FOOD(I + 1)
-        FoodAge(I) = FoodAge(I + 1)
-    Next
+
+
+
 
 End Sub
 
@@ -75,6 +89,9 @@ Public Sub AddFoodParticle(POS As geoVector2D, IsWhite As Long)
         .Vel.x = 0
         .Vel.y = 0
         .POS = POS
+                    .RotSign = Int(Rnd * 2)
+            If .RotSign = 0 Then .RotSign = -1    '1
+        
     End With
 
 If IsWhite Then FoodAge(NFood) = 1 Else: FoodAge(NFood) = 0
@@ -196,9 +213,9 @@ Public Sub FoodMoveAndCheckEaten()
 '---- Food move/animation  '--2024
 Dim SC As geoVector2D
 Dim A As Long
-A = (I * 90 + CNT * 1.33) Mod 360
-SC.x = COStable(A) * 0.002
-SC.y = SINtable(A) * 0.002
+A = (I * 137.52 + CNT * 1.33 * .RotSign) Mod 360
+SC.x = COStable(A) * 0.0025
+SC.y = SINtable(A) * 0.0025
 .Vel = VectorSUM(.Vel, SC)
 '------------
 

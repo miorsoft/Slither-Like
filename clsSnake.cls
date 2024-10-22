@@ -62,6 +62,8 @@ Private Const SPEED As Double = 2.5 ' 3 '3.5
 Public SearchForFOODMODE As Double
 
 
+
+
 Public Property Get GetSize() As Double
     GetSize = fLength
 End Property
@@ -599,4 +601,6 @@ End Sub
 
 Private Sub Class_Initialize()
 SearchForFOODMODE = 1.2 + Rnd * 0.8
+
+
 End Sub
