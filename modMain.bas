@@ -1,10 +1,12 @@
 Attribute VB_Name = "modMain"
 Option Explicit
 
-Public MultipleSounds As clsSounds
+Public MultipleSounds As cSounds
 
 Public Snake() As clsSnake
 Public NSnakes As Long
+Public NSnakes2 As Long
+
 Public InvNSnakes As Double
 
 Public DoLOOP As Boolean
@@ -45,12 +47,14 @@ Public DoBackGround As Long
 Public ZOOM As Double
 Public invZOOM As Double
 
+Public AIcontrol As Boolean
 
 Public Sub InitPool(ByVal NoSnakes As Long)
 
     Dim I   As Long
     NSnakes = NoSnakes
     InvNSnakes = 1 / NSnakes
+    NSnakes2 = NSnakes * 2
     
 
     ReDim Snake(NSnakes)
@@ -223,7 +227,7 @@ Public Sub MainLoop()
             DoEvents
             CNT = CNT + 1
 
-            If NFood < NSnakes Then  '5 'Next Level
+            If NFood <= NSnakes2 Then '5 'Next Level
                 InitPool NSnakes * 1.2
                 InitFOOD NSnakes * 25 '20
                 Level = Level + 1
@@ -235,6 +239,8 @@ Public Sub MainLoop()
             If CNT Mod 100 = 0 Then
                 StrCaption = "Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
             End If
+
+
 
         End If
 

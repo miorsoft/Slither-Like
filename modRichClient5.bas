@@ -50,10 +50,10 @@ Public Sub InitRC()
 '    wMaxX = CenX + MaxW * 2.2
 '    wMaxY = CenY + maxH + 2.2
 
-wMinX = CenX - 840 * 2
-wMaxX = CenX + 840 * 2
-wMinY = CenY - 640 * 2
-wMaxY = CenY + 640 * 2
+wMinX = CenX - 840 * 3.5 '2
+wMaxX = CenX + 840 * 3.5
+wMinY = CenY - 640 * 3.5
+wMaxY = CenY + 640 * 3.5
 
 
 

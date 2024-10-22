@@ -10,6 +10,8 @@ Option Explicit
 
 Public Const Pi As Double = 3.14159265358979    ' Atn (1) * 4
 Public Const PI2 As Double = 6.28318530717959    'PI * 2
+Public Const InvPI2 As Double = 1 / 6.28318530717959  'PI * 2
+
 Public Const PIh As Double = 1.5707963267949    ' PI * 0.5
 
 Public Type geoVector2D
@@ -67,10 +69,10 @@ Public Sub UpdateLineAng(ByRef L As geoLine)
     L.ANG = Atan2(dx, dy)
     If L.ANG < 0 Then L.ANG = L.ANG + PI2
 End Sub
-Public Sub UpdateArcPts(ByRef a As geoARC)
+Public Sub UpdateArcPts(ByRef A As geoARC)
 'Knowing A1 and A2 of the arc
 'calc x1,y1 and x2,y2
-    With a
+    With A
         .X1 = .Circle.Center.x + .Circle.Radius * Cos(.A1)
         .Y1 = .Circle.Center.y + .Circle.Radius * Sin(.A1)
         .x2 = .Circle.Center.x + .Circle.Radius * Cos(.A2)
@@ -595,7 +597,7 @@ Public Sub IntersectOfCircles(ByRef C1 As geoCircle, _
     Dim c2R As Double
     Dim M   As Double
     Dim N   As Double
-    Dim a   As Double
+    Dim A   As Double
     Dim H   As Double
     Dim P   As geoVector2D
 
@@ -620,14 +622,14 @@ Public Sub IntersectOfCircles(ByRef C1 As geoCircle, _
     If (D = 0) And (c1R = c2R) Then Exit Sub
 
     'Solve for a
-    a = (c1R * c1R - c2R * c2R + D * D) / (2 * D)
+    A = (c1R * c1R - c2R * c2R + D * D) / (2 * D)
 
     'Solve for h
-    H = Sqr(c1R * c1R - a * a)
+    H = Sqr(c1R * c1R - A * A)
 
     'Calculate point p, where the line through the circle intersection points crosses the line between the circle centers.
-    P.x = C1.Center.x + (a / D) * (C2.Center.x - C1.Center.x)
-    P.y = C1.Center.y + (a / D) * (C2.Center.y - C1.Center.y)
+    P.x = C1.Center.x + (A / D) * (C2.Center.x - C1.Center.x)
+    P.y = C1.Center.y + (A / D) * (C2.Center.y - C1.Center.y)
 
     '1 soln , circles are touching
     If D = (c1R + c2R) Then Sol1 = P: Sol1.Bool = True: Exit Sub
@@ -920,12 +922,12 @@ End Function
 
 
 
-Public Function maX(a As Double, b As Double) As Double
-    If a > b Then maX = a Else: maX = b
+Public Function maX(A As Double, b As Double) As Double
+    If A > b Then maX = A Else: maX = b
 End Function
 
-Public Function Min(a As Double, b As Double) As Double
-    If a < b Then Min = a Else: Min = b
+Public Function Min(A As Double, b As Double) As Double
+    If A < b Then Min = A Else: Min = b
 End Function
 
 
@@ -937,7 +939,7 @@ End Function
 ' @param Remainder The variable to place the remainder of the division.
 ' @return The quotient of the division.
 '
-Public Function DivRem(ByVal a As Long, ByVal b As Long, ByRef remainder As Long) As Long
-    DivRem = a \ b
-    remainder = a - (b * DivRem)    ' this is about 2x faster than Mod.
+Public Function DivRem(ByVal A As Long, ByVal b As Long, ByRef remainder As Long) As Long
+    DivRem = A \ b
+    remainder = A - (b * DivRem)    ' this is about 2x faster than Mod.
 End Function

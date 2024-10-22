@@ -59,6 +59,7 @@ Public FASTspeedCOUNT As Long
 
 Private Const SPEED As Double = 2.5 ' 3 '3.5
 
+Public SearchForFOODMODE As Double
 
 
 Public Property Get GetSize() As Double
@@ -121,7 +122,7 @@ End Function
 '    Next
 '
 'End Function
-Public Sub UpdateBB()
+Friend Sub UpdateBB()
     Dim I   As Long
     BB.minX = wMaxX * 2
     BB.minY = wMaxY * 2
@@ -138,7 +139,7 @@ Public Sub UpdateBB()
     Next
 
 End Sub
-Public Sub Init(x As Double, y As Double, Idx As Long, Leng As Double)
+Friend Sub Init(x As Double, y As Double, Idx As Long, Leng As Double)
     Dim I   As Long
 
     'fLength = Leng
@@ -228,13 +229,14 @@ InvNtokens2 = 1 / (Ntokens - 1)
 
     UpdateBB
 
+SearchForFOODMODE = 1.2 + Rnd * 0.8
 
 End Sub
 
 
-Public Sub DRAW(DrawBoundingBox As Long)
+Friend Sub DRAW(DrawBoundingBox As Long)
     Dim ANG As Double
-    Dim a   As Double
+    Dim A   As Double
     Dim A2  As Double
 
 
@@ -290,7 +292,7 @@ StepD = 1
                 J = I Mod Ntokens
                 P = Token(J).POS
                 '.Ellipse P.x, P.y, Diam, Diam
-                .ARC P.x, P.y, Radius
+                .Arc P.x, P.y, Radius
                 
                 .Fill
             Next
@@ -341,9 +343,14 @@ StepD = 1
                 'To Avoid Head->Queue Line:
                 If J <> (tokIDX + StepD) Mod Ntokens Then
                 
-                                'CADD = Cos((-K * InvNtokens) * PI2 * 5#) * 0.2 - FASTspeed * 0.25
-                CADD = Cos((K * InvNtokens2) * PI2 * 3.5) * 0.2 - FASTspeed * 0.25
-  .SetSourceRGB ColorR + CADD, ColorG + CADD, ColorB + CADD
+                            '    'CADD = Cos((-K * InvNtokens) * PI2 * 5#) * 0.2 - FASTspeed * 0.25
+                
+                       'CADD = Cos((K * InvNtokens2) * PI2 * 3.5) * 0.2 - FASTspeed * 0.25
+                Dim AA&
+                AA = ((K * InvNtokens2) * 360 * 3.5) Mod 360
+                CADD = COStable(AA) * 0.2 - FASTspeed * 0.25
+
+                    .SetSourceRGB ColorR + CADD, ColorG + CADD, ColorB + CADD
                     .LineTo P.x, P.y
                     .Stroke
                 End If
@@ -378,45 +385,46 @@ StepD = 1
         Y1 = Head.POS.y + S
         .SetSourceRGBA 1, 0.6, 0.6, 0.4
         '.Ellipse X1, Y1, Diam * 0.67, Diam * 0.67
-        .ARC X1, Y1, Diam * 0.335
+        .Arc X1, Y1, Diam * 0.335
         .Fill
         'Draw Head
         .SetSourceRGB ColorR + CADD, ColorG + CADD, ColorB + CADD
         '.Ellipse Head.POS.x, Head.POS.y, Diam, Diam
-        .ARC Head.POS.x, Head.POS.y, Radius
+        .Arc Head.POS.x, Head.POS.y, Radius
         .Fill
         '---------------------------------
 
-        If MyIDX = PLAYER Then
-            EyEANG = Atan2(DirChange.x, DirChange.y)
-        Else
-            EyEANG = oldANG
-        End If
+'        If MyIDX = PLAYER Then
+'            EyEANG = Atan2(DirChange.x, DirChange.y)
+            EyEANG = EyEANG + 0.25 * AngleDIFF(EyEANG, Atan2(DirChange.x, DirChange.y)) '--2024
+'        Else
+'            EyEANG = oldANG
+'        End If
         If IsDying Then EyEANG = (CNT + DyingTime) * 0.3
 
         .SetSourceRGB 1, 1, 0.85    'EYEBALLS
-        a = ANG - PIh * 0.5
-        C = Cos(a) * Reye
-        S = Sin(a) * Reye
+        A = ANG - PIh * 0.5
+        C = Cos(A) * Reye
+        S = Sin(A) * Reye
         X1 = Head.POS.x + C
         Y1 = Head.POS.y + S
         '.Ellipse X1, Y1, DEye, DEye
-        .ARC X1, Y1, DEye * 0.5
+        .Arc X1, Y1, DEye * 0.5
         
         x2 = Head.POS.x - S
         Y2 = Head.POS.y + C
         '.Ellipse x2, Y2, DEye, DEye
-        .ARC x2, Y2, DEye * 0.5
+        .Arc x2, Y2, DEye * 0.5
         .Fill
 
         .SetSourceRGBA 0, 0, 0, 0.55    'eye contour
         '.Ellipse X1, Y1, DEye, DEye
-         .ARC X1, Y1, DEye * 0.5
+         .Arc X1, Y1, DEye * 0.5
         .Stroke
         x2 = Head.POS.x - S
         Y2 = Head.POS.y + C
         '.Ellipse x2, Y2, DEye, DEye
-         .ARC x2, Y2, DEye * 0.5
+         .Arc x2, Y2, DEye * 0.5
         .Stroke
 
 
@@ -425,9 +433,9 @@ StepD = 1
         dx = Cos(EyEANG) * (Reye * 0.5)
         dy = Sin(EyEANG) * (Reye * 0.5)
         '.Ellipse X1 + dx, Y1 + dy, Reye2, Reye2
-        .ARC X1 + dx, Y1 + dy, Reye2 * 0.5
+        .Arc X1 + dx, Y1 + dy, Reye2 * 0.5
         '.Ellipse x2 + dx, Y2 + dy, Reye2, Reye2
-        .ARC x2 + dx, Y2 + dy, Reye2 * 0.5
+        .Arc x2 + dx, Y2 + dy, Reye2 * 0.5
         .Fill
         '........................................
 
@@ -453,7 +461,7 @@ StepD = 1
 End Sub
 
 
-Public Sub MOVE()
+Friend Sub MOVE()
     Dim I   As Long
     Dim J   As Long
     Dim J2  As Long
@@ -464,7 +472,7 @@ Public Sub MOVE()
     tokIDX = (tokIDX + 1) Mod Ntokens
 
 
-    If MyIDX = PLAYER Then  'Player
+    If MyIDX = PLAYER And (Not (AIcontrol)) Then 'Player
 '        DirChange = VectorMUL(MousePos, 0.01 * InvDiam)  '.001
         DirChange = VectorMUL(VectorNormalize(MousePos), 3.25 * InvDiam)
 
@@ -472,21 +480,30 @@ Public Sub MOVE()
 
         Head.Vel = VectorNormalize(VectorSUM(Head.Vel, DirChange))
 
-    Else    'Other Snakes
+    Else    'Other Snakes (AI)
 
         oldANG = Atan2(Head.Vel.x, Head.Vel.y)
 
-        'If Cos((CNT + MyIDX * 50500) * 0.0075) < -0.98 Then  ''' Ramble -.75 -0.0625
-        If Cos((CNT + MyIDX * 50500) * 0.0075) < -1 * (NSnakes - MyIDX * 0.0625) * InvNSnakes Then ''' Ramble -.75 -0.0625
-        
+
+    '    'If Cos((CNT + MyIDX * 50500) * 0.0075) < -0.98 Then  ''' Ramble -.75 -0.0625
+        If Cos((CNT + MyIDX * 50500) * 0.0075) < -1# * (NSnakes - MyIDX * 0.0625) * InvNSnakes Then ''' Ramble -.75 -0.0625
+    '--2024
+    '    If Cos((CNT + MyIDX * 50500) * 0.0075) > (NSnakes - MyIDX * 0.0625) * InvNSnakes Then   ''' Ramble -.75 -0.0625
+    
+    
+'    Debug.Print MyIDX, Cos((CNT + MyIDX * 50500) * 0.0075), (NSnakes - MyIDX * 0.0625) * InvNSnakes
+'    Stop
+    
             DirChange.x = Rnd * 2 - 1
             DirChange.y = Rnd * 2 - 1
             'Commented to make AI sometimes not to Work
             'DirChange = VectorSUM(DirChange, AvoidEnemy(MyIDX, HEAD.POS, HEAD.Vel))
         Else
-            DirChange = PointToNearestFood(Head)
+            DirChange = PointToNearestFood(Head, MyIDX)
             DirChange = VectorSUM(DirChange, AvoidEnemy(MyIDX, Head.POS, Head.Vel))
         End If
+
+
 
         'DirChange = VectorMUL(DirChange, 0.15)
         DirChange = VectorMUL(DirChange, 3.25 * InvDiam)
@@ -494,9 +511,11 @@ Public Sub MOVE()
         Head.Vel = VectorNormalize(VectorSUM(Head.Vel, DirChange))
 
         If FASTspeed Then
-            If Rnd < 0.025 Then FASTspeed = False
+          '  If Rnd < 0.025 Then FASTspeed = False
+            If Rnd < 0.02 Then FASTspeed = False
         Else
-            If Rnd < 0.00625 Then FASTspeed = True
+            'If Rnd < 0.00625 Then FASTspeed = True
+            If Rnd < 0.005 Then FASTspeed = True
         End If
 
 
@@ -506,7 +525,7 @@ Public Sub MOVE()
     '    HEAD.POS = VectorSUM(HEAD.POS, VectorMUL(HEAD.Vel, MySIZE))
 
 
-    If FASTspeed And fLength > 3 Then
+    If FASTspeed And (fLength > 3) Then
         FASTspeedCOUNT = FASTspeedCOUNT + 1
         Head.POS = VectorSUM(Head.POS, VectorMUL(Head.Vel, SPEED * 1.72))
     Else
@@ -569,7 +588,7 @@ InvNtokens2 = 1 / (Ntokens - 1)
 
 End Sub
 
-Public Sub Kill()
+Friend Sub Kill()
 
     If Not (IsDying) Then
         IsDying = -1
@@ -578,3 +597,6 @@ Public Sub Kill()
 
 End Sub
 
+Private Sub Class_Initialize()
+SearchForFOODMODE = 1.2 + Rnd * 0.8
+End Sub

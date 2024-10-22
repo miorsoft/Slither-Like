@@ -293,7 +293,7 @@ End Function
 
 
 
-Public Function AvoidEnemy(Idx As Long, POS As geoVector2D, Vel As geoVector2D) As geoVector2D
+Public Function AvoidEnemy(ByVal Idx As Long, POS As geoVector2D, Vel As geoVector2D) As geoVector2D
     Dim I   As Long
     Dim J   As Long
 
@@ -305,7 +305,7 @@ Public Function AvoidEnemy(Idx As Long, POS As geoVector2D, Vel As geoVector2D) 
     Dim S   As Double
     Dim A   As Double
 
-    Dim tEsc As geoVector2D
+    Dim EscapeDirection As geoVector2D
     Dim Dmin As Double
     Dim D1  As Double
     Dim D2  As Double
@@ -313,46 +313,65 @@ Public Function AvoidEnemy(Idx As Long, POS As geoVector2D, Vel As geoVector2D) 
 
     Diam = Snake(Idx).Diam
 
-
     A = Atan2(Vel.x, Vel.y)
+    'TPleft.x = POS.x - Cos(A - 0.5) * Diam
+    'TPleft.y = POS.y - Sin(A - 0.5) * Diam
+    'TPRight.x = POS.x - Cos(A + 0.5) * Diam
+    'TPRight.y = POS.y - Sin(A + 0.5) * Diam
+    'USING TABLE---------------------------------------
+Dim CC#, SS#
+Dim tbA As Long
+If A < 0.5 Then A = A + PI2
+tbA = (A - 0.5) * 360# * InvPI2
+TPleft.x = POS.x - COStable(tbA) * Diam
+TPleft.y = POS.y - SINtable(tbA) * Diam
+If (A + 0.5) > PI2 Then A = A - PI2
+tbA = (A + 0.5) * 360# * InvPI2
+TPRight.x = POS.x - COStable(tbA) * Diam
+TPRight.y = POS.y - SINtable(tbA) * Diam
+'---------------------------------------
+If A < 0# Then A = A + PI2
 
-    TPleft.x = POS.x - Cos(A - 0.5) * Diam
-    TPleft.y = POS.y - Sin(A - 0.5) * Diam
-    TPRight.x = POS.x - Cos(A + 0.5) * Diam
-    TPRight.y = POS.y - Sin(A + 0.5) * Diam
+
 
     Dmin = 1E+28
 
-
-
-    Diam = (Diam + 30) * 3    ' 8 '''' Distance Sense
-    Diam = Diam * Diam
-
-    'If Idx = PLAYER Then Stop
+    'Diam = (Diam + 30) * 3    ' 8 '''' Distance Sense
+    'Diam = Diam * Diam
 
     For I = 0 To NSnakes
         If I <> Idx Then
+
+Diam = Snake(Idx).Diam * 2.5 + 1 * Snake(I).Diam '--2024
+Diam = Diam * Diam
 
             For J = 1 To Snake(I).Ntokens - 1
 
 
                 TP = Snake(I).GetTokenPos(J)
 
-                'If Sgn((TP.x - POS.x) * Vel.x) + Sgn((TP.y - POS.y) * Vel.y) > 1 Then 'ERROR
                 If Sgn((TP.x - POS.x) * Vel.x + (TP.y - POS.y) * Vel.y) > 0 Then    'Correct!
 
                     D1 = DistFromPointSQU(TP, TPleft)
                     D2 = DistFromPointSQU(TP, TPRight)
 
                     If (D1 < Diam) Or (D2 < Diam) Then
-
                         If D1 < Dmin Or D2 < Dmin Then
                             If D1 < D2 Then
-                                tEsc.x = Cos(A - 0.25) * 8
-                                tEsc.y = Sin(A - 0.25) * 8
+                                'EscapeDirection.x = Cos(A - 0.25) * 8#
+                                'EscapeDirection.y = Sin(A - 0.25) * 8#
+If A < 0.25 Then A = A + PI2
+tbA = (A - 0.25) * 360# * InvPI2
+EscapeDirection.x = COStable(tbA) * 8#
+EscapeDirection.y = SINtable(tbA) * 8#
                             Else
-                                tEsc.x = Cos(A + 0.25) * 8
-                                tEsc.y = Sin(A + 0.25) * 8
+                                'EscapeDirection.x = Cos(A + 0.25) * 8#
+                                'EscapeDirection.y = Sin(A + 0.25) * 8#
+If (A + 0.25) > PI2 Then A = A - PI2
+tbA = (A + 0.25) * 360# * InvPI2
+EscapeDirection.x = COStable(tbA) * 8#
+EscapeDirection.y = SINtable(tbA) * 8#
+                                
                             End If
                             If D1 < Dmin Then Dmin = D1 Else: Dmin = D2
                         End If
@@ -363,9 +382,7 @@ Public Function AvoidEnemy(Idx As Long, POS As geoVector2D, Vel As geoVector2D) 
         End If
     Next
 
-    AvoidEnemy = tEsc
-
-
+    AvoidEnemy = EscapeDirection
 
 
 End Function

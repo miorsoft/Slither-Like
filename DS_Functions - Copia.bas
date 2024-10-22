@@ -4,12 +4,12 @@ Option Explicit
 'Author: TheTrick
 
 Private Type CHUNK
-    ID            As Long
-    szData        As Long
+    id      As Long
+    szData  As Long
 End Type
 
 Private Type curBuffer
-    b(15)         As Currency
+    b(15)   As Currency
 End Type
 
 Private Type mp3Const
@@ -18,38 +18,38 @@ Private Type mp3Const
 End Type
 
 Private Type LARGE_INTEGER
-    lowpart       As Long
-    highpart      As Long
+    lowpart As Long
+    highpart As Long
 End Type
 
 Private Type MPEGLAYER3WAVEFORMAT
-    wFormatTag    As Integer
-    nChannels     As Integer
+    wFormatTag As Integer
+    nChannels As Integer
     nSamplesPerSec As Long
     nAvgBytesPerSec As Long
-    nBlockAlign   As Integer
+    nBlockAlign As Integer
     wBitsPerSample As Integer
-    cbSize        As Integer
-    wID           As Integer
-    fdwFlags      As Long
-    nBlockSize    As Integer
+    cbSize  As Integer
+    wID     As Integer
+    fdwFlags As Long
+    nBlockSize As Integer
     nFramesPerBlock As Integer
-    nCodecDelay   As Integer
+    nCodecDelay As Integer
 End Type
 
 Private Type ACMSTREAMHEADER
-    cbStruct      As Long
-    fdwStatus     As Long
-    lpdwUser      As Long
-    lppbSrc       As Long
-    cbSrcLength   As Long
+    cbStruct As Long
+    fdwStatus As Long
+    lpdwUser As Long
+    lppbSrc As Long
+    cbSrcLength As Long
     cbSrcLengthUsed As Long
-    lpdwSrcUser   As Long
-    lppbDst       As Long
-    cbDstLength   As Long
+    lpdwSrcUser As Long
+    lppbDst As Long
+    cbDstLength As Long
     cbDstLengthUsed As Long
-    lpdwDstUser   As Long
-    dwDriver(9)   As Long
+    lpdwDstUser As Long
+    dwDriver(9) As Long
 End Type
 
 Private Declare Function CreateFile Lib "kernel32" Alias "CreateFileW" (ByVal lpFileName As Long, ByVal dwDesiredAccess As Long, ByVal dwShareMode As Long, lpSecurityAttributes As Any, ByVal dwCreationDisposition As Long, ByVal dwFlagsAndAttributes As Long, ByVal hTemplateFile As Long) As Long
@@ -64,10 +64,10 @@ Private Declare Function memcpy Lib "kernel32" Alias "RtlMoveMemory" (ByRef Dest
 Private Declare Function SetFilePointerEx Lib "kernel32" (ByVal hFile As Long, ByVal liDistanceToMoveL As Long, ByVal liDistanceToMoveH As Long, ByRef lpNewFilePointer As LARGE_INTEGER, ByVal dwMoveMethod As Long) As Long
 Private Declare Function acmStreamClose Lib "msacm32" (ByVal has As Long, ByVal fdwClose As Long) As Long
 Private Declare Function acmStreamConvert Lib "msacm32" (ByVal has As Long, ByRef pash As ACMSTREAMHEADER, ByVal fdwConvert As Long) As Long
-'Private Declare Function acmStreamMessage Lib "msacm32" (ByVal has As Long, ByVal uMsg As Long, ByVal lParam1 As Long, ByVal lParam2 As Long) As Long
+Private Declare Function acmStreamMessage Lib "msacm32" (ByVal has As Long, ByVal uMsg As Long, ByVal lParam1 As Long, ByVal lParam2 As Long) As Long
 Private Declare Function acmStreamOpen Lib "msacm32" (phas As Any, ByVal had As Long, pwfxSrc As Any, pwfxDst As Any, pwfltr As Any, dwCallback As Any, dwInstance As Any, ByVal fdwOpen As Long) As Long
 Private Declare Function acmStreamPrepareHeader Lib "msacm32" (ByVal has As Long, ByRef pash As ACMSTREAMHEADER, ByVal fdwPrepare As Long) As Long
-'Private Declare Function acmStreamReset Lib "msacm32" (ByVal has As Long, ByVal fdwReset As Long) As Long
+Private Declare Function acmStreamReset Lib "msacm32" (ByVal has As Long, ByVal fdwReset As Long) As Long
 Private Declare Function acmStreamSize Lib "msacm32" (ByVal has As Long, ByVal cbInput As Long, ByRef pdwOutputBytes As Long, ByVal fdwSize As Long) As Long
 Private Declare Function acmStreamUnprepareHeader Lib "msacm32" (ByVal has As Long, ByRef pash As ACMSTREAMHEADER, ByVal fdwUnprepare As Long) As Long
 
@@ -100,11 +100,11 @@ Private Constants As mp3Const
 Public Function DSCreateSoundBufferFromFile(ByVal ds As DirectSound8, _
                                             ByRef strFileName As String, _
                                             ByRef bufDesc As DSBUFFERDESC) As IDirectSoundBuffer
-    Dim hFile     As Long
-    Dim hMap      As Long
-    Dim lpData    As Long
-    Dim errNum    As Long
-    Dim size      As LARGE_INTEGER
+    Dim hFile As Long
+    Dim hMap As Long
+    Dim lpData As Long
+    Dim errNum As Long
+    Dim size As LARGE_INTEGER
 
     hFile = CreateFile(StrPtr(strFileName), GENERIC_READ, FILE_SHARE_READ, ByVal 0&, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0)
 
@@ -155,17 +155,17 @@ Public Function DSCreateSoundBufferFromMemory(ByVal ds As DirectSound8, _
                                               ByVal lpData As Long, _
                                               ByVal szData As Long, _
                                               ByRef bufDesc As DSBUFFERDESC) As IDirectSoundBuffer
-    Dim chkData   As CHUNK
-    Dim subChnk   As CHUNK
-    Dim chkType   As Long
-    Dim lpFmt     As Long
-    Dim szFmt     As Long
-    Dim lpDat     As Long
-    Dim szDat     As Long
-    Dim size      As Long
-    Dim ptr       As Long
-    Dim ret       As Long
-    Dim hdr(9)    As Byte
+    Dim chkData As CHUNK
+    Dim subChnk As CHUNK
+    Dim chkType As Long
+    Dim lpFmt As Long
+    Dim szFmt As Long
+    Dim lpDat As Long
+    Dim szDat As Long
+    Dim size As Long
+    Dim ptr As Long
+    Dim ret As Long
+    Dim hdr(9) As Byte
 
     ' // Check size
     If szData < 4 Then GoTo ERROR_OUTOFMEMORY
@@ -173,7 +173,7 @@ Public Function DSCreateSoundBufferFromMemory(ByVal ds As DirectSound8, _
     If IsBadReadPtr(ByVal lpData, szData) Then GoTo ERROR_OUTOFMEMORY
     GetMem4 ByVal lpData, chkData
 
-    If chkData.ID = RIFF_SIGNATURE Then
+    If chkData.id = RIFF_SIGNATURE Then
         ' // Wave
         If IsBadReadPtr(ByVal lpData, 8) Then GoTo ERROR_OUTOFMEMORY
         GetMem8 ByVal lpData, chkData
@@ -194,7 +194,7 @@ Public Function DSCreateSoundBufferFromMemory(ByVal ds As DirectSound8, _
 
             If subChnk.szData > chkData.szData - 8 Then GoTo ERROR_OUTOFMEMORY
 
-            Select Case subChnk.ID
+            Select Case subChnk.id
                 Case FMT_SIGNATURE
 
                     If lpFmt Then GoTo ERROR_FORMAT
@@ -450,7 +450,7 @@ ERROR_FORMAT:
 End Function
 
 Private Sub Mp3Init()
-    Dim b         As curBuffer
+    Dim b   As curBuffer
 
     b.b(0) = 450377142658.6656@: b.b(1) = 900743977448.248@: b.b(2) = 1351114248211.6672@
     b.b(3) = 1801487954948.9248@: b.b(4) = 2702228496423.3344@: b.b(5) = 3602975909897.8496@

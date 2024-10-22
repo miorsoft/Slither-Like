@@ -35,6 +35,14 @@ Begin VB.Form fMain
       TabIndex        =   1
       Top             =   240
       Width           =   1935
+      Begin VB.CheckBox chkAI 
+         Caption         =   "AI control"
+         Height          =   495
+         Left            =   240
+         TabIndex        =   6
+         Top             =   2520
+         Width           =   1455
+      End
       Begin VB.CommandButton Command1 
          Caption         =   "START"
          Height          =   615
@@ -56,7 +64,7 @@ Begin VB.Form fMain
          Height          =   495
          Left            =   240
          TabIndex        =   3
-         Top             =   2640
+         Top             =   3480
          Width           =   1455
       End
       Begin VB.CheckBox chkBG 
@@ -104,6 +112,10 @@ Option Explicit
 
 
 
+Private Sub chkAI_Click()
+AIcontrol = (chkAI.Value = vbChecked)
+End Sub
+
 Private Sub chkBB_Click()
     DrawBB = (chkBB.Value = vbChecked)
 End Sub
@@ -138,7 +150,7 @@ PIC.Refresh
 
     Level = 1
 
-    Set MultipleSounds = New clsSounds
+    Set MultipleSounds = New cSounds
     
 DoBackGround = True
 
@@ -153,15 +165,20 @@ End Sub
 
 Private Sub Form_Resize()
 
-PIC.Width = Me.ScaleWidth - 16
-PIC.Height = Me.ScaleHeight - 16
+    PIC.Width = Me.ScaleWidth - 16
+    PIC.Height = Me.ScaleHeight - 16
 
-PicPanel.Top = PIC.Top
+    PIC.Width = (PIC.Width \ 8) * 8
+    PIC.Height = (PIC.Height \ 8) * 8
 
-PicPanel.Left = PIC.Left + PIC.Width - PicPanel.Width
+PIC.Left = (Me.ScaleWidth - PIC.Width) \ 2
+PIC.Top = (Me.ScaleHeight - PIC.Height) \ 2
+
+    PicPanel.Top = PIC.Top
+    PicPanel.Left = PIC.Left + PIC.Width - PicPanel.Width
 
 
-InitRC
+    InitRC
 
 End Sub
 
@@ -178,8 +195,9 @@ End Sub
 
 Private Sub Command1_Click()
     InitPool 6
-    InitFOOD 6 * 25 '100
+    InitFOOD 6 * 25                     '100
 
+    Command1.Enabled = False
 
     MainLoop
 
