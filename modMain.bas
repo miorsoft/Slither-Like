@@ -28,7 +28,7 @@ Public CameraBB As tBB
 
 Public Const PLAYER As Long = 0
 
-Public Const STARTLENGTH As Long = 8
+Public Const STARTLENGTH As Long = 5 '
 
 
 
@@ -59,6 +59,7 @@ Public invZOOM As Double
 Public AIcontrol As Boolean
 
 Private StrScore As String
+Private invMaxScore As Double
 
 
 Public Sub InitPool(ByVal NoSnakes As Long)
@@ -75,7 +76,7 @@ Public Sub InitPool(ByVal NoSnakes As Long)
 
     For I = 0 To NSnakes
         If Snake(I) Is Nothing Then Set Snake(I) = New clsSnake
-        Snake(I).Init Rnd * MaxW, Rnd * maxH, I, 5    '+ Rnd * 30
+        Snake(I).Init Rnd * MaxW, Rnd * maxH, I, STARTLENGTH    '+ Rnd * 30
     Next
 
 
@@ -216,7 +217,7 @@ Dim J As Long
 For I = 0 To NSnakes
 J = ScoresIdx(I)
 .SetSourceRGBA Snake(J).ColorR, Snake(J).ColorG, Snake(J).ColorB, 0.5
-.Rectangle MaxW - 305, 5 + (I + 2) * 15, 90, 14
+.Rectangle MaxW - 305, 5 + (I + 2) * 15, 90 * Scores(I) * invMaxScore, 14
 .Fill
 Next
 .SetSourceRGBA 0, 1, 0, 0.3
@@ -257,7 +258,7 @@ Next
             CNT = CNT + 1
 
 
-            If NFood <= MinFoodForLevelChange Then  '5 'Next Level
+            If NFood <= MinFoodForLevelChange Then  '5 'Next Level '
                 InitPool NSnakes * 1.18    '1.2
                 InitFOOD NSnakes * FoodXSanke
                 Level = Level + 1
@@ -267,7 +268,7 @@ Next
 
 
             If CNT Mod 100 = 0 Then
-                StrCaption = "Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
+                StrCaption = " Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
                 UpdateSCORESString
             End If
 
@@ -327,6 +328,11 @@ AG: '- SORT------------------
         End If
         StrScore = StrScore & S & Space(11 - Len(S) - Len(CStr(Scores(I)))) & Scores(I) & vbCrLf
     Next
+
+
+
+invMaxScore = 1 / Scores(0)
+
 
 
 End Sub

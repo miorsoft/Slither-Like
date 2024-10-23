@@ -20,12 +20,14 @@ Public FoodDiv As Double
 
 
 Public Const FoodSize As Double = 9
-Public Const FoodXSanke As Long = 27 '25 '30
+Public Const FoodXSanke As Long = 30 '25 '30
 
 Public Const FoodLengthValue As Double = 1
 
 Public COStable(-360 To 360) As Double
 Public SINtable(-360 To 360) As Double
+
+
 
 
 
@@ -62,6 +64,11 @@ Public Sub InitFOOD(HowMuch As Long)
         COStable(I) = Cos(I / 360 * PI2)    '* 0.002
         SINtable(I) = Sin(I / 360 * PI2)    '* 0.002
     Next
+
+
+
+
+
 
 
 End Sub
@@ -205,7 +212,6 @@ Public Sub FoodMoveAndCheckEaten()
                             MultipleSounds.PlaySound SoundEnemyChomp, ClampLong(-dx * 2, -10000, 10000), ClampLong(-D * 1, -10000, 0)
  
                         End If
-
                         'Snake(J).fLength = Snake(J).fLength + 1
                         Snake(J).SetSize = Snake(J).GetSize + FoodLengthValue
                         '   FoodToRNDPosition I
@@ -246,21 +252,10 @@ Public Sub CreateFoodFromDeadSnake(wS As Long)
 
 
 
+'    MinFoodForLevelChange = MinFoodForLevelChange + (Snake(wS).Ntokens - 1) * 0.5 - (STARTLENGTH - 1)
+'    FoodDiv = 1 / (MaxFood - MinFoodForLevelChange)
 
-    Dim TOTLEN&
-
-    For I = 0 To NSnakes
-        TOTLEN = TOTLEN + Snake(I).Ntokens - (STARTLENGTH - 3)
-    Next
-    
-''
-''     Debug.Print NFood + TOTLEN
-''Stop
-    
-    TOTLEN = TOTLEN - (Snake(wS).Ntokens - 2)
-
-
-    For I = 1 To Snake(wS).Ntokens - 2  '1
+    For I = 0 To Snake(wS).Ntokens - 2
 
         ''        NFood = NFood + 1
         ''        If NFood > MaxFood Then
@@ -276,21 +271,14 @@ Public Sub CreateFoodFromDeadSnake(wS As Long)
         ''        End With
         ''        FoodAge(NFood) = 1
 
+        NFood = NFood + 1
+        With FOOD(NFood)
+            .POS = Snake(wS).GetTokenPos(I)
+            .Vel.x = (Rnd * 2 - 1) * 0.125
+            .Vel.y = (Rnd * 2 - 1) * 0.125
+        End With
 
-        If NFood + TOTLEN < FOODLEVEL Then    '--2024   ---- Dont' allow FOOD tot amount grouwth
-            NFood = NFood + 1
-            With FOOD(NFood)
-                .POS = Snake(wS).GetTokenPos(I)
-                .Vel.x = (Rnd * 2 - 1) * 0.125
-                .Vel.y = (Rnd * 2 - 1) * 0.125
-            End With
-
-            FoodAge(NFood) = 1
-        Else
-''            Debug.Print I, NFood + TOTLEN
-''            Stop '---------- DEBUG
-            
-        End If
+        FoodAge(NFood) = 1
 
 
     Next

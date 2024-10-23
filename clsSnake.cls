@@ -61,6 +61,7 @@ Private Const SPEED As Double = 2.5 ' 3 '3.5
 
 Public SearchForFOODMODE As Double
 
+Private EYESWIDE As Double
 
 
 
@@ -232,7 +233,7 @@ InvNtokens2 = 1 / (Ntokens - 2)
     UpdateBB
 
 SearchForFOODMODE = 1.2 + Rnd * 0.8
-
+EYESWIDE = SearchForFOODMODE
 End Sub
 
 
@@ -265,6 +266,8 @@ Friend Sub DRAW(DrawBoundingBox As Long)
     Dim CADD As Double
 
     Dim StepD As Long
+
+Dim LA As Long
 
 
 
@@ -353,7 +356,7 @@ K = -StepD
                 Dim AA&
                 'AA = ((K * InvNtokens2) * 360 * 3.5) Mod 360
                 AA = ((K * InvNtokens2) * 360 * 4) Mod 360
-                CADD = COStable(AA) * 0.22 - FASTspeed * 0.25
+                CADD = -COStable(AA) * 0.21 - FASTspeed * 0.25
 
                     .SetSourceRGB ColorR + CADD, ColorG + CADD, ColorB + CADD
                     .LineTo P.x, P.y
@@ -383,9 +386,19 @@ K = -StepD
         '--------Tongue
 
         TongueLen = TongueLen * 0.3 + TongueOut * 0.7
+        
         TongueOut = TongueOut * 0.6
-        C = Cos(ANG) * Diam * TongueLen * 0.45
-        S = Sin(ANG) * Diam * TongueLen * 0.45
+        
+        
+        
+'        C = Cos(ANG) * Diam * TongueLen * 0.55 '* 0.45
+'        S = Sin(ANG) * Diam * TongueLen * 0.55 '* 0.45
+        LA = ANG * 360 * InvPI2
+        C = COStable(LA) * Diam * TongueLen * 0.55 '* 0.45
+        S = SINtable(LA) * Diam * TongueLen * 0.55 '* 0.45
+        
+        
+        
         X1 = Head.POS.x + C
         Y1 = Head.POS.y + S
         .SetSourceRGBA 1, 0.6, 0.6, 0.4
@@ -409,8 +422,14 @@ K = -StepD
 
         .SetSourceRGB 1, 1, 0.85    'EYEBALLS
         A = ANG - PIh * 0.5
-        C = Cos(A) * Reye
-        S = Sin(A) * Reye
+        'C = Cos(A) * Reye * EYESWIDE
+        'S = Sin(A) * Reye * EYESWIDE
+    
+        LA = (A * 360 * InvPI2) 'Mod 360
+        C = COStable(LA) * Reye * EYESWIDE
+        S = SINtable(LA) * Reye * EYESWIDE
+        
+        
         X1 = Head.POS.x + C
         Y1 = Head.POS.y + S
         '.Ellipse X1, Y1, DEye, DEye
@@ -437,6 +456,12 @@ K = -StepD
         .SetSourceColor 0    'PUPILS
         dx = Cos(EyEANG) * (Reye * 0.5)
         dy = Sin(EyEANG) * (Reye * 0.5)
+        
+        LA = (EyEANG * InvPI2 * 360#) Mod 360
+        dx = COStable(LA) * (Reye * 0.5)
+        dy = SINtable(LA) * (Reye * 0.5)
+        
+        
         '.Ellipse X1 + dx, Y1 + dy, Reye2, Reye2
         .Arc X1 + dx, Y1 + dy, Reye2 * 0.5
         '.Ellipse x2 + dx, Y2 + dy, Reye2, Reye2
@@ -605,5 +630,6 @@ End Sub
 Private Sub Class_Initialize()
 SearchForFOODMODE = 1.2 + Rnd * 0.8
 
+EYESWIDE = SearchForFOODMODE
 
 End Sub

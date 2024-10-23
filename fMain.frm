@@ -93,6 +93,7 @@ Begin VB.Form fMain
       ForeColor       =   &H80000008&
       Height          =   9495
       Left            =   120
+      MousePointer    =   2  'Cross
       ScaleHeight     =   633
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   801

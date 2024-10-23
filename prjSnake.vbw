@@ -1,10 +1,10 @@
 modRichClient5 = 66, 87, 649, 456, 
 fMain = 44, 58, 627, 425, , 88, 116, 671, 483, C
-clsSnake = 44, 58, 605, 425, 
+clsSnake = 44, 58, 605, 425, Z
 modMATH = 66, 87, 687, 480, 
 modMain = 0, 0, 583, 367, 
 modConstFPS = 44, 58, 695, 427, 
-modFOOD = 22, 29, 605, 396, Z
+modFOOD = 22, 29, 605, 396, 
 modCollision = 22, 29, 583, 396, 
 DS_Functions = 22, 29, 600, 396, 
 cSounds = 78, 78, 756, 519, 
