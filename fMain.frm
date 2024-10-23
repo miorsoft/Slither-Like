@@ -195,7 +195,7 @@ End Sub
 
 Private Sub Command1_Click()
     InitPool 6
-    InitFOOD 6 * 25                     '100
+    InitFOOD 6 * FoodXSanke                     '100
 
     Command1.Enabled = False
 

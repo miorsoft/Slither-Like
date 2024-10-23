@@ -10,7 +10,7 @@ Public MultipleSounds As cSounds
 
 Public Snake() As clsSnake
 Public NSnakes As Long
-Public NSnakes2 As Long
+Public MinFoodForLevelChange As Long
 
 Public InvNSnakes As Double
 
@@ -27,6 +27,10 @@ Public CameraBB As tBB
 
 
 Public Const PLAYER As Long = 0
+
+Public Const STARTLENGTH As Long = 8
+
+
 
 Public Const SoundINTRO As String = "intropm.wav"
 Public Const SoundPlayerChomp As String = "wakawaka.wav"
@@ -62,7 +66,7 @@ Public Sub InitPool(ByVal NoSnakes As Long)
     Dim I   As Long
     NSnakes = NoSnakes
     InvNSnakes = 1 / NSnakes
-    NSnakes2 = NSnakes * 2
+    MinFoodForLevelChange = NSnakes * 2
     
 
     ReDim Snake(NSnakes)
@@ -216,7 +220,7 @@ J = ScoresIdx(I)
 .Fill
 Next
 .SetSourceRGBA 0, 1, 0, 0.3
-.Rectangle MaxW - 305, 2, 90 * (1 - (NFood - NSnakes2) * FoodDiv), 31
+.Rectangle MaxW - 305, 2, 90 * (1 - (NFood - MinFoodForLevelChange) * FoodDiv), 31
 .Fill
 
 
@@ -253,9 +257,9 @@ Next
             CNT = CNT + 1
 
 
-            If NFood <= NSnakes2 Then  '5 'Next Level
+            If NFood <= MinFoodForLevelChange Then  '5 'Next Level
                 InitPool NSnakes * 1.18    '1.2
-                InitFOOD NSnakes * 25
+                InitFOOD NSnakes * FoodXSanke
                 Level = Level + 1
                 StrCaption = "Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
                 MultipleSounds.PlaySound SoundINTRO

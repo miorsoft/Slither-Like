@@ -196,11 +196,11 @@ Private Sub RandomizeMe()
     IsDying = 0    ' False
 
     'fLength = 2
-    SetSize = 8 '3
+    SetSize = STARTLENGTH
 
     Ntokens = fLength
 InvNtokens = 1 / Ntokens
-InvNtokens2 = 1 / (Ntokens - 1)
+InvNtokens2 = 1 / (Ntokens - 2)
 
     ReDim Token(MaxNtok)
 
@@ -333,6 +333,8 @@ StepD = 1
             
             .MoveTo P.x, P.y
 
+
+K = -StepD
             For I = tokIDX + StepD * 1 + 2 To tokIDX + Ntokens Step StepD    'Senza -1 disegna anche testa
 
                 'J = I Mod Ntokens
@@ -349,8 +351,9 @@ StepD = 1
                 
                        'CADD = Cos((K * InvNtokens2) * PI2 * 3.5) * 0.2 - FASTspeed * 0.25
                 Dim AA&
-                AA = ((K * InvNtokens2) * 360 * 3.5) Mod 360
-                CADD = COStable(AA) * 0.2 - FASTspeed * 0.25
+                'AA = ((K * InvNtokens2) * 360 * 3.5) Mod 360
+                AA = ((K * InvNtokens2) * 360 * 4) Mod 360
+                CADD = COStable(AA) * 0.22 - FASTspeed * 0.25
 
                     .SetSourceRGB ColorR + CADD, ColorG + CADD, ColorB + CADD
                     .LineTo P.x, P.y
@@ -567,7 +570,7 @@ Friend Sub MOVE()
     If fLength \ 1 < Ntokens Then
         Ntokens = Ntokens - 1
         InvNtokens = 1 / Ntokens
-InvNtokens2 = 1 / (Ntokens - 1)
+InvNtokens2 = 1 / (Ntokens - 2)
     End If
 
     ' fLength = fLength + 0.002 * Rnd
@@ -584,7 +587,7 @@ InvNtokens2 = 1 / (Ntokens - 1)
             Next
         End If
         InvNtokens = 1 / Ntokens
-        InvNtokens2 = 1 / (Ntokens - 1)
+        InvNtokens2 = 1 / (Ntokens - 2)
     End If
 
 
