@@ -259,7 +259,7 @@ Next
 
 
             If NFood <= MinFoodForLevelChange Then  '5 'Next Level '
-                InitPool NSnakes * 1.18    '1.2
+                InitPool NSnakes + 1 ' * 1.18    '1.2
                 InitFOOD NSnakes * FoodXSanke
                 Level = Level + 1
                 StrCaption = "Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
