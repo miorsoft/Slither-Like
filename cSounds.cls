@@ -22,7 +22,7 @@ End Type
 
 Private DirectSound As DirectSound8
 
-Private Const BUFFLEN As Long = 31
+Private Const BUFFLEN As Long = 63 '31
 
 Private SoundsSET() As tMyBuff
 

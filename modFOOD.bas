@@ -20,7 +20,7 @@ Public FoodDiv As Double
 
 
 Public Const FoodSize As Double = 9
-Public Const FoodXSanke As Long = 30 '25 '30
+Public Const FoodXSnake As Long = 30 '25 '30
 
 Public Const FoodLengthValue As Double = 1
 
@@ -201,6 +201,7 @@ Public Sub FoodMoveAndCheckEaten()
                                 ' MultipleSounds.playsound "eatfruit.wav"
 
                                 MultipleSounds.PlaySound SoundPlayerChomp, 0, -1000
+                                PlayerScore = PlayerScore + 10
                                 
                             End If
                         Else
@@ -248,12 +249,12 @@ SC.y = SINtable(A) * 0.0025
 End Sub
 
 Public Sub CreateFoodFromDeadSnake(wS As Long)
-    Dim I         As Long
+    Dim I      As Long
 
 
 
-'    MinFoodForLevelChange = MinFoodForLevelChange + (Snake(wS).Ntokens - 1) * 0.5 - (STARTLENGTH - 1)
-'    FoodDiv = 1 / (MaxFood - MinFoodForLevelChange)
+    '    MinFoodForLevelChange = MinFoodForLevelChange + (Snake(wS).Ntokens - 1) * 0.5 - (STARTLENGTH - 1)
+    '    FoodDiv = 1 / (MaxFood - MinFoodForLevelChange)
 
     For I = 0 To Snake(wS).Ntokens - 2
 
@@ -272,6 +273,11 @@ Public Sub CreateFoodFromDeadSnake(wS As Long)
         ''        FoodAge(NFood) = 1
 
         NFood = NFood + 1
+        If NFood > MaxFood Then
+            MaxFood = NFood + 20
+            ReDim Preserve FOOD(MaxFood)
+            ReDim Preserve FoodAge(MaxFood)
+        End If
         With FOOD(NFood)
             .POS = Snake(wS).GetTokenPos(I)
             .Vel.x = (Rnd * 2 - 1) * 0.125

@@ -117,20 +117,20 @@ End Function
 'End Sub
 
 Public Sub CheckCollisionsALLtoALL()
-    Dim Ri  As Double
-    Dim Rj  As Double
-    Dim I   As Long
-    Dim J   As Long
+    Dim Ri     As Double
+    Dim Rj     As Double
+    Dim I      As Long
+    Dim J      As Long
 
-    Dim K   As Long
+    Dim K      As Long
 
 
     Dim TokenPosition As geoVector2D
-    Dim dx  As Double
-    Dim dy  As Double
-    Dim D   As Double
-    Dim MIND As Double
-    Dim BB  As tBB
+    Dim dx     As Double
+    Dim dy     As Double
+    Dim D      As Double
+    Dim MIND   As Double
+    Dim BB     As tBB
 
 
     Dim HeadPosI As geoVector2D
@@ -178,7 +178,9 @@ Public Sub CheckCollisionsALLtoALL()
                             End If
 
                         End If
-                        Snake(I).Kill: Exit For
+                        Snake(I).Kill
+                        
+                         Exit For
                     End If
                 Next
             End If

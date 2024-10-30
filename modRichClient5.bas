@@ -109,40 +109,40 @@ End Sub
 
 
 Public Sub InitResources()
-    Dim Srf As cCairoSurface
-    Dim CC  As cCairoContext
-    Dim size As Double
-    Dim I   As Long
-    Dim x   As Double
-    Dim y   As Double
-    Dim Gray As Double
+    Dim Srf    As cCairoSurface
+    Dim CC     As cCairoContext
+    Dim size   As Double
+    Dim I      As Long
+    Dim x      As Double
+    Dim y      As Double
+    Dim Gray   As Double
 
-Const LowResScale As Double = 0.33
+    Const LowResScale As Double = 0.33
 
 
 
     '    Cairo.ImageList.AddImage "FoodIcon", App.Path & "\Resources\Orb.png", 16, 16
     Cairo.ImageList.AddImage "FoodIcon", App.Path & "\Resources\greenlight.png", FoodSize * 2, FoodSize * 2
- Cairo.ImageList.AddImage "FoodIconLight", App.Path & "\Resources\whitelight.png", FoodSize * 4, FoodSize * 4
+    Cairo.ImageList.AddImage "FoodIconLight", App.Path & "\Resources\whitelight.png", FoodSize * 4, FoodSize * 4
 
 
 
 
-    Gray = 40 '45    '60
+    Gray = 40    '45    '60
 
     'Set Srf = New_c.Cairo.CreateSurface(wMaxX - wMinX, wMaxY - wMinY, ImageSurface)
     'Lower Res
     Set Srf = New_c.Cairo.CreateSurface((wMaxX - wMinX) * LowResScale, (wMaxY - wMinY) * LowResScale, ImageSurface)
-    
+
     Set CC = Srf.CreateContext
     CC.SetSourceColor RGB(Gray * 0.8, Gray * 0.8, Gray * 0.8)
     CC.Paint
 
     CC.RotateDrawings PIh / 12
 
-    size = 200 * LowResScale '
-    
-    
+    size = 200 * LowResScale    '
+
+
     I = 0
     CC.SetSourceColor RGB(Gray, Gray, Gray)
     For x = 0 To Srf.Width * 1.2 Step size * Cos(Pi / 6)
@@ -172,13 +172,38 @@ Const LowResScale As Double = 0.33
 
         Next
     Next
+    '-----------------------------------------
 
     CC.Restore
+    Dim b()    As Byte
+    Srf.BindToArray b()
+    Dim XX#, YY#
+    Dim DX#, DY#
+    Dim D#, X4&
+    YY = UBound(b, 2)
+    XX = UBound(b, 1) \ 4
+    For y = 0 To YY
+        DY = Abs(2 * (y - YY * 0.5) / YY)
+        For x = 0 To XX
+        X4 = x * 4
+            DX = Abs(2 * (x - XX * 0.5) / XX)
+            D = 0.998 - maX(DX, DY) ^ 8
+            If D < 0 Then D = 0
+            b(X4 + 0, y) = b(X4 + 0, y) * D
+            b(X4 + 1, y) = b(X4 + 1, y) * D
+            b(X4 + 2, y) = b(X4 + 2, y) * D
+        Next
+    Next
 
 
-    Srf.WriteContentToJpgFile App.Path & "\Resources\BK.jpg"
-    ' Cairo.ImageList.AddSurface "BK", Srf
-    Cairo.ImageList.AddImage "BK", App.Path & "\Resources\BK.jpg"
+    Cairo.ImageList.AddImage "BK", b()
+    Srf.ReleaseArray b()
+    '-----------------------------------------
+
+    '    Srf.WriteContentToJpgFile App.Path & "\Resources\BK.jpg"
+    '    ''' Cairo.ImageList.AddSurface "BK", Srf
+    '    Cairo.ImageList.AddImage "BK", App.Path & "\Resources\BK.jpg"
+    '-----------------------------------------
 
     Set CC = Nothing
     Set Srf = Nothing

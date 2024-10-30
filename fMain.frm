@@ -25,7 +25,6 @@ Begin VB.Form fMain
    WindowState     =   2  'Maximized
    Begin VB.PictureBox PicPanel 
       Appearance      =   0  'Flat
-      BackColor       =   &H80000005&
       ForeColor       =   &H80000008&
       Height          =   4095
       Left            =   13440
@@ -40,7 +39,8 @@ Begin VB.Form fMain
          Height          =   495
          Left            =   240
          TabIndex        =   6
-         Top             =   2520
+         ToolTipText     =   "AI moves the player"
+         Top             =   1680
          Width           =   1455
       End
       Begin VB.CommandButton Command1 
@@ -56,7 +56,8 @@ Begin VB.Form fMain
          Height          =   495
          Left            =   240
          TabIndex        =   4
-         Top             =   1800
+         ToolTipText     =   "Debug Draw Bounding Boxes"
+         Top             =   2400
          Width           =   1455
       End
       Begin VB.CheckBox chkJPG 
@@ -64,7 +65,8 @@ Begin VB.Form fMain
          Height          =   495
          Left            =   240
          TabIndex        =   3
-         Top             =   3480
+         ToolTipText     =   "Save Frame to create a Video"
+         Top             =   3360
          Width           =   1455
       End
       Begin VB.CheckBox chkBG 
@@ -72,7 +74,8 @@ Begin VB.Form fMain
          Height          =   495
          Left            =   240
          TabIndex        =   2
-         Top             =   1080
+         ToolTipText     =   "Draw Background"
+         Top             =   960
          Value           =   1  'Checked
          Width           =   1455
       End
@@ -139,9 +142,9 @@ Private Sub Form_Load()
 'MsgBox Cairo.CalcArc(2, 3)
 
     PIC.Width = PIC.Height * 4 / 3
-'    Stop
-    
-PIC.Refresh
+    '    Stop
+
+    PIC.Refresh
 
     If Dir(App.Path & "\Frames", vbDirectory) = vbNullString Then MkDir App.Path & "\Frames"
     If Dir(App.Path & "\Frames\*.*") <> vbNullString Then Kill App.Path & "\Frames\*.*"
@@ -152,9 +155,10 @@ PIC.Refresh
     Level = 1
 
     Set MultipleSounds = New cSounds
-    
-DoBackGround = True
 
+    DoBackGround = True
+
+Open App.Path & "\LOG.txt" For Output As 1
 
 
 End Sub
@@ -187,6 +191,7 @@ Private Sub Form_Unload(Cancel As Integer)
 '  DestroySoundManager
 
 
+Close 1
 
     UnloadRC
 
@@ -196,7 +201,7 @@ End Sub
 
 Private Sub Command1_Click()
     InitPool 6
-    InitFOOD 6 * FoodXSanke                     '100
+    InitFOOD 6 * FoodXSnake                     '100
 
     Command1.Enabled = False
 
@@ -205,7 +210,7 @@ Private Sub Command1_Click()
 End Sub
 
 Private Sub PIC_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
-    Snake(PLAYER).FASTspeed = -1
+    If DoLOOP Then Snake(PLAYER).FASTspeed = -1
 
 End Sub
 
@@ -216,5 +221,5 @@ Private Sub PIC_MouseMove(Button As Integer, Shift As Integer, x As Single, y As
 End Sub
 
 Private Sub PIC_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
-    Snake(PLAYER).FASTspeed = 0
+    If DoLOOP Then Snake(PLAYER).FASTspeed = 0
 End Sub

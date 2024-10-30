@@ -10,6 +10,7 @@ Public MultipleSounds As cSounds
 
 Public Snake() As clsSnake
 Public NSnakes As Long
+Public MaxNSnakes As Long
 Public MinFoodForLevelChange As Long
 
 Public InvNSnakes As Double
@@ -27,7 +28,6 @@ Public CameraBB As tBB
 
 
 Public Const PLAYER As Long = 0
-
 Public Const STARTLENGTH As Long = 5 '
 
 
@@ -61,18 +61,40 @@ Public AIcontrol As Boolean
 Private StrScore As String
 Private invMaxScore As Double
 
+Public LIFES As Long
+Public PlayerScore As Long
+Public LevelCNT As Long
 
-Public Sub InitPool(ByVal NoSnakes As Long)
 
-    Dim I   As Long
+Public Sub InitPool(ByVal NoSnakes As Long, Optional NEWGAME As Boolean = True)
+
+    Dim I      As Long
+
+    If NEWGAME Then
+        LIFES = 3
+        PlayerScore = STARTLENGTH * 10
+        Level = 1
+        NoSnakes = 6
+    Else    'BONUS LIfE
+        If ScoresIdx(0) = PLAYER Then LIFES = LIFES + 1
+    End If
+
+    LevelCNT = CNT + 300
+
+    If Level = 1 Then Print #1, "--------------------"
+    Print #1, Level & "  Lifes " & LIFES & "   Score " & PlayerScore
+
+
     NSnakes = NoSnakes
     InvNSnakes = 1 / NSnakes
     MinFoodForLevelChange = NSnakes * 2
-    
 
-    ReDim Snake(NSnakes)
-    ReDim Scores(NSnakes)
-    ReDim ScoresIdx(NSnakes)
+    If NSnakes > MaxNSnakes Then
+        ReDim Snake(NSnakes)
+        ReDim Scores(NSnakes)
+        ReDim ScoresIdx(NSnakes)
+        MaxNSnakes = NSnakes
+    End If
 
     For I = 0 To NSnakes
         If Snake(I) Is Nothing Then Set Snake(I) = New clsSnake
@@ -87,19 +109,18 @@ End Sub
 
 
 Public Sub MainLoop()
-    Dim I         As Long
-    Dim pTime     As Double
-    Dim pTime2    As Double
-    Dim FPS       As Long
-    Dim pCnt      As Long
-Dim J As Long
+    Dim I      As Long
+    Dim pTime  As Double
+    Dim pTime2 As Double
+    Dim FPS    As Long
+    Dim pCnt   As Long
+    Dim J      As Long
 
     Dim StrCaption As String
 
+    Dim ZOOMtoGO As Double
 
-
-    Dim ZOOMtoGO  As Double
-
+Dim FH As Double
 
 
     DoLOOP = True
@@ -161,7 +182,9 @@ Dim J As Long
                     ZOOMtoGO = 0.05 + 10 * Snake(PLAYER).InvDiam ^ 0.7
 
 
-                    ZOOM = ZOOM * 0.98 + ZOOMtoGO * 0.02
+                    'ZOOM = ZOOM * 0.98 + ZOOMtoGO * 0.02
+                    ZOOM = ZOOM * 0.995 + ZOOMtoGO * 0.005 '--2024
+                    
                     invZOOM = 1# / ZOOM
 
                     .TranslateDrawings -Camera.x * ZOOM + CenX, -Camera.y * ZOOM + CenY
@@ -202,27 +225,27 @@ Dim J As Long
                     CameraBB.minY = Camera.y - CenY * invZOOM
                     CameraBB.maxY = Camera.y + CenY * invZOOM
 
-
-
-
                     For I = 0 To NSnakes
                         Snake(I).DRAW DrawBB
                     Next
-
+        
                     .Restore
+
+
+If CNT < LevelCNT Then .DrawTextCell CenX - 50, CenY - 30, 100, 60, "LEVEL " & CStr(Level) & vbCrLf & vbCrLf & "Lifes " & LIFES, , vbCenter, , 444, 0.9, 111
 
                     .TextOut 5, 5, StrCaption
                     .DrawText MaxW - 300, 5, 400, 1000, StrScore
 
-For I = 0 To NSnakes
-J = ScoresIdx(I)
-.SetSourceRGBA Snake(J).ColorR, Snake(J).ColorG, Snake(J).ColorB, 0.5
-.Rectangle MaxW - 305, 5 + (I + 2) * 15, 90 * Scores(I) * invMaxScore, 14
-.Fill
-Next
-.SetSourceRGBA 0, 1, 0, 0.3
-.Rectangle MaxW - 305, 2, 90 * (1 - (NFood - MinFoodForLevelChange) * FoodDiv), 31
-.Fill
+                    For I = 0 To NSnakes
+                        J = ScoresIdx(I)
+                        .SetSourceRGBA Snake(J).ColorR, Snake(J).ColorG, Snake(J).ColorB, 0.5
+                        .Rectangle MaxW - 305, 5 + (I + 2) * 15, 90 * Scores(I) * invMaxScore, 14
+                        .Fill
+                    Next
+                    .SetSourceRGBA 0, 1, 0, 0.3
+                    .Rectangle MaxW - 305, 2, 90 * (1 - (NFood - MinFoodForLevelChange) * FoodDiv), 31
+                    .Fill
 
 
 
@@ -259,16 +282,17 @@ Next
 
 
             If NFood <= MinFoodForLevelChange Then  '5 'Next Level '
-                InitPool NSnakes + 1 ' * 1.18    '1.2
-                InitFOOD NSnakes * FoodXSanke
+                InitPool NSnakes + 1, False    ' * 1.18    '1.2
+                InitFOOD NSnakes * FoodXSnake
                 Level = Level + 1
-                StrCaption = "Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
+                StrCaption = " Lifes: " & LIFES & "     SCORE: " & PlayerScore & "     Level: " & Level & "     Snakes: " & NSnakes & "     Food: " & NFood & "      FPS: " & FPS \ JPGframeRate & "     Length: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
                 MultipleSounds.PlaySound SoundINTRO
             End If
 
 
-            If CNT Mod 100 = 0 Then
-                StrCaption = " Level: " & Level & "       Snakes: " & NSnakes & "       Food: " & NFood & "        FPS: " & FPS \ JPGframeRate & "       Score: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
+'            If CNT Mod 100 = 0 Then
+            If (CNT And 63&) = 0& Then
+                StrCaption = " Lifes: " & LIFES & "     SCORE: " & PlayerScore & "     Level: " & Level & "     Snakes: " & NSnakes & "     Food: " & NFood & "      FPS: " & FPS \ JPGframeRate & "     Length: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
                 UpdateSCORESString
             End If
 
@@ -305,7 +329,7 @@ Private Sub UpdateSCORESString()
     Next
 
 
-AG: '- SORT------------------
+AG: '- SORT SCORES------------------
     SW = 0
     For I = 0 To NSnakes - 1
         For J = I + 1 To NSnakes
@@ -319,7 +343,7 @@ AG: '- SORT------------------
     If SW Then GoTo AG
 
 
-    StrScore = "SCORES:" & vbCrLf & vbCrLf
+    StrScore = "Level SCORES:" & vbCrLf & vbCrLf
     For I = 0 To NSnakes
         If ScoresIdx(I) = 0& Then
             S = "PLYR"

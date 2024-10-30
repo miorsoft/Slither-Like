@@ -143,7 +143,7 @@ Friend Sub UpdateBB()
 
 End Sub
 Friend Sub Init(x As Double, y As Double, Idx As Long, Leng As Double)
-    Dim I   As Long
+    Dim I      As Long
 
     'fLength = Leng
     SetSize = Leng
@@ -176,9 +176,15 @@ Friend Sub Init(x As Double, y As Double, Idx As Long, Leng As Double)
     Head.Vel.x = Rnd * 2 - 1
     Head.Vel.y = Rnd * 2 - 1
     'Color = RGB(120 + Rnd * 135, 120 + Rnd * 135, 120 + Rnd * 135)
-    ColorR = 0.45 + Rnd * 0.5
-    ColorG = 0.45 + Rnd * 0.5
-    ColorB = 0.45 + Rnd * 0.5
+''    ColorR = 0.45 + Rnd * 0.5
+''    ColorG = 0.45 + Rnd * 0.5
+''    ColorB = 0.45 + Rnd * 0.5
+
+    Do
+        ColorR = Rnd
+        ColorG = Rnd
+        ColorB = Rnd
+    Loop While (ColorR + ColorG + ColorB) < 1.6
 
     UpdateBB
 
@@ -238,36 +244,36 @@ End Sub
 
 
 Friend Sub DRAW(DrawBoundingBox As Long)
-    Dim ANG As Double
-    Dim A   As Double
-    Dim A2  As Double
+    Dim ANG    As Double
+    Dim A      As Double
+    Dim A2     As Double
 
 
-    Dim Reye As Double
-    Dim Reye2 As Double
+    Dim Reye   As Double
+    Dim Reye2  As Double
 
-    Dim DEye As Double
+    Dim DEye   As Double
 
-    Dim I   As Long
-    Dim J   As Long
-    Dim P   As geoVector2D
+    Dim I      As Long
+    Dim J      As Long
+    Dim P      As geoVector2D
 
-    Dim X1  As Double
-    Dim Y1  As Double
-    Dim x2  As Double
-    Dim Y2  As Double
-    Dim dx  As Double
-    Dim dy  As Double
+    Dim X1     As Double
+    Dim Y1     As Double
+    Dim x2     As Double
+    Dim Y2     As Double
+    Dim DX     As Double
+    Dim DY     As Double
 
-    Dim C   As Double
-    Dim S   As Double
-    Dim K   As Double
+    Dim C      As Double
+    Dim S      As Double
+    Dim K      As Double
     '  Dim InvNtokens
-    Dim CADD As Double
+    Dim CADD   As Double
 
-    Dim StepD As Long
+    Dim StepD  As Long
 
-Dim LA As Long
+    Dim LA     As Long
 
 
 
@@ -283,14 +289,14 @@ Dim LA As Long
 
     'StepD = 1 + Diam * 0.0125
 
-    StepD = 1 + Diam * Diam * 0.0004 '0.00045
- 
+    StepD = 1 + Diam * Diam * 0.0004    '0.00045
+
 
 
     With vbDrawCC
 
         If IsDying Then
-StepD = 1
+            StepD = 1
 
             .SetSourceRGBA Rnd, Rnd, Rnd, 0.33
             For I = tokIDX + 1 To tokIDX + Ntokens - 1 Step StepD
@@ -298,13 +304,24 @@ StepD = 1
                 P = Token(J).POS
                 '.Ellipse P.x, P.y, Diam, Diam
                 .Arc P.x, P.y, Radius
-                
+
                 .Fill
             Next
 
-            If (CNT - DyingTime > 40) Then '104 '' Blinking time
+            If (CNT - DyingTime > 40) Then    '104 '' Blinking time
                 CreateFoodFromDeadSnake MyIDX
                 RandomizeMe
+                If MyIDX = PLAYER Then
+                    LIFES = LIFES - 1
+                    If LIFES = 0 Then
+                        InitPool 6, True
+                        InitFOOD 6 * FoodXSnake
+                        MultipleSounds.PlaySound SoundINTRO
+                    End If
+                End If
+
+
+
             End If
 
         Else
@@ -333,30 +350,30 @@ StepD = 1
             J = I Mod Ntokens
             P = Token(J).POS
             K = K + StepD
-            
+
             .MoveTo P.x, P.y
 
 
-K = -StepD
+            K = -StepD
             For I = tokIDX + StepD * 1 + 2 To tokIDX + Ntokens Step StepD    'Senza -1 disegna anche testa
 
                 'J = I Mod Ntokens
                 DivRem I, Ntokens, J
-                
-                
+
+
                 P = Token(J).POS
                 K = K + StepD
-  
+
                 'To Avoid Head->Queue Line:
                 If J <> (tokIDX + StepD) Mod Ntokens Then
-                
-                            '    'CADD = Cos((-K * InvNtokens) * PI2 * 5#) * 0.2 - FASTspeed * 0.25
-                
-                       'CADD = Cos((K * InvNtokens2) * PI2 * 3.5) * 0.2 - FASTspeed * 0.25
-                Dim AA&
-                'AA = ((K * InvNtokens2) * 360 * 3.5) Mod 360
-                AA = ((K * InvNtokens2) * 360 * 4) Mod 360
-                CADD = -COStable(AA) * 0.21 - FASTspeed * 0.25
+
+                    '    'CADD = Cos((-K * InvNtokens) * PI2 * 5#) * 0.2 - FASTspeed * 0.25
+
+                    'CADD = Cos((K * InvNtokens2) * PI2 * 3.5) * 0.2 - FASTspeed * 0.25
+                    Dim AA&
+                    'AA = ((K * InvNtokens2) * 360 * 3.5) Mod 360
+                    AA = ((K * InvNtokens2) * 360 * 4) Mod 360
+                    CADD = -COStable(AA) * 0.21 - FASTspeed * 0.25
 
                     .SetSourceRGB ColorR + CADD, ColorG + CADD, ColorB + CADD
                     .LineTo P.x, P.y
@@ -366,7 +383,7 @@ K = -StepD
                 .MoveTo P.x, P.y
 
             Next
-                       
+
             .LineTo Head.POS.x, Head.POS.y
             .Stroke
 
@@ -386,19 +403,19 @@ K = -StepD
         '--------Tongue
 
         TongueLen = TongueLen * 0.3 + TongueOut * 0.7
-        
+
         TongueOut = TongueOut * 0.6
-        
-        
-        
-'        C = Cos(ANG) * Diam * TongueLen * 0.55 '* 0.45
-'        S = Sin(ANG) * Diam * TongueLen * 0.55 '* 0.45
+
+
+
+        '        C = Cos(ANG) * Diam * TongueLen * 0.55 '* 0.45
+        '        S = Sin(ANG) * Diam * TongueLen * 0.55 '* 0.45
         LA = ANG * 360 * InvPI2
-        C = COStable(LA) * Diam * TongueLen * 0.55 '* 0.45
-        S = SINtable(LA) * Diam * TongueLen * 0.55 '* 0.45
-        
-        
-        
+        C = COStable(LA) * Diam * TongueLen * 0.55    '* 0.45
+        S = SINtable(LA) * Diam * TongueLen * 0.55    '* 0.45
+
+
+
         X1 = Head.POS.x + C
         Y1 = Head.POS.y + S
         .SetSourceRGBA 1, 0.6, 0.6, 0.4
@@ -412,29 +429,29 @@ K = -StepD
         .Fill
         '---------------------------------
 
-'        If MyIDX = PLAYER Then
-'            EyEANG = Atan2(DirChange.x, DirChange.y)
-            EyEANG = EyEANG + 0.25 * AngleDIFF(EyEANG, Atan2(DirChange.x, DirChange.y)) '--2024
-'        Else
-'            EyEANG = oldANG
-'        End If
+        '        If MyIDX = PLAYER Then
+        '            EyEANG = Atan2(DirChange.x, DirChange.y)
+        EyEANG = EyEANG + 0.25 * AngleDIFF(EyEANG, Atan2(DirChange.x, DirChange.y))    '--2024
+        '        Else
+        '            EyEANG = oldANG
+        '        End If
         If IsDying Then EyEANG = (CNT + DyingTime) * 0.3
 
         .SetSourceRGB 1, 1, 0.85    'EYEBALLS
         A = ANG - PIh * 0.5
         'C = Cos(A) * Reye * EYESWIDE
         'S = Sin(A) * Reye * EYESWIDE
-    
-        LA = (A * 360 * InvPI2) 'Mod 360
+
+        LA = (A * 360 * InvPI2)    'Mod 360
         C = COStable(LA) * Reye * EYESWIDE
         S = SINtable(LA) * Reye * EYESWIDE
-        
-        
+
+
         X1 = Head.POS.x + C
         Y1 = Head.POS.y + S
         '.Ellipse X1, Y1, DEye, DEye
         .Arc X1, Y1, DEye * 0.5
-        
+
         x2 = Head.POS.x - S
         Y2 = Head.POS.y + C
         '.Ellipse x2, Y2, DEye, DEye
@@ -443,29 +460,29 @@ K = -StepD
 
         .SetSourceRGBA 0, 0, 0, 0.55    'eye contour
         '.Ellipse X1, Y1, DEye, DEye
-         .Arc X1, Y1, DEye * 0.5
+        .Arc X1, Y1, DEye * 0.5
         .Stroke
         x2 = Head.POS.x - S
         Y2 = Head.POS.y + C
         '.Ellipse x2, Y2, DEye, DEye
-         .Arc x2, Y2, DEye * 0.5
+        .Arc x2, Y2, DEye * 0.5
         .Stroke
 
 
 
         .SetSourceColor 0    'PUPILS
-        dx = Cos(EyEANG) * (Reye * 0.5)
-        dy = Sin(EyEANG) * (Reye * 0.5)
-        
+        DX = Cos(EyEANG) * (Reye * 0.5)
+        DY = Sin(EyEANG) * (Reye * 0.5)
+
         LA = (EyEANG * InvPI2 * 360#) Mod 360
-        dx = COStable(LA) * (Reye * 0.5)
-        dy = SINtable(LA) * (Reye * 0.5)
-        
-        
+        DX = COStable(LA) * (Reye * 0.5)
+        DY = SINtable(LA) * (Reye * 0.5)
+
+
         '.Ellipse X1 + dx, Y1 + dy, Reye2, Reye2
-        .Arc X1 + dx, Y1 + dy, Reye2 * 0.5
+        .Arc X1 + DX, Y1 + DY, Reye2 * 0.5
         '.Ellipse x2 + dx, Y2 + dy, Reye2, Reye2
-        .Arc x2 + dx, Y2 + dy, Reye2 * 0.5
+        .Arc x2 + DX, Y2 + DY, Reye2 * 0.5
         .Fill
         '........................................
 
@@ -568,6 +585,7 @@ Friend Sub MOVE()
         FASTspeedCOUNT = 0
         AddFoodParticle Token((tokIDX + 1) Mod Ntokens).POS, False
         SetSize = GetSize - FoodLengthValue
+        If MyIDX = PLAYER Then PlayerScore = PlayerScore - 10
     End If
 
     '    If HEAD.Pos.X < wMinX Then HEAD.Pos.X = wMaxX
@@ -590,7 +608,9 @@ Friend Sub MOVE()
         J2 = J - 1
         If J2 < 0 Then J2 = J2 + Ntokens
         'If J2 <> tokIDX Then Token(J).POS = VectorSUM(VectorMUL(Token(J).POS, 0.18), VectorMUL(Token(J2).POS, 0.82)) '2nd Video
-        If J2 <> tokIDX Then Token(J).POS = VectorSUM(VectorMUL(Token(J).POS, 0.17), VectorMUL(Token(J2).POS, 0.83))
+        'If J2 <> tokIDX Then Token(J).POS = VectorSUM(VectorMUL(Token(J).POS, 0.17), VectorMUL(Token(J2).POS, 0.83))
+        If J2 <> tokIDX Then Token(J).POS = VectorSUM(VectorMUL(Token(J).POS, 0.165), VectorMUL(Token(J2).POS, 0.835)) '--2024
+        
     Next
     If fLength \ 1 < Ntokens Then
         Ntokens = Ntokens - 1
