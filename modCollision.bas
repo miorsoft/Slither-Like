@@ -152,7 +152,7 @@ Public Sub CheckCollisionsALLtoALL()
                 MIND = Ri + Rj
                 MIND = MIND * MIND
 
-                For K = 0 To Snake(J).Ntokens - 1
+                For K = 0 To Snake(J).Ntokens '- 1
 
                     TokenPosition = Snake(J).GetTokenPos(K)
 
@@ -162,16 +162,15 @@ Public Sub CheckCollisionsALLtoALL()
 
                     If D < MIND Then
                         'Dead Snake
-                        If I = PLAYER Then
+                        If I = SNAKECAMERA Then
                             If Snake(I).IsDying = 0 Then MultipleSounds.PlaySound SoundPlayerDeath
                         Else
                             If Snake(I).IsDying = 0 Then
 
-                                HeadPosI = Snake(PLAYER).GetHEADPos
+                                HeadPosI = Snake(SNAKECAMERA).GetHEADPos
                                 dx = HeadPosI.x - TokenPosition.x
                                 dy = HeadPosI.y - TokenPosition.y
                                 D = Sqr(dx * dx + dy * dy)
-                                'MultipleSounds.PlaySound SoundEnenmyKilled, ClampLong(-dx * 3, -10000, 10000), ClampLong(-D * 0.8, -10000, 0)
                                 MultipleSounds.PlaySound SoundEnenmyKilled, ClampLong(-dx * 2, -10000, 10000), ClampLong(-D * 0.5, -10000, 0)
 
                                 HeadPosI = Snake(I).GetHEADPos
@@ -179,7 +178,6 @@ Public Sub CheckCollisionsALLtoALL()
 
                         End If
                         Snake(I).Kill
-                        
                          Exit For
                     End If
                 Next
@@ -193,7 +191,7 @@ Public Sub CheckCollisionsALLtoALL()
                 MIND = Ri + Rj
                 MIND = MIND * MIND
 
-                For K = 0 To Snake(I).Ntokens - 1
+                For K = 0 To Snake(I).Ntokens '- 1
 
                     TokenPosition = Snake(I).GetTokenPos(K)
 
@@ -201,20 +199,17 @@ Public Sub CheckCollisionsALLtoALL()
                     dy = HeadPosJ.y - TokenPosition.y
                     D = dx * dx + dy * dy
 
-
                     If D < MIND Then
                         'Player Dead
-                        If J = PLAYER Then
+                        If J = SNAKECAMERA Then
                             If Snake(J).IsDying = 0 Then MultipleSounds.PlaySound SoundPlayerDeath
                         Else
-                            If I = PLAYER Then
+                            If I = SNAKECAMERA Then
                                 If Snake(J).IsDying = 0 Then
-
-                                    HeadPosJ = Snake(PLAYER).GetHEADPos
+                                    HeadPosJ = Snake(SNAKECAMERA).GetHEADPos
                                     dx = HeadPosJ.x - TokenPosition.x
                                     dy = HeadPosJ.y - TokenPosition.y
                                     D = Sqr(dx * dx + dy * dy)
-                                    'MultipleSounds.PlaySound SoundEnenmyKilledByMe, ClampLong(-dx * 3, -10000, 10000), ClampLong(-D * 0.8, -10000, 0)
                                     MultipleSounds.PlaySound SoundEnenmyKilledByMe, ClampLong(-dx * 2, -10000, 10000), ClampLong(-D * 1, -10000, 0)
 
                                     HeadPosJ = Snake(J).GetHEADPos
@@ -222,18 +217,18 @@ Public Sub CheckCollisionsALLtoALL()
 
                             Else
                                 If Snake(J).IsDying = 0 Then
-                                    HeadPosI = Snake(PLAYER).GetHEADPos
+                                    HeadPosI = Snake(SNAKECAMERA).GetHEADPos
                                     dx = HeadPosI.x - TokenPosition.x
                                     dy = HeadPosI.y - TokenPosition.y
                                     D = Sqr(dx * dx + dy * dy)
-                                    'MultipleSounds.PlaySound SoundEnenmyKilled, ClampLong(-dx * 3, -10000, 10000), ClampLong(-D * 0.8, -10000, 0)
                                     MultipleSounds.PlaySound SoundEnenmyKilled, ClampLong(-dx * 2, -10000, 10000), ClampLong(-D * 0.5, -10000, 0)
 
                                     HeadPosI = Snake(I).GetHEADPos
                                 End If
                             End If
-                            Snake(J).Kill: Exit For
+'                            Snake(J).Kill: Exit For
                         End If
+                        Snake(J).Kill: Exit For
                     End If
                 Next
             End If
@@ -265,8 +260,8 @@ Public Function NewSnakePosition(Idx As Long) As geoVector2D
 
         Do
             InsBB = False
-            POS.x = wMinX + (wMaxX - wMinX) * Rnd
-            POS.y = wMinY + (wMaxY - wMinY) * Rnd
+            POS.x = wMinX + (wMaxX - wMinX) * RndM
+            POS.y = wMinY + (wMaxY - wMinY) * RndM
             For C = 1 To NSnakes
                 BB = Snake(C).getBB
                 If InsideBB(BB, POS) Then InsBB = True: Exit For
@@ -278,8 +273,8 @@ Public Function NewSnakePosition(Idx As Long) As geoVector2D
         PlayerHeadPOS = Snake(PLAYER).GetHEADPos
 
         Do
-            POS.x = wMinX + (wMaxX - wMinX) * Rnd
-            POS.y = wMinY + (wMaxY - wMinY) * Rnd
+            POS.x = wMinX + (wMaxX - wMinX) * RndM
+            POS.y = wMinY + (wMaxY - wMinY) * RndM
             dx = POS.x - PlayerHeadPOS.x
             dy = POS.y - PlayerHeadPOS.y
             'Loop While InsideBB(BB, POS) Or ((dx * dx + dy * dy) < 40000)
@@ -347,7 +342,7 @@ If A < 0# Then A = A + PI2
 Diam = Snake(Idx).Diam * 2.5 + 1 * Snake(I).Diam '--2024
 Diam = Diam * Diam
 
-            For J = 1 To Snake(I).Ntokens - 1
+            For J = 0 To Snake(I).Ntokens '- 1
 
 
                 TP = Snake(I).GetTokenPos(J)

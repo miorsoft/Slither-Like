@@ -939,7 +939,32 @@ End Function
 ' @param Remainder The variable to place the remainder of the division.
 ' @return The quotient of the division.
 '
-Public Function DivRem(ByVal A As Long, ByVal b As Long, ByRef remainder As Long) As Long
-    DivRem = A \ b
-    remainder = A - (b * DivRem)    ' this is about 2x faster than Mod.
+Public Sub DivRem(ByVal A As Long, ByVal b As Long, ByRef remainder As Long) 'As Long
+    Dim D&
+    D = A \ b
+    remainder = A - (b * D)    ' this is about 2x faster than Mod.
+End Sub
+
+Public Function RndM(Optional ByVal Number As Long) As Double
+'https://www.vbforums.com/showthread.php?899623-Random-repeatable-numbers-that-do-NOT-depend-on-prior-values-for-the-next-result&p=5600596&viewfull=1#post5600596
+    Static Ri     As Double
+
+    If Number Then Ri = Number
+
+    Ri = Ri * (1.241 + (Ri > 983732.3)) + 1.737
+    RndM = Ri - Int(Ri)
+    
+End Function
+
+
+
+'This is a modified fMOD function; it handles negative values specially to ensure they work with certain distort functions
+Public Function fMOD(ByVal quotient As Double, ByVal divisor As Double) As Double
+    'If quotient < 0 Then Stop
+
+    fMOD = quotient - Fix(quotient / divisor) * divisor
+    '    fMOD = quotient - Fix(Abs(quotient / divisor)) * Abs(divisor)
+    If (fMOD < 0#) Then Stop: fMOD = fMOD + divisor
+    '    If (quotient < 0#) Then fMOD = -fMOD
+
 End Function

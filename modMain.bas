@@ -65,13 +65,14 @@ Public LIFES As Long
 Public PlayerScore As Long
 Public LevelCNT As Long
 
+Public SNAKECAMERA As Long
 
 Public Sub InitPool(ByVal NoSnakes As Long, Optional NEWGAME As Boolean = True)
 
     Dim I      As Long
 
     If NEWGAME Then
-        LIFES = 3
+        LIFES = 20 ' 5 '3
         PlayerScore = STARTLENGTH * 10
         Level = 1
         NoSnakes = 6
@@ -87,7 +88,7 @@ Public Sub InitPool(ByVal NoSnakes As Long, Optional NEWGAME As Boolean = True)
 
     NSnakes = NoSnakes
     InvNSnakes = 1 / NSnakes
-    MinFoodForLevelChange = NSnakes * 2
+    MinFoodForLevelChange = NSnakes * (FoodXSnake / 34) * 2 '2
 
     If NSnakes > MaxNSnakes Then
         ReDim Snake(NSnakes)
@@ -98,8 +99,12 @@ Public Sub InitPool(ByVal NoSnakes As Long, Optional NEWGAME As Boolean = True)
 
     For I = 0 To NSnakes
         If Snake(I) Is Nothing Then Set Snake(I) = New clsSnake
-        Snake(I).Init Rnd * MaxW, Rnd * maxH, I, STARTLENGTH    '+ Rnd * 30
+        Snake(I).Init RndM * MaxW, RndM * maxH, I, STARTLENGTH    '+ rndm * 30
     Next
+
+If SNAKECAMERA > NoSnakes Then fMain.hSnake.Value = 0
+fMain.hSnake.Min = 0
+fMain.hSnake.maX = NoSnakes
 
 
 End Sub
@@ -155,7 +160,7 @@ Dim FH As Double
             pTime = Timing
 
             For I = 0 To NSnakes
-                Snake(I).MOVE
+                Snake(I).MOVE2
             Next
 
             FoodMoveAndCheckEaten       '------------------------------------
@@ -179,7 +184,7 @@ Dim FH As Double
 
                     'ZOOMtoGO = 0.0625 + 25# * Snake(PLAYER).InvDiam   'ok
 
-                    ZOOMtoGO = 0.05 + 10 * Snake(PLAYER).InvDiam ^ 0.7
+                    ZOOMtoGO = 0.05 + 10 * Snake(SNAKECAMERA).InvDiam ^ 0.7
 
 
                     'ZOOM = ZOOM * 0.98 + ZOOMtoGO * 0.02
@@ -212,8 +217,10 @@ Dim FH As Double
                     DrawFOOD            '--------------------------------
 
 
-                    ' Camera = Snake(PLAYER + 1).GetHEADPos
-                    Camera = Snake(PLAYER).GetHEADPos
+
+'                    Camera = Snake(PLAYER).GetHEADPos
+                    Camera = Snake(SNAKECAMERA).GetHEADPos
+                    
 
                     '                    CameraBB.minX = Camera.x - CenX
                     '                    CameraBB.maxX = Camera.x + CenX
@@ -242,6 +249,13 @@ If CNT < LevelCNT Then .DrawTextCell CenX - 50, CenY - 30, 100, 60, "LEVEL " & C
                         .SetSourceRGBA Snake(J).ColorR, Snake(J).ColorG, Snake(J).ColorB, 0.5
                         .Rectangle MaxW - 305, 5 + (I + 2) * 15, 90 * Scores(I) * invMaxScore, 14
                         .Fill
+                        If (CNT - Snake(J).DyingTime) < 160 Then
+                            .SetLineWidth 2
+                            .SetSourceRGB 1, 0.25, 0.25
+                            .Rectangle MaxW - 305, 5 + (I + 2) * 15, 90, 14
+                            .Stroke
+                        End If
+                        
                     Next
                     .SetSourceRGBA 0, 1, 0, 0.3
                     .Rectangle MaxW - 305, 2, 90 * (1 - (NFood - MinFoodForLevelChange) * FoodDiv), 31
@@ -291,7 +305,8 @@ If CNT < LevelCNT Then .DrawTextCell CenX - 50, CenY - 30, 100, 60, "LEVEL " & C
 
 
 '            If CNT Mod 100 = 0 Then
-            If (CNT And 63&) = 0& Then
+'            If (CNT And 31&) = 0& Then '63
+            If (CNT And 15&) = 0& Then '63
                 StrCaption = " Lifes: " & LIFES & "     SCORE: " & PlayerScore & "     Level: " & Level & "     Snakes: " & NSnakes & "     Food: " & NFood & "      FPS: " & FPS \ JPGframeRate & "     Length: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
                 UpdateSCORESString
             End If
@@ -304,7 +319,7 @@ If CNT < LevelCNT Then .DrawTextCell CenX - 50, CenY - 30, 100, 60, "LEVEL " & C
 
 End Sub
 
-Public Function ClampLong(V As Double, Min As Long, maX As Long) As Long
+Public Function ClampLong(ByVal V As Double, ByVal Min As Long, ByVal maX As Long) As Long
 
     ClampLong = V
     If V < Min Then
@@ -328,7 +343,7 @@ Private Sub UpdateSCORESString()
         ScoresIdx(I) = I
     Next
 
-
+Debug.Print
 AG: '- SORT SCORES------------------
     SW = 0
     For I = 0 To NSnakes - 1
@@ -340,7 +355,8 @@ AG: '- SORT SCORES------------------
             End If
         Next
     Next
-    If SW Then GoTo AG
+    Debug.Print SW
+'    If SW Then GoTo AG
 
 
     StrScore = "Level SCORES:" & vbCrLf & vbCrLf

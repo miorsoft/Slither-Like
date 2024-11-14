@@ -26,14 +26,21 @@ Begin VB.Form fMain
    Begin VB.PictureBox PicPanel 
       Appearance      =   0  'Flat
       ForeColor       =   &H80000008&
-      Height          =   4095
+      Height          =   4455
       Left            =   13440
-      ScaleHeight     =   271
+      ScaleHeight     =   295
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   127
       TabIndex        =   1
       Top             =   240
       Width           =   1935
+      Begin VB.HScrollBar hSnake 
+         Height          =   375
+         Left            =   0
+         TabIndex        =   7
+         Top             =   3840
+         Width           =   1935
+      End
       Begin VB.CheckBox chkAI 
          Caption         =   "AI control"
          Height          =   495
@@ -66,7 +73,7 @@ Begin VB.Form fMain
          Left            =   240
          TabIndex        =   3
          ToolTipText     =   "Save Frame to create a Video"
-         Top             =   3360
+         Top             =   3120
          Width           =   1455
       End
       Begin VB.CheckBox chkBG 
@@ -139,6 +146,8 @@ Private Sub Form_Load()
 
 
 
+RndM Timer
+
 'MsgBox Cairo.CalcArc(2, 3)
 
     PIC.Width = PIC.Height * 4 / 3
@@ -206,6 +215,16 @@ Private Sub Command1_Click()
     Command1.Enabled = False
 
     MainLoop
+
+End Sub
+
+Private Sub hSnake_Change()
+SNAKECAMERA = hSnake.Value
+
+End Sub
+
+Private Sub hSnake_Scroll()
+SNAKECAMERA = hSnake.Value
 
 End Sub
 

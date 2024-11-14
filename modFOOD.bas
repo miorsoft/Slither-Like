@@ -2,17 +2,31 @@ Attribute VB_Name = "modFOOD"
 Option Explicit
 
 Public Type tPosAndVel
-    POS     As geoVector2D
-    Vel     As geoVector2D
-    RotSign As Long
+    POS        As geoVector2D
+    Vel        As geoVector2D
+
 End Type
 
-Public FOOD() As tPosAndVel
-Public FOODcolor() As Long
-Public FoodAge() As Double
+'Public FOOD() As tPosAndVel
+'Public FOODcolor() As Long
+'Public FoodAge() As Double
+'Public FootRotSign() As Long
 
 
-Public NFood As Long
+Public Type tFOOD
+    POS        As geoVector2D
+    Vel        As geoVector2D
+    Color      As Long
+    foodWHITE  As Double
+    RotSign    As Long
+    Born       As Long
+    fromSnake As Long
+End Type
+
+Public FOOD()  As tFOOD
+
+
+Public NFood   As Long
 Private MaxFood As Long
 Public FOODLEVEL As Long
 
@@ -20,7 +34,7 @@ Public FoodDiv As Double
 
 
 Public Const FoodSize As Double = 9
-Public Const FoodXSnake As Long = 30 '25 '30
+Public Const FoodXSnake As Long = 35    '34 ' 30 '25
 
 Public Const FoodLengthValue As Double = 1
 
@@ -32,30 +46,16 @@ Public SINtable(-360 To 360) As Double
 
 
 Public Sub InitFOOD(HowMuch As Long)
-    Dim I         As Long
+    Dim I      As Long
 
-    NFood = HowMuch
-    MaxFood = NFood
-    FOODLEVEL = NFood
-    
-    FoodDiv = 1 / (MaxFood - MinFoodForLevelChange)
-    
 
-    ReDim FOOD(NFood)
-    ReDim FoodAge(NFood)
 
-    For I = 0 To NFood
 
-        With FOOD(I)
-            .POS.x = wMinX + Rnd * (wMaxX - wMinX)
-            .POS.y = wMinY + Rnd * (wMaxY - wMinY)
-
-            FoodAge(I) = 0
-
-            .RotSign = Int(Rnd * 2)
-            If .RotSign = 0 Then .RotSign = -1    '1
-
-        End With
+    Dim P      As geoVector2D
+    For I = 1 To HowMuch
+        P.x = wMinX + RndM * (wMaxX - wMinX)
+        P.y = wMinY + RndM * (wMaxY - wMinY)
+        AddFoodParticle P, False, -1
     Next
 
 
@@ -66,7 +66,9 @@ Public Sub InitFOOD(HowMuch As Long)
     Next
 
 
-
+    MaxFood = HowMuch
+    FOODLEVEL = HowMuch
+    FoodDiv = 1 / (MaxFood - MinFoodForLevelChange)
 
 
 
@@ -83,7 +85,7 @@ Private Sub RemoveFood(wF As Long)
 
     '---With No Loop '--2024
     FOOD(wF) = FOOD(NFood)
-    FoodAge(wF) = FoodAge(NFood)
+'    FoodAge(wF) = FoodAge(NFood)
     NFood = NFood - 1
 
 
@@ -91,86 +93,91 @@ Private Sub RemoveFood(wF As Long)
 
 End Sub
 
-Public Sub AddFoodParticle(POS As geoVector2D, IsWhite As Long)
+Public Sub AddFoodParticle(POS As geoVector2D, IsWhite As Boolean, fromSnake As Long)
 
     NFood = NFood + 1
     If NFood > MaxFood Then
         MaxFood = NFood + 20
-
         ReDim Preserve FOOD(MaxFood)
-        ReDim Preserve FoodAge(MaxFood)
+        '        ReDim Preserve FoodAge(MaxFood)
+        '        ReDim Preserve FootRotSign(MaxFood)
     End If
 
     With FOOD(NFood)
         .Vel.x = 0
         .Vel.y = 0
         .POS = POS
-                    .RotSign = Int(Rnd * 2)
-            If .RotSign = 0 Then .RotSign = -1    '1
+
+        .RotSign = Int(RndM * 2)
+        If .RotSign = 0 Then .RotSign = -1
+
+        If IsWhite Then .foodWHITE = 1 Else: .foodWHITE = 0
+        .Born = CNT
+        .fromSnake = fromSnake
+        
+
+        
+
+        InitFoodIcon .fromSnake, NFood
         
     End With
-
-If IsWhite Then FoodAge(NFood) = 1 Else: FoodAge(NFood) = 0
-
 End Sub
 
 
 Private Sub FoodToRNDPosition(wF As Long)
     With FOOD(wF)
-        .POS.x = wMinX + Rnd * (wMaxX - wMinX)
-        .POS.y = wMinY + Rnd * (wMaxY - wMinY)
+        .POS.x = wMinX + RndM * (wMaxX - wMinX)
+        .POS.y = wMinY + RndM * (wMaxY - wMinY)
     End With
 End Sub
 Public Sub DrawFOOD()
-    Dim I   As Long
-
-    ' vbDRAW.CC.SetSourceColor vbGreen
-
+    Dim I      As Long
 
     For I = 0 To NFood
         With FOOD(I)
-            'vbDRAW.CC.Ellipse .Pos.X, .Pos.y, 5, 5
-            'vbDRAW.CC.Fill
-
             If InsideBB(CameraBB, FOOD(I).POS) Then
-                vbDrawCC.RenderSurfaceContent "FoodIcon", .POS.x - FoodSize, .POS.y - FoodSize, , , CAIRO_FILTER_FAST, 0.75
-       '        If FoodAge(I) > 0 Then vbDrawCC.RenderSurfaceContent "FoodIconLight", .POS.x - FoodSize * 3, .POS.y - FoodSize * 3, , , CAIRO_FILTER_FAST, FoodAge(I)
-                If FoodAge(I) > 0 Then vbDrawCC.RenderSurfaceContent "FoodIconLight", .POS.x - FoodSize * 2, .POS.y - FoodSize * 2, , , CAIRO_FILTER_FAST, FoodAge(I)
-                
+'                vbDrawCC.RenderSurfaceContent "FoodIcon", .POS.x - FoodSize, .POS.y - FoodSize, , , CAIRO_FILTER_FAST, 0.75
+                      vbDrawCC.RenderSurfaceContent "FoodIcon" & CStr(.fromSnake), .POS.x - FoodSize, .POS.y - FoodSize, , , CAIRO_FILTER_FAST, 0.75
+           
+                If .foodWHITE > 0 Then vbDrawCC.RenderSurfaceContent "FoodIconLight", .POS.x - FoodSize * 2, .POS.y - FoodSize * 2, , , CAIRO_FILTER_FAST, .foodWHITE
             End If
+
+'            .foodWHITE = .foodWHITE - 0.0015    '--2024
+'            If .foodWHITE < 0# Then .foodWHITE = 0#
+            .foodWHITE = .foodWHITE * 0.996
+            
         End With
-'        FoodAge(I) = FoodAge(I) - 0.002
-        FoodAge(I) = FoodAge(I) - 0.0015 '--2024
-        If FoodAge(I) < 0# Then FoodAge(I) = 0#
     Next
-
-
 
 End Sub
 
 Public Sub FoodMoveAndCheckEaten()
-    Dim I   As Long
-    Dim J   As Double
+    Dim I      As Long
+    Dim J      As Double
     Dim HeadPosition As geoVector2D
-    Dim Hvel As geoVector2D
+    Dim Hvel   As geoVector2D
 
-    Dim D   As Double
-    Dim dx  As Double
-    Dim dy  As Double
-    Dim vD  As Double
-    Dim vDx As Double
-    Dim vDy As Double
-
-
-    Dim GrabR As Double
+    Dim D      As Double
+    Dim dx     As Double
+    Dim dy     As Double
+    Dim vD     As Double
+    Dim vDx    As Double
+    Dim vDy    As Double
 
 
-    For I = 0 To NFood
+    Dim GrabR  As Double
+
+
+
+    'For I = 0 To NFood
+    Do
+
         With FOOD(I)
 
             For J = 0 To NSnakes
                 If InsideBB(Snake(J).getBB, FOOD(I).POS) Then    'when there's a lot of food skip check far away
                     HeadPosition = Snake(J).GetHEADPos
+
 
                     'HeadPosition = VectorSUM(HeadPosition, VectorMUL(Snake(J).GetHEADVel, Snake(J).MySIZE * 3))
 
@@ -196,22 +203,22 @@ Public Sub FoodMoveAndCheckEaten()
                     GrabR = Snake(J).Radius + FoodSize * 0.5
                     GrabR = GrabR * GrabR
                     If D < GrabR Then
-                        If J = PLAYER Then
-                            If Snake(PLAYER).IsDying = 0 Then
+                        If J = SNAKECAMERA Then
+                            If Snake(SNAKECAMERA).IsDying = 0 Then
                                 ' MultipleSounds.playsound "eatfruit.wav"
 
-                                MultipleSounds.PlaySound SoundPlayerChomp, 0, -1000
+                                MultipleSounds.PlaySound SoundPlayerChomp, 0, -1500
                                 PlayerScore = PlayerScore + 10
-                                
+
                             End If
                         Else
-                            HeadPosition = Snake(PLAYER).GetHEADPos
+                            HeadPosition = Snake(SNAKECAMERA).GetHEADPos
                             dx = HeadPosition.x - .POS.x
                             dy = HeadPosition.y - .POS.y
                             D = Sqr(dx * dx + dy * dy)
                             'MultipleSounds.PlaySound SoundEnemyChomp, ClampLong(-dx * 3, -10000, 10000), ClampLong(-D * 0.8, -10000, 0)
                             MultipleSounds.PlaySound SoundEnemyChomp, ClampLong(-dx * 2, -10000, 10000), ClampLong(-D * 1, -10000, 0)
- 
+
                         End If
                         'Snake(J).fLength = Snake(J).fLength + 1
                         Snake(J).SetSize = Snake(J).GetSize + FoodLengthValue
@@ -225,17 +232,17 @@ Public Sub FoodMoveAndCheckEaten()
 
             .POS = VectorSUM(.POS, .Vel)
             .Vel = VectorMUL(.Vel, 0.992)
-            
-'---- Food move/animation  '--2024
-Dim SC As geoVector2D
-Dim A As Long
-A = (I * 137.52 + CNT * 1.33 * .RotSign) Mod 360
-SC.x = COStable(A) * 0.0025
-SC.y = SINtable(A) * 0.0025
-.Vel = VectorSUM(.Vel, SC)
-'------------
 
-            
+            '---- Food move/animation  '--2024
+            Dim SC As geoVector2D
+            Dim A As Long
+            A = (I * 137.52 + CNT * 1.33 * .RotSign) Mod 360
+            SC.x = COStable(A) * 0.0025
+            SC.y = SINtable(A) * 0.0025
+            .Vel = VectorSUM(.Vel, SC)
+            '------------
+
+
             If .POS.x < wMinX Then .POS.x = wMinX: .Vel.x = -.Vel.x
             If .POS.y < wMinY Then .POS.y = wMinY: .Vel.y = -.Vel.y
             If .POS.x > wMaxX Then .POS.x = wMaxX: .Vel.x = -.Vel.x
@@ -243,93 +250,98 @@ SC.y = SINtable(A) * 0.0025
 
 
         End With
-    Next
 
+        '    Next
+I = I + 1
+Loop While I <= NFood
 
 End Sub
 
 Public Sub CreateFoodFromDeadSnake(wS As Long)
-    Dim I      As Long
+    Dim I         As Long
 
 
 
     '    MinFoodForLevelChange = MinFoodForLevelChange + (Snake(wS).Ntokens - 1) * 0.5 - (STARTLENGTH - 1)
     '    FoodDiv = 1 / (MaxFood - MinFoodForLevelChange)
 
-    For I = 0 To Snake(wS).Ntokens - 2
+    For I = 0 To Snake(wS).Ntokens '- 2
+        '
+        '        NFood = NFood + 1
+        '        If NFood > MaxFood Then
+        '            MaxFood = NFood + 20
+        '            ReDim Preserve FOOD(MaxFood)
+        '            ReDim Preserve FoodAge(MaxFood)
+        '        End If
+        '        With FOOD(NFood)
+        '            .POS = Snake(wS).GetTokenPos(I)
+        '            .Vel.x = (RndM * 2 - 1) * 0.125
+        '            .Vel.y = (RndM * 2 - 1) * 0.125
+        '        End With
+        '        FoodAge(NFood) = 1
 
-        ''        NFood = NFood + 1
-        ''        If NFood > MaxFood Then
-        ''            MaxFood = NFood + 20
-        ''            ReDim Preserve FOOD(MaxFood)
-        ''            ReDim Preserve FoodAge(MaxFood)
-        ''        End If
-        ''
-        ''        With FOOD(NFood)
-        ''            .POS = Snake(wS).GetTokenPos(I)
-        ''            .Vel.x = (Rnd * 2 - 1) * 0.125
-        ''            .Vel.y = (Rnd * 2 - 1) * 0.125
-        ''        End With
-        ''        FoodAge(NFood) = 1
-
-        NFood = NFood + 1
-        If NFood > MaxFood Then
-            MaxFood = NFood + 20
-            ReDim Preserve FOOD(MaxFood)
-            ReDim Preserve FoodAge(MaxFood)
-        End If
+        AddFoodParticle Snake(wS).GetTokenPos(I), True, -1
         With FOOD(NFood)
-            .POS = Snake(wS).GetTokenPos(I)
-            .Vel.x = (Rnd * 2 - 1) * 0.125
-            .Vel.y = (Rnd * 2 - 1) * 0.125
+            .Vel.x = (RndM * 2 - 1) * 0.125
+            .Vel.y = (RndM * 2 - 1) * 0.125
         End With
-
-        FoodAge(NFood) = 1
-
 
     Next
 End Sub
 
 
 Public Function PointToNearestFood(Head As tPosAndVel, ByVal SnakeIDX As Long) As geoVector2D
-    Dim I         As Long
-    Dim J         As Long
-    Dim D         As Double
-    Dim dx        As Double
-    Dim dy        As Double
-    Dim MIND      As Double
-    Dim Direct    As Double
+    Dim I      As Long
+    Dim J      As Long
+    Dim D      As Double
+    Dim dx     As Double
+    Dim dy     As Double
+    Dim MIND   As Double
+    Dim Direct As Double
+    Dim Avoid  As Double
 
     Dim HX#, HY#, HVX#, HVY#
     HX = Head.POS.x
     HY = Head.POS.y
     HVX = Head.Vel.x
     HVY = Head.Vel.y
-Dim SFFM#
-SFFM = Snake(SnakeIDX).SearchForFOODMODE
+    Dim SFFM#
+    SFFM = Snake(SnakeIDX).SearchForFOODMODE
 
     MIND = 1E+32
 
     For I = 0 To NFood
-        dx = FOOD(I).POS.x - HX
-        dy = FOOD(I).POS.y - HY
-        D = dx * dx + dy * dy
+        With FOOD(I)
+            dx = .POS.x - HX
+            dy = .POS.y - HY
+            D = dx * dx + dy * dy
 
-        Direct = -Sgn(dx * HVX + dy * HVY)    '''' Consider nearer the ones in front
+            Direct = -Sgn(dx * HVX + dy * HVY)    '''' Consider nearer the ones in front
 
-        ''        Direct = Direct + 2#
-        '        Direct = Direct + 1.65 '--2024
+            ''        Direct = Direct + 2#
+            '        Direct = Direct + 1.65 '--2024
 
-        Direct = Direct + SFFM  '--2024
+            Direct = Direct + SFFM          '--2024
 
-        ''D = D * Direct * (1# - FoodAge(I) * 0.95)
-        'D = D * Direct * (1# - FoodAge(I) * 0.98)
-        D = D * Direct * (1# - FoodAge(I) * 0.99)    '--2024
+            ''D = D * Direct * (1# - FoodAge(I) * 0.95)
+            'D = D * Direct * (1# - FoodAge(I) * 0.98)
+            D = D * Direct * (1# - .foodWHITE * 0.99999)    '--2024
 
-        If D < MIND Then
-            MIND = D
-            J = I
-        End If
+
+            If .fromSnake = SnakeIDX Then
+                Avoid = 200 - (CNT - .Born)
+                If Avoid > 0 Then
+                    D = D * (1 + 5 * Avoid * 0.005)
+                End If
+            End If
+
+
+
+            If D < MIND Then
+                MIND = D
+                J = I
+            End If
+        End With
     Next
 
     PointToNearestFood = VectorNormalize(VectorSUB(FOOD(J).POS, Head.POS))
