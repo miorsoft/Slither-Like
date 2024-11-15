@@ -237,8 +237,8 @@ Public Sub FoodMoveAndCheckEaten()
             Dim SC As geoVector2D
             Dim A As Long
             A = (I * 137.52 + CNT * 1.33 * .RotSign) Mod 360
-            SC.x = COStable(A) * 0.0025
-            SC.y = SINtable(A) * 0.0025
+            SC.x = COStable(A) * 0.0027 '0.0025
+            SC.y = SINtable(A) * 0.0027 '0.0025
             .Vel = VectorSUM(.Vel, SC)
             '------------
 
@@ -280,7 +280,7 @@ Public Sub CreateFoodFromDeadSnake(wS As Long)
         '        End With
         '        FoodAge(NFood) = 1
 
-        AddFoodParticle Snake(wS).GetTokenPos(I), True, -1
+        AddFoodParticle Snake(wS).GetTokenPos(I), True, wS '-1
         With FOOD(NFood)
             .Vel.x = (RndM * 2 - 1) * 0.125
             .Vel.y = (RndM * 2 - 1) * 0.125
@@ -328,8 +328,8 @@ Public Function PointToNearestFood(Head As tPosAndVel, ByVal SnakeIDX As Long) A
             D = D * Direct * (1# - .foodWHITE * 0.99999)    '--2024
 
 
-            If .fromSnake = SnakeIDX Then
-                Avoid = 200 - (CNT - .Born)
+            If .fromSnake = SnakeIDX Then 'Ignore fresh-Tail ones
+                Avoid = 300 - (CNT - .Born) '300=4 secs .. 200
                 If Avoid > 0 Then
                     D = D * (1 + 5 * Avoid * 0.005)
                 End If

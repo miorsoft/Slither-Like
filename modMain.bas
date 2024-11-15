@@ -282,7 +282,7 @@ If CNT < LevelCNT Then .DrawTextCell CenX - 50, CenY - 30, 100, 60, "LEVEL " & C
                 If SaveFrames Then
                     ' If CNT Mod JPGframeRate = 0 Then    'Multiple of 4 JPGframeRate
                     If DoLOOP Then
-                        vbDRAW.Srf.WriteContentToJpgFile App.Path & "\Frames\" & format(Frame, "00000") & ".jpg", 100
+                        vbDRAW.Srf.WriteContentToPngFile App.Path & "\Frames\" & format(Frame, "00000") & ".png" ', 100
                         Frame = Frame + 1
                     End If
                     ' End If

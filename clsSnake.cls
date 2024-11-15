@@ -18,7 +18,7 @@ Option Explicit
 Private Head As tPosAndVel
 
 Private Token() As tPosAndVel
-Private Const MaxNtok As Long = 999 ' 199
+Private Const MaxNtok As Long = 1023 ' 199
 
 Public Ntokens As Long
 Private InvNtokens As Double

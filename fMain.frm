@@ -68,7 +68,7 @@ Begin VB.Form fMain
          Width           =   1455
       End
       Begin VB.CheckBox chkJPG 
-         Caption         =   "Save Jpg Frames"
+         Caption         =   "Save PNG Frames"
          Height          =   495
          Left            =   240
          TabIndex        =   3
@@ -179,8 +179,9 @@ End Sub
 
 Private Sub Form_Resize()
 
-    PIC.Width = Me.ScaleWidth - 16
-    PIC.Height = Me.ScaleHeight - 16
+
+    PIC.Width = Me.ScaleWidth '- 16
+    PIC.Height = Me.ScaleHeight '- 16
 
     PIC.Width = (PIC.Width \ 8) * 8
     PIC.Height = (PIC.Height \ 8) * 8
