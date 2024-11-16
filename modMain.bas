@@ -439,12 +439,38 @@ End Sub
 
 Private Function UpdateMAPsrf()
     Dim I         As Long
+    Dim P         As geoVector2D
+
+    '    MapCC.Operator = CAIRO_OPERATOR_OUT
+    '    MapCC.SetSourceRGBA 0, 0, 0, 0.8
+    '    MapCC.Paint
+    '    MapCC.Operator = CAIRO_OPERATOR_OVER
+
+    Dim O         As Long
+    O = MapCC.Operator
+    MapCC.Operator = CAIRO_OPERATOR_CLEAR: MapCC.Paint: MapCC.Operator = O
     
-    MapCC.Operator = CAIRO_OPERATOR_OUT
-    MapCC.SetSourceRGBA 0, 0, 0, 0.8
-    MapCC.Paint
-    MapCC.Operator = CAIRO_OPERATOR_OVER
+    'BackGround
+    MapCC.SetSourceRGBA 0.28, 0.28, 0.28, 0.82
+    'MapCC.Paint
+    MapCC.RoundedRect 0, 0, MAPsrf.Width, MAPsrf.Height, 6: MapCC.Fill
+    
+    'FOOD
+    MapCC.SetSourceRGBA 0.1, 0.6, 0.1, 0.55
+    For I = 0 To NFood
+        MapCC.Rectangle (FOOD(I).POS.x - wMinX) * MapScale, (FOOD(I).POS.y - wMinY) * MapScale, 1, 1
+    Next
+    MapCC.Stroke
+
+    'SNAKES
     For I = NSnakes To 0 Step -1
         Snake(I).DrawToMAP MapCC, MapScale
     Next
+
+    'Visible Screen
+    P = Snake(PLAYER).GetHEADPos
+    MapCC.SetSourceRGBA 1, 1, 1, 0.06
+    MapCC.RoundedRect (P.x - wMinX) * MapScale - MaxW * 0.5 * invZOOM * MapScale, (P.y - wMinY) * MapScale - maxH * 0.5 * invZOOM * MapScale, MaxW * MapScale * invZOOM, maxH * MapScale * invZOOM, 4
+    MapCC.Fill
+
 End Function
