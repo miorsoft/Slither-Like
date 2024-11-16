@@ -922,12 +922,12 @@ End Function
 
 
 
-Public Function maX(A As Double, b As Double) As Double
-    If A > b Then maX = A Else: maX = b
+Public Function maX(ByVal A As Double, ByVal B As Double) As Double
+    If A > B Then maX = A Else: maX = B
 End Function
 
-Public Function Min(A As Double, b As Double) As Double
-    If A < b Then Min = A Else: Min = b
+Public Function Min(ByVal A As Double, ByVal B As Double) As Double
+    If A < B Then Min = A Else: Min = B
 End Function
 
 
@@ -939,10 +939,10 @@ End Function
 ' @param Remainder The variable to place the remainder of the division.
 ' @return The quotient of the division.
 '
-Public Sub DivRem(ByVal A As Long, ByVal b As Long, ByRef remainder As Long) 'As Long
+Public Sub DivRem(ByVal A As Long, ByVal B As Long, ByRef remainder As Long) 'As Long
     Dim D&
-    D = A \ b
-    remainder = A - (b * D)    ' this is about 2x faster than Mod.
+    D = A \ B
+    remainder = A - (B * D)    ' this is about 2x faster than Mod.
 End Sub
 
 Public Function RndM(Optional ByVal Number As Long) As Double

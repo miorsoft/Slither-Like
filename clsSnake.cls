@@ -148,16 +148,18 @@ End Function
 '    Next
 '
 'End Function
-Friend Sub UpdateBB()
-    Dim I      As Long
+Friend Sub UpdateBB(Optional Extra As Boolean = False)
+    Dim I         As Long
     BB.minX = 1E+32
     BB.minY = 1E+32
     BB.maxX = -1E+32
     BB.maxY = -1E+32
-    Dim D2     As Double
-    D2 = Diam * 2
+    Dim D2        As Double
 
-    For I = 0 To Ntokens    ' - 1
+    D2 = Diam * 2
+    If Extra Then D2 = Diam * 6
+
+    For I = 0 To Ntokens
         With Token(I).POS
             If .x - D2 < BB.minX Then BB.minX = .x - D2
             If .y - D2 < BB.minY Then BB.minY = .y - D2
@@ -621,11 +623,54 @@ Friend Sub DRAWFlag()
         .LineTo (Token(FlagToken).POS.x + FlagX) * 0.5 - X1, (Token(FlagToken).POS.y + FlagY) * 0.5 - Y1
         .RelLineTo X1, Y1
         .Fill
+        
+        
+
+        
     End With
 
     '----------------------------
 End Sub
+Friend Sub DrawToMAP(CC As cCairoContext, MapS As Double)
+    Dim I         As Double
+    Dim R         As Double
+    Dim IStep As Double
+    
+    R = Diam * MapS '* 1.25
+    
+'    IStep = R * 1.66
+'    CC.SetSourceRGB ColorR, ColorG, ColorB
+'    For I = 0 To Ntokens Step IStep
+'        CC.Arc (Token(I).POS.x - wMinX) * MapS, (Token(I).POS.y - wMinY) * MapS, R
+'        CC.Fill
+'    Next
+    
+    CC.SetLineWidth R * 2#
+    IStep = R * 2.5
+   If IsDying Then
+    CC.SetSourceRGB RndM, RndM, RndM
+   Else
+     CC.SetSourceRGB ColorR, ColorG, ColorB
+    End If
+    
+    CC.MoveTo (Token(0).POS.x - wMinX) * MapS, (Token(0).POS.y - wMinY) * MapS
+       For I = IStep To Ntokens Step IStep
+        CC.LineTo (Token(I).POS.x - wMinX) * MapS, (Token(I).POS.y - wMinY) * MapS
+    Next
+           CC.LineTo (Token(Ntokens).POS.x - wMinX) * MapS, (Token(Ntokens).POS.y - wMinY) * MapS
+ 
+CC.Stroke
 
+    
+    
+    If MyIDX = PLAYER Then
+    CC.SetLineWidth 1.25
+    CC.SetSourceColor vbYellow
+        CC.Arc (Token(0).POS.x - wMinX) * MapS, (Token(0).POS.y - wMinY) * MapS, R + 1
+        CC.Stroke
+    End If
+    
+End Sub
 
 '''''
 '''''Friend Sub MOVE()
@@ -1005,13 +1050,6 @@ Friend Sub Kill()
     If Not (IsDying) Then
         IsDying = -1
         DyingTime = CNT
-        
-        
-        
-        
-        
-    Else
-
     End If
 
 End Sub

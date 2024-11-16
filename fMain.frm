@@ -26,20 +26,28 @@ Begin VB.Form fMain
    Begin VB.PictureBox PicPanel 
       Appearance      =   0  'Flat
       ForeColor       =   &H80000008&
-      Height          =   5175
+      Height          =   5895
       Left            =   13440
-      ScaleHeight     =   343
+      ScaleHeight     =   391
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   127
       TabIndex        =   1
       Top             =   240
       Width           =   1935
+      Begin VB.CheckBox chkMAP 
+         Caption         =   "Draw MAP"
+         Height          =   495
+         Left            =   240
+         TabIndex        =   9
+         ToolTipText     =   "Show MAP"
+         Top             =   3120
+         Width           =   1455
+      End
       Begin VB.CheckBox chkFlag 
          Caption         =   "Draw Flags"
          Height          =   495
          Left            =   240
          TabIndex        =   8
-         ToolTipText     =   "AI moves the player"
          Top             =   2400
          Width           =   1455
       End
@@ -47,7 +55,7 @@ Begin VB.Form fMain
          Height          =   375
          Left            =   0
          TabIndex        =   7
-         Top             =   4680
+         Top             =   5280
          Width           =   1935
       End
       Begin VB.CheckBox chkAI 
@@ -73,7 +81,7 @@ Begin VB.Form fMain
          Left            =   240
          TabIndex        =   4
          ToolTipText     =   "Debug Draw Bounding Boxes"
-         Top             =   3120
+         Top             =   3840
          Width           =   1455
       End
       Begin VB.CheckBox chkJPG 
@@ -82,7 +90,7 @@ Begin VB.Form fMain
          Left            =   240
          TabIndex        =   3
          ToolTipText     =   "Save Frame to create a Video"
-         Top             =   3840
+         Top             =   4560
          Width           =   1455
       End
       Begin VB.CheckBox chkBG 
@@ -152,8 +160,9 @@ Private Sub chkJPG_Click()
     SaveFrames = (chkJPG.Value = vbChecked)
 End Sub
 
-
-
+Private Sub chkMAP_Click()
+    DoDrawMAP = (chkMAP.Value = vbChecked)
+End Sub
 
 Private Sub Form_Load()
 

@@ -47,6 +47,7 @@ Public Const SoundPlayerDeath As String = "death.wav"
 
 Public DoDrawFlags As Long
 Public DoDrawBB As Long
+Public DoDrawMAP As Long
 Public SaveFrames As Long
 Private Frame As Long
 Private Const JPGframeRate As Long = 3    ''''75/3= 25 FPS ' Multiple of 3  ( cnt mod 3)
@@ -67,6 +68,55 @@ Public PlayerScore As Long
 Public LevelCNT As Long
 
 Public SNAKECAMERA As Long
+
+Public MAPsrf As cCairoSurface
+Public MapCC As cCairoContext
+Public Const MapScale As Double = 0.05
+
+'********************
+'***** MANIFEST *****
+'********************
+Private Type InitCommonControlsExStruct
+    lngSize As Long
+    lngICC As Long
+End Type
+Private Declare Function InitCommonControls Lib "comctl32" () As Long
+Private Declare Function LoadLibrary Lib "kernel32.dll" Alias "LoadLibraryA" (ByVal lpLibFileName As String) As Long
+Private Declare Function FreeLibrary Lib "kernel32.dll" (ByVal hLibModule As Long) As Long
+Private Declare Function InitCommonControlsEx Lib "comctl32.dll" (iccex As InitCommonControlsExStruct) As Boolean
+
+Private Sub Main()
+
+    Dim iccex As InitCommonControlsExStruct, hMod As Long
+    Const ICC_ALL_CLASSES As Long = &HFDFF& ' combination of all known values
+    ' constant descriptions: http://msdn.microsoft.com/en-us/library/bb775507%28VS.85%29.aspx
+
+    With iccex
+       .lngSize = LenB(iccex)
+       .lngICC = ICC_ALL_CLASSES    ' you really should customize this value from the available constants
+    End With
+    On Error Resume Next ' error? Requires IEv3 or above
+    hMod = LoadLibrary("shell32.dll")
+    InitCommonControlsEx iccex
+    If Err Then
+        InitCommonControls ' try Win9x version
+        Err.Clear
+    End If
+    On Error GoTo 0
+    '... show your main form next (i.e., Form1.Show)
+    fMain.Show
+    If hMod Then FreeLibrary hMod
+
+
+'** Tip 1: Avoid using VB Frames when applying XP/Vista themes
+'          In place of VB Frames, use pictureboxes instead.
+'** Tip 2: Avoid using Graphical Style property of buttons, checkboxes and option buttons
+'          Doing so will prevent them from being themed.
+
+End Sub
+'********************
+'********************
+'********************
 
 Public Sub InitPool(ByVal NoSnakes As Long, Optional NEWGAME As Boolean = True)
 
@@ -280,6 +330,11 @@ Public Sub MainLoop()
                 End With
 
 
+If DoDrawMAP Then
+If (CNT Mod 6&) = 0& Then UpdateMAPsrf
+vbDrawCC.RenderSurfaceContent MAPsrf, 10, 25
+End If
+
                 vbDRAW.Srf.DrawToDC PicHDC
 
 
@@ -304,18 +359,18 @@ Public Sub MainLoop()
                 InitPool NSnakes + 1, False    ' * 1.18    '1.2
                 InitFOOD NSnakes * FoodXSnake
                 Level = Level + 1
-                StrCaption = " Lifes: " & LIFES & "     SCORE: " & PlayerScore & "     Level: " & Level & "     Snakes: " & NSnakes & "     Food: " & NFood & "      FPS: " & FPS \ JPGframeRate & "     Length: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
+                StrCaption = " Lifes: " & LIFES & "     SCORE: " & PlayerScore & "     Level: " & Level & "     Snakes: " & NSnakes + 1 & "     Food: " & NFood & "      FPS: " & FPS \ JPGframeRate & "     Length: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
                 MultipleSounds.PlaySound SoundINTRO
             End If
 
 
-            '            If CNT Mod 100 = 0 Then
-            '            If (CNT And 31&) = 0& Then '63
-            If (CNT And 15&) = 0& Then  '63
-                StrCaption = " Lifes: " & LIFES & "     SCORE: " & PlayerScore & "     Level: " & Level & "     Snakes: " & NSnakes & "     Food: " & NFood & "      FPS: " & FPS \ JPGframeRate & "     Length: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
-                UpdateSCORESString
-            End If
 
+            If (CNT And 15&) = 0& Then
+                StrCaption = " Lifes: " & LIFES & "     SCORE: " & PlayerScore & "     Level: " & Level & "     Snakes: " & NSnakes + 1 & "     Food: " & NFood & "      FPS: " & FPS \ JPGframeRate & "     Length: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
+                UpdateSCORESString
+                
+            End If
+           
 
 
         End If
@@ -376,9 +431,20 @@ AG: '- SORT SCORES------------------
 
 
 
-invMaxScore = 1 / Scores(0)
+    invMaxScore = 1# / Scores(0)
 
 
 
 End Sub
 
+Private Function UpdateMAPsrf()
+    Dim I         As Long
+    
+    MapCC.Operator = CAIRO_OPERATOR_OUT
+    MapCC.SetSourceRGBA 0, 0, 0, 0.8
+    MapCC.Paint
+    MapCC.Operator = CAIRO_OPERATOR_OVER
+    For I = NSnakes To 0 Step -1
+        Snake(I).DrawToMAP MapCC, MapScale
+    Next
+End Function

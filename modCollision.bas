@@ -247,41 +247,57 @@ End Sub
 
 Public Function NewSnakePosition(Idx As Long) As geoVector2D
 
-    Dim BB  As tBB
-    Dim POS As geoVector2D
+    Dim BB        As tBB
+    Dim POS       As geoVector2D
     Dim PlayerHeadPOS As geoVector2D
-    Dim dx  As Double
-    Dim dy  As Double
-    Dim C   As Long
-    Dim InsBB As Boolean
+    Dim dx        As Double
+    Dim dy        As Double
+    Dim C         As Long
+    Dim InsBB     As Boolean
 
 
-    If Idx = PLAYER Then
+    '    If Idx = PLAYER Then
+    '
+    '        Do
+    '            InsBB = False
+    '            POS.x = wMinX + (wMaxX - wMinX) * RndM
+    '            POS.y = wMinY + (wMaxY - wMinY) * RndM
+    '            For C = 1 To NSnakes
+    '                BB = Snake(C).getBB
+    '                If InsideBB(BB, POS) Then InsBB = True: Exit For
+    '            Next
+    '        Loop While InsBB
+    '
+    '    Else
+    '        ' BB = Snake(PLAYER).getBB
+    '        PlayerHeadPOS = Snake(PLAYER).GetHEADPos
+    '
+    '        Do
+    '            POS.x = wMinX + (wMaxX - wMinX) * RndM
+    '            POS.y = wMinY + (wMaxY - wMinY) * RndM
+    '            dx = POS.x - PlayerHeadPOS.x
+    '            dy = POS.y - PlayerHeadPOS.y
+    '            'Loop While InsideBB(BB, POS) Or ((dx * dx + dy * dy) < 40000)
+    '        Loop While (dx * dx + dy * dy) < 40000
+    '
+    '
+    '    End If
 
-        Do
-            InsBB = False
-            POS.x = wMinX + (wMaxX - wMinX) * RndM
-            POS.y = wMinY + (wMaxY - wMinY) * RndM
-            For C = 1 To NSnakes
+    For C = 0 To NSnakes
+        Snake(C).UpdateBB True
+    Next
+
+    Do
+        InsBB = False
+        POS.x = wMinX + (wMaxX - wMinX) * RndM
+        POS.y = wMinY + (wMaxY - wMinY) * RndM
+        For C = 0 To NSnakes
+            If C <> Idx Then
                 BB = Snake(C).getBB
                 If InsideBB(BB, POS) Then InsBB = True: Exit For
-            Next
-        Loop While InsBB
-
-    Else
-        ' BB = Snake(PLAYER).getBB
-        PlayerHeadPOS = Snake(PLAYER).GetHEADPos
-
-        Do
-            POS.x = wMinX + (wMaxX - wMinX) * RndM
-            POS.y = wMinY + (wMaxY - wMinY) * RndM
-            dx = POS.x - PlayerHeadPOS.x
-            dy = POS.y - PlayerHeadPOS.y
-            'Loop While InsideBB(BB, POS) Or ((dx * dx + dy * dy) < 40000)
-        Loop While (dx * dx + dy * dy) < 40000
-
-
-    End If
+            End If
+        Next
+    Loop While InsBB
 
     NewSnakePosition = POS
 

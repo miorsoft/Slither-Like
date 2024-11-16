@@ -45,14 +45,13 @@ Public SINtable(-360 To 360) As Double
 
 
 
-
 Public Sub InitFOOD(HowMuch As Long)
-    Dim I      As Long
+    Dim I         As Long
 
 
 
 
-    Dim P      As geoVector2D
+    Dim P         As geoVector2D
     For I = 1 To HowMuch
         P.x = wMinX + RndM * (wMaxX - wMinX)
         P.y = wMinY + RndM * (wMaxY - wMinY)
@@ -72,7 +71,12 @@ Public Sub InitFOOD(HowMuch As Long)
     FoodDiv = 1 / (MaxFood - MinFoodForLevelChange)
 
 
-
+    Set MAPsrf = Cairo.CreateSurface((wMaxX - wMinX) * MapScale, (wMaxY - wMinY) * MapScale, ImageSurface)
+    Set MapCC = MAPsrf.CreateContext
+    MapCC.AntiAlias = CAIRO_ANTIALIAS_FAST
+    MapCC.SetLineCap CAIRO_LINE_CAP_ROUND
+    MapCC.SetLineJoin CAIRO_LINE_JOIN_ROUND
+    
 
 End Sub
 Private Sub RemoveFood(wF As Long)
@@ -348,4 +352,6 @@ Public Function PointToNearestFood(Head As tPosAndVel, ByVal SnakeIDX As Long) A
     PointToNearestFood = VectorNormalize(VectorSUB(FOOD(J).POS, Head.POS))
 
 End Function
+
+
 
