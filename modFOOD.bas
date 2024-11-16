@@ -2,8 +2,8 @@ Attribute VB_Name = "modFOOD"
 Option Explicit
 
 Public Type tPosAndVel
-    POS        As geoVector2D
-    Vel        As geoVector2D
+    POS           As geoVector2D
+    Vel           As geoVector2D
 
 End Type
 
@@ -14,23 +14,24 @@ End Type
 
 
 Public Type tFOOD
-    POS        As geoVector2D
-    Vel        As geoVector2D
-    Color      As Long
-    foodWHITE  As Double
-    RotSign    As Long
-    Born       As Long
-    fromSnake As Long
+    POS           As geoVector2D
+    Vel           As geoVector2D
+    Color         As Long
+    foodWHITE     As Double
+    RotSign       As Long
+    Born          As Long
+    fromSnake     As Long
+    fromSnakeIconName As String
 End Type
 
-Public FOOD()  As tFOOD
+Public FOOD()     As tFOOD
 
 
-Public NFood   As Long
-Private MaxFood As Long
-Public FOODLEVEL As Long
+Public NFood      As Long
+Private MaxFood   As Long
+Public FOODLEVEL  As Long
 
-Public FoodDiv As Double
+Public FoodDiv    As Double
 
 
 Public Const FoodSize As Double = 9
@@ -93,7 +94,7 @@ Private Sub RemoveFood(wF As Long)
 
 End Sub
 
-Public Sub AddFoodParticle(POS As geoVector2D, IsWhite As Boolean, fromSnake As Long)
+Public Sub AddFoodParticle(POS As geoVector2D, ByVal IsWhite As Boolean, ByVal fromSnake As Long)
 
     NFood = NFood + 1
     If NFood > MaxFood Then
@@ -114,9 +115,8 @@ Public Sub AddFoodParticle(POS As geoVector2D, IsWhite As Boolean, fromSnake As 
         If IsWhite Then .foodWHITE = 1 Else: .foodWHITE = 0
         .Born = CNT
         .fromSnake = fromSnake
-        
-
-        
+        .fromSnakeIconName = "FoodIcon" & CStr(fromSnake)
+                
 
         InitFoodIcon .fromSnake, NFood
         
@@ -124,27 +124,28 @@ Public Sub AddFoodParticle(POS As geoVector2D, IsWhite As Boolean, fromSnake As 
 End Sub
 
 
-Private Sub FoodToRNDPosition(wF As Long)
-    With FOOD(wF)
-        .POS.x = wMinX + RndM * (wMaxX - wMinX)
-        .POS.y = wMinY + RndM * (wMaxY - wMinY)
-    End With
-End Sub
+'Private Sub FoodToRNDPosition(wF As Long)
+'    With FOOD(wF)
+'        .POS.x = wMinX + RndM * (wMaxX - wMinX)
+'        .POS.y = wMinY + RndM * (wMaxY - wMinY)
+'    End With
+'End Sub
 Public Sub DrawFOOD()
     Dim I      As Long
 
     For I = 0 To NFood
         With FOOD(I)
-            If InsideBB(CameraBB, FOOD(I).POS) Then
+            If InsideBB(CameraBB, .POS) Then
 '                vbDrawCC.RenderSurfaceContent "FoodIcon", .POS.x - FoodSize, .POS.y - FoodSize, , , CAIRO_FILTER_FAST, 0.75
-                      vbDrawCC.RenderSurfaceContent "FoodIcon" & CStr(.fromSnake), .POS.x - FoodSize, .POS.y - FoodSize, , , CAIRO_FILTER_FAST, 0.75
+                      vbDrawCC.RenderSurfaceContent .fromSnakeIconName, .POS.x - FoodSize, .POS.y - FoodSize, , , CAIRO_FILTER_FAST, 0.75
            
                 If .foodWHITE > 0 Then vbDrawCC.RenderSurfaceContent "FoodIconLight", .POS.x - FoodSize * 2, .POS.y - FoodSize * 2, , , CAIRO_FILTER_FAST, .foodWHITE
             End If
 
 '            .foodWHITE = .foodWHITE - 0.0015    '--2024
 '            If .foodWHITE < 0# Then .foodWHITE = 0#
-            .foodWHITE = .foodWHITE * 0.996
+'            .foodWHITE = .foodWHITE * 0.996
+            .foodWHITE = .foodWHITE * 0.9965
             
         End With
     Next
@@ -328,7 +329,7 @@ Public Function PointToNearestFood(Head As tPosAndVel, ByVal SnakeIDX As Long) A
             D = D * Direct * (1# - .foodWHITE * 0.99999)    '--2024
 
 
-            If .fromSnake = SnakeIDX Then 'Ignore fresh-Tail ones
+            If .fromSnake = SnakeIDX Then 'Ignore fresh-Trail ones
                 Avoid = 300 - (CNT - .Born) '300=4 secs .. 200
                 If Avoid > 0 Then
                     D = D * (1 + 5 * Avoid * 0.005)

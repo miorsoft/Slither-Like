@@ -65,6 +65,13 @@ Public SearchForFOODMODE As Double
 
 Private EYESWIDE As Double
 
+Private FlagToken As Long
+Private FlagX As Double
+Private FlagY As Double
+Private FlagZ As Double
+Private FlagVelZ As Double
+'
+
 '---------------------------------------------
 ' LEGS
 Private FrontDist As Double
@@ -206,6 +213,9 @@ Friend Sub Init(x As Double, y As Double, Idx As Long, Leng As Double)
 
     UpdateBB
 
+FlagToken = Ntokens \ 2
+FlagX = Token(FlagToken).POS.x
+FlagY = Token(FlagToken).POS.y
 
 
 End Sub
@@ -248,8 +258,8 @@ Private Sub RandomizeMe()
 
     Head.POS.x = x
     Head.POS.y = y
-    Head.Vel.x = RndM * 2 - 1
-    Head.Vel.y = RndM * 2 - 1
+    Head.Vel.x = 0 ' RndM * 2 - 1
+    Head.Vel.y = 0 ' RndM * 2 - 1
     'Color = RGB(120 + rndm * 135, 120 + rndm * 135, 120 + rndm * 135)
     ColorR = 0.45 + RndM * 0.5
     ColorG = 0.45 + RndM * 0.5
@@ -259,6 +269,16 @@ Private Sub RandomizeMe()
 
     SearchForFOODMODE = 1.2 + RndM * 0.8
     EYESWIDE = SearchForFOODMODE
+    
+    
+
+    
+FlagToken = Ntokens \ 2
+
+FlagX = Token(FlagToken).POS.x
+FlagY = Token(FlagToken).POS.y
+
+
 End Sub
 
 
@@ -373,7 +393,7 @@ Friend Sub DRAW(DrawBoundingBox As Long)
             '                .Fill
             '            Next
 
-            .SetLineWidth Diam
+
 
             '''''            GoTo DRAW2
             '''''
@@ -414,12 +434,16 @@ Friend Sub DRAW(DrawBoundingBox As Long)
 
 
 DRAW2:
+            .SetLineWidth Diam
             P = Token(Ntokens).POS
             .MoveTo P.x, P.y
             For I = Ntokens - 1 To 0 Step -StepD
                 P = Token(I).POS
                 AA = ((I * InvNtokens) * 360 * (SQRNtokens * 0.66)) Mod 360
                 CADD = -COStable(AA) * 0.21 - FASTspeed * 0.25
+                
+'                .SetLineWidth Diam + 0.0618 * Diam * COStable(AA) '<<--- ??? experim width cosinusoidal
+                
                 .SetSourceRGB ColorR + CADD, ColorG + CADD, ColorB + CADD
                 .LineTo P.x, P.y
                 .Stroke
@@ -428,6 +452,13 @@ DRAW2:
             .LineTo Head.POS.x, Head.POS.y  ''REM '--2024
             .Stroke
         End If
+
+
+
+
+
+
+
 
 
         '''' LEGS
@@ -477,9 +508,9 @@ DRAW2:
         '.Ellipse X1, Y1, Diam * 0.67, Diam * 0.67
         .Arc X1, Y1, Diam * 0.335
         .Fill
-        'Draw Head
+        '-----------------Draw Head
         .SetSourceRGB ColorR + CADD, ColorG + CADD, ColorB + CADD
-        '.Ellipse Head.POS.x, Head.POS.y, Diam, Diam
+        .Ellipse Head.POS.x, Head.POS.y, Diam, Diam
         .Arc Head.POS.x, Head.POS.y, Radius
         .Fill
         '---------------------------------
@@ -542,6 +573,11 @@ DRAW2:
         '........................................
 
 
+
+
+
+
+
         If DrawBoundingBox Then
             .Rectangle BB.minX, BB.minY, BB.maxX - BB.minX, BB.maxY - BB.minY
             .Stroke
@@ -549,10 +585,47 @@ DRAW2:
 
 
 
+
+
     End With
 
 
 End Sub
+Friend Sub DRAWFlag()
+
+    If BBOverlapping(CameraBB, BB) = False Then Exit Sub
+    '-------- FLAG --------------
+    Dim X1#, Y1#
+
+    With vbDrawCC
+        .SetLineWidth Diam * 0.12 '0.15
+
+        X1 = Token(FlagToken).Vel.x * Diam * 0.35 '- Diam * 0.5
+        Y1 = Token(FlagToken).Vel.y * Diam * 0.35 '- Diam * 0.5
+
+        .SetSourceRGB ColorR * 0.85, ColorG * 0.85, ColorB * 0.85
+        .Arc Token(FlagToken).POS.x, Token(FlagToken).POS.y, Diam * 0.15 '0.175
+        .Fill
+
+
+        '.SetSourceRGBA ColorR - 0.25, ColorG + 0.2, ColorB - 0.25, 0.85
+        .SetSourceRGBA 1.25 - ColorR, 1.25 - ColorG, 1.25 - ColorB, 0.85
+        
+        .MoveTo Token(FlagToken).POS.x, Token(FlagToken).POS.y
+        .LineTo FlagX, FlagY
+        .LineTo FlagX - X1, FlagY - Y1
+        .Stroke
+
+        .MoveTo FlagX, FlagY
+        .RelLineTo -X1, -Y1
+        .LineTo (Token(FlagToken).POS.x + FlagX) * 0.5 - X1, (Token(FlagToken).POS.y + FlagY) * 0.5 - Y1
+        .RelLineTo X1, Y1
+        .Fill
+    End With
+
+    '----------------------------
+End Sub
+
 
 '''''
 '''''Friend Sub MOVE()
@@ -699,38 +772,38 @@ End Sub
 
 
 Friend Sub MOVE2()
-    Dim I      As Long
-    Dim J      As Long
-    Dim J2     As Long
+    Dim I         As Long
+    Dim J         As Long
+    Dim J2        As Long
 
 
     If IsDying Then
-    '''' TOLTO DA DRAW
-                    If (CNT - DyingTime > 40) Then    '104 '' Blinking time
-                CreateFoodFromDeadSnake MyIDX
-                RandomizeMe
-                If MyIDX = PLAYER Then
-                    LIFES = LIFES - 1
-                    If LIFES = 0 Then
-                        Print #1, Level & "  Lifes " & LIFES & "   Score " & PlayerScore
+        '''' TOLTO DA DRAW
+        If (CNT - DyingTime > 40) Then  '104 '' Blinking time
+            CreateFoodFromDeadSnake MyIDX
+            RandomizeMe
+            If MyIDX = PLAYER Then
+                LIFES = LIFES - 1
+                If LIFES = 0 Then
+                    Print #1, Level & "  Lifes " & LIFES & "   Score " & PlayerScore
 
-                        InitPool 6, True
-                        InitFOOD 6 * FoodXSnake
-                        MultipleSounds.PlaySound SoundINTRO
-                    End If
+                    InitPool 6, True
+                    InitFOOD 6 * FoodXSnake
+                    MultipleSounds.PlaySound SoundINTRO
                 End If
             End If
-    
-    
-    
-    
-    
-    Exit Sub
-End If
-    '    tokIDX = (tokIDX + 1) Mod Ntokens
-'    DivRem (tokIDX + 1), Ntokens, tokIDX
+        End If
 
-tokIDX = 0
+
+
+
+
+        Exit Sub
+    End If
+    '    tokIDX = (tokIDX + 1) Mod Ntokens
+    '    DivRem (tokIDX + 1), Ntokens, tokIDX
+
+    tokIDX = 0
 
 
     If MyIDX = PLAYER And (Not (AIcontrol)) Then    'Player
@@ -741,7 +814,7 @@ tokIDX = 0
 
         Head.Vel = VectorNormalize(VectorSUM(Head.Vel, DirChange))
 
-    Else    'Other Snakes (AI)
+    Else                                'Other Snakes (AI)
 
         oldANG = Atan2(Head.Vel.x, Head.Vel.y)
 
@@ -794,9 +867,9 @@ tokIDX = 0
 
 
 
-    If FASTspeedCOUNT > 25 Then    '20
+    If FASTspeedCOUNT > 25 Then         '20
         FASTspeedCOUNT = 0
-'        AddFoodParticle Token((tokIDX + 1) Mod Ntokens).POS, False
+        '        AddFoodParticle Token((tokIDX + 1) Mod Ntokens).POS, False
         AddFoodParticle Token(Ntokens).POS, False, MyIDX
         SetSize = GetSize - FoodLengthValue
         If MyIDX = PLAYER Then PlayerScore = PlayerScore - 10
@@ -813,65 +886,116 @@ tokIDX = 0
 
     Token(tokIDX).POS = Head.POS
 
-'********************************************
-'    For I = Ntokens To 1 Step -1
-'        J = I - 1&
-''        Token(I).POS = VectorSUM(VectorMUL(Token(I).POS, 0.835), VectorMUL(Token(J).POS, 0.165))    '--2024
-'        Token(I).POS.x = Token(I).POS.x * 0.835 + Token(J).POS.x * 0.165 '--2024
-'        Token(I).POS.y = Token(I).POS.y * 0.835 + Token(J).POS.y * 0.165 '--2024
-'    Next
-'********************************************
-'        For I = 1 To Ntokens
-        For I = Ntokens To 1 Step -1
+    '********************************************
+    '    For I = Ntokens To 1 Step -1
+    '        J = I - 1&
+    ''        Token(I).POS = VectorSUM(VectorMUL(Token(I).POS, 0.835), VectorMUL(Token(J).POS, 0.165))    '--2024
+    '        Token(I).POS.x = Token(I).POS.x * 0.835 + Token(J).POS.x * 0.165 '--2024
+    '        Token(I).POS.y = Token(I).POS.y * 0.835 + Token(J).POS.y * 0.165 '--2024
+    '    Next
+    '********************************************
+    '        For I = 1 To Ntokens
+    For I = Ntokens To 1 Step -1
         J = I - 1&
-'        Token(I).POS = VectorSUM(VectorMUL(Token(I).POS, 0.835), VectorMUL(Token(J).POS, 0.165))    '--2024
-        Token(I).POS.x = Token(I).POS.x * 0.76 + Token(J).POS.x * 0.24 '--2024
-        Token(I).POS.y = Token(I).POS.y * 0.76 + Token(J).POS.y * 0.24 '--2024
+        '        Token(I).POS = VectorSUM(VectorMUL(Token(I).POS, 0.835), VectorMUL(Token(J).POS, 0.165))    '--2024
+        Token(I).POS.x = Token(I).POS.x * 0.76 + Token(J).POS.x * 0.24    '--2024
+        Token(I).POS.y = Token(I).POS.y * 0.76 + Token(J).POS.y * 0.24    '--2024
     Next
-'********************************************
-    
+    '********************************************
+
     If fLength \ 1 < Ntokens Then
         Ntokens = Ntokens - 1
         InvNtokens = 1 / Ntokens
-'        InvNtokens2 = 1 / (Ntokens - 2)
-SQRNtokens = Ntokens ^ 0.5
+        '        InvNtokens2 = 1 / (Ntokens - 2)
+        SQRNtokens = Ntokens ^ 0.5
 
     End If
     ' fLength = fLength + 0.002 * rndm
     If fLength \ 1 > Ntokens Then
         Ntokens = Ntokens + 1
-        
+
         If Ntokens > MaxNtok Then
             Ntokens = MaxNtok
-            
+
         Else
-'            'Riordina
-'            For I = Ntokens - 1 To tokIDX + 1 Step -1
-'                'J = I Mod Ntokens
-'                DivRem I, Ntokens, J
-'
-'                J2 = I - 1
-''                DivRem I - 1, Ntokens, J2
-'
-'                Token(J).POS = Token(J2).POS
-'            Next
+            '            'Riordina
+            '            For I = Ntokens - 1 To tokIDX + 1 Step -1
+            '                'J = I Mod Ntokens
+            '                DivRem I, Ntokens, J
+            '
+            '                J2 = I - 1
+            ''                DivRem I - 1, Ntokens, J2
+            '
+            '                Token(J).POS = Token(J2).POS
+            '            Next
         End If
         Token(Ntokens) = Token(Ntokens - 1)
         InvNtokens = 1 / Ntokens
-'        InvNtokens2 = 1 / (Ntokens - 2)
-SQRNtokens = Ntokens ^ 0.5
+        '        InvNtokens2 = 1 / (Ntokens - 2)
+        SQRNtokens = Ntokens ^ 0.5
     End If
 
 
 
+
+
+
+
+
+
+
+    '-------- FLAG --------------
+    Dim MZZ       As Double
+    Dim MMUL2     As Double
+    Dim dx#, dy#, DZ#
+
+    Const MULUP   As Double = 0.006 '0.007
+    Const DECAY   As Double = 0.99 '0.99      '0.95
+
+If DoDrawFlags Then
+    FlagToken = STARTLENGTH
+
+    If FlagToken > Ntokens Then FlagToken = Ntokens
+
+    MZZ = Diam * 2
+
+
+    dx = Token(FlagToken).POS.x - (FlagX + Token(FlagToken).Vel.x)
+    dy = Token(FlagToken).POS.y - (FlagY + Token(FlagToken).Vel.y)
+    DZ = MZZ - (FlagZ + FlagVelZ)
+    Token(FlagToken).Vel.x = Token(FlagToken).Vel.x + dx * MULUP
+    Token(FlagToken).Vel.y = Token(FlagToken).Vel.y + dy * MULUP
+    FlagVelZ = FlagVelZ + DZ * MULUP
+    FlagX = FlagX + Token(FlagToken).Vel.x
+    FlagY = FlagY + Token(FlagToken).Vel.y
+    FlagZ = FlagZ + FlagVelZ
+
+    Token(FlagToken).Vel.x = Token(FlagToken).Vel.x * DECAY
+    Token(FlagToken).Vel.y = Token(FlagToken).Vel.y * DECAY
+    FlagVelZ = FlagVelZ * DECAY
+End If
+    '-------- -------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
     '-------------- legs--------------------------------
-'    lungGambaT = lungGambaT * 0.999 + 0.001 * Diam * 3
-'    INVlungGambaT = 1 / lungGambaT
-'
-'    iFront = 3
-'    DivRem tokIDX + Ntokens \ 2, Ntokens, iRear
-'
-'    COMPUTELEGS
+    '    lungGambaT = lungGambaT * 0.999 + 0.001 * Diam * 3
+    '    INVlungGambaT = 1 / lungGambaT
+    '
+    '    iFront = 3
+    '    DivRem tokIDX + Ntokens \ 2, Ntokens, iRear
+    '
+    '    COMPUTELEGS
     '-------------------------------------------------------
 
 

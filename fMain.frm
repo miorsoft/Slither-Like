@@ -26,19 +26,28 @@ Begin VB.Form fMain
    Begin VB.PictureBox PicPanel 
       Appearance      =   0  'Flat
       ForeColor       =   &H80000008&
-      Height          =   4455
+      Height          =   5175
       Left            =   13440
-      ScaleHeight     =   295
+      ScaleHeight     =   343
       ScaleMode       =   3  'Pixel
       ScaleWidth      =   127
       TabIndex        =   1
       Top             =   240
       Width           =   1935
+      Begin VB.CheckBox chkFlag 
+         Caption         =   "Draw Flags"
+         Height          =   495
+         Left            =   240
+         TabIndex        =   8
+         ToolTipText     =   "AI moves the player"
+         Top             =   2400
+         Width           =   1455
+      End
       Begin VB.HScrollBar hSnake 
          Height          =   375
          Left            =   0
          TabIndex        =   7
-         Top             =   3840
+         Top             =   4680
          Width           =   1935
       End
       Begin VB.CheckBox chkAI 
@@ -64,7 +73,7 @@ Begin VB.Form fMain
          Left            =   240
          TabIndex        =   4
          ToolTipText     =   "Debug Draw Bounding Boxes"
-         Top             =   2400
+         Top             =   3120
          Width           =   1455
       End
       Begin VB.CheckBox chkJPG 
@@ -73,7 +82,7 @@ Begin VB.Form fMain
          Left            =   240
          TabIndex        =   3
          ToolTipText     =   "Save Frame to create a Video"
-         Top             =   3120
+         Top             =   3840
          Width           =   1455
       End
       Begin VB.CheckBox chkBG 
@@ -124,15 +133,19 @@ Option Explicit
 
 
 Private Sub chkAI_Click()
-AIcontrol = (chkAI.Value = vbChecked)
+    AIcontrol = (chkAI.Value = vbChecked)
 End Sub
 
 Private Sub chkBB_Click()
-    DrawBB = (chkBB.Value = vbChecked)
+    DoDrawBB = (chkBB.Value = vbChecked)
 End Sub
 
 Private Sub chkBG_Click()
     DoBackGround = (chkBG.Value = vbChecked)
+End Sub
+
+Private Sub chkFlag_Click()
+    DoDrawFlags = (chkFlag.Value = vbChecked)
 End Sub
 
 Private Sub chkJPG_Click()

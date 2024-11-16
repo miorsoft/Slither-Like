@@ -109,16 +109,16 @@ Public Sub UnloadRC()
 End Sub
 
 
-Public Sub InitFoodIcon(BySnake As Long, FoodNum As Long)
-    Dim Srf    As cCairoSurface
-    Dim CC     As cCairoContext
-    Dim b()    As Byte
-    Dim x      As Long
-    Dim y      As Long
+Public Sub InitFoodIcon(ByVal BySnake As Long, ByVal FoodNum As Long)
+    Dim Srf       As cCairoSurface
+    Dim CC        As cCairoContext
+    Dim b()       As Byte
+    Dim x         As Long
+    Dim y         As Long
 
-    Dim cR     As Double
-    Dim cG     As Double
-    Dim cB     As Double
+    Dim cR        As Double
+    Dim cG        As Double
+    Dim cB        As Double
 
     If BySnake > UBound(IconR) Then
         ReDim Preserve IconR(-1 To BySnake)
@@ -139,25 +139,23 @@ Public Sub InitFoodIcon(BySnake As Long, FoodNum As Long)
         cG = Snake(BySnake).ColorG
         cB = Snake(BySnake).ColorB
 
-        If IconR(BySnake) <> cR Then
-            If IconG(BySnake) <> cG Then
-                If IconB(BySnake) <> cB Then
-                    For y = 0 To UBound(b, 2)
-                        For x = 0 To UBound(b, 1) Step 4
-                            b(x + 0, y) = cB * b(x + 3, y)
-                            b(x + 1, y) = cG * b(x + 3, y)
-                            b(x + 2, y) = cR * b(x + 3, y)
-                            b(x + 3, y) = 0
-                        Next
-                    Next
-                    Cairo.ImageList.AddImage "FoodIcon" & CStr(BySnake), b()
+        If (IconR(BySnake) <> cR) Or _
+           (IconG(BySnake) <> cG) Or _
+           (IconB(BySnake) <> cB) Then
+            For y = 0 To UBound(b, 2)
+                For x = 0 To UBound(b, 1) Step 4
+                    b(x + 0, y) = cB * b(x + 3, y)
+                    b(x + 1, y) = cG * b(x + 3, y)
+                    b(x + 2, y) = cR * b(x + 3, y)
+                    b(x + 3, y) = 0
+                Next
+            Next
+            Cairo.ImageList.AddImage "FoodIcon" & CStr(BySnake), b()
 
+            IconR(BySnake) = Snake(BySnake).ColorR
+            IconG(BySnake) = Snake(BySnake).ColorG
+            IconB(BySnake) = Snake(BySnake).ColorB
 
-                    IconR(BySnake) = Snake(BySnake).ColorR
-                    IconG(BySnake) = Snake(BySnake).ColorG
-                    IconB(BySnake) = Snake(BySnake).ColorB
-                End If
-            End If
         End If
 
     Else

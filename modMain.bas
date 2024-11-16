@@ -45,7 +45,8 @@ Public Const SoundEnenmyKilled As String = "uohm.wav"
 
 Public Const SoundPlayerDeath As String = "death.wav"
 
-Public DrawBB As Long
+Public DoDrawFlags As Long
+Public DoDrawBB As Long
 Public SaveFrames As Long
 Private Frame As Long
 Private Const JPGframeRate As Long = 3    ''''75/3= 25 FPS ' Multiple of 3  ( cnt mod 3)
@@ -114,18 +115,18 @@ End Sub
 
 
 Public Sub MainLoop()
-    Dim I      As Long
-    Dim pTime  As Double
-    Dim pTime2 As Double
-    Dim FPS    As Long
-    Dim pCnt   As Long
-    Dim J      As Long
+    Dim I         As Long
+    Dim pTime     As Double
+    Dim pTime2    As Double
+    Dim FPS       As Long
+    Dim pCnt      As Long
+    Dim J         As Long
 
     Dim StrCaption As String
 
-    Dim ZOOMtoGO As Double
+    Dim ZOOMtoGO  As Double
 
-Dim FH As Double
+    Dim FH        As Double
 
 
     DoLOOP = True
@@ -188,8 +189,8 @@ Dim FH As Double
 
 
                     'ZOOM = ZOOM * 0.98 + ZOOMtoGO * 0.02
-                    ZOOM = ZOOM * 0.995 + ZOOMtoGO * 0.005 '--2024
-                    
+                    ZOOM = ZOOM * 0.995 + ZOOMtoGO * 0.005    '--2024
+
                     invZOOM = 1# / ZOOM
 
                     .TranslateDrawings -Camera.x * ZOOM + CenX, -Camera.y * ZOOM + CenY
@@ -218,9 +219,9 @@ Dim FH As Double
 
 
 
-'                    Camera = Snake(PLAYER).GetHEADPos
+                    '                    Camera = Snake(PLAYER).GetHEADPos
                     Camera = Snake(SNAKECAMERA).GetHEADPos
-                    
+
 
                     '                    CameraBB.minX = Camera.x - CenX
                     '                    CameraBB.maxX = Camera.x + CenX
@@ -232,14 +233,20 @@ Dim FH As Double
                     CameraBB.minY = Camera.y - CenY * invZOOM
                     CameraBB.maxY = Camera.y + CenY * invZOOM
 
+
                     For I = 0 To NSnakes
-                        Snake(I).DRAW DrawBB
+                        Snake(I).DRAW DoDrawBB
                     Next
-        
+                    If DoDrawFlags Then
+                        For I = 0 To NSnakes
+                            Snake(I).DRAWFlag
+                        Next
+                    End If
+
                     .Restore
 
 
-If CNT < LevelCNT Then .DrawTextCell CenX - 50, CenY - 30, 100, 60, "LEVEL " & CStr(Level) & vbCrLf & vbCrLf & "Lifes " & LIFES, , vbCenter, , 444, 0.9, 111
+                    If CNT < LevelCNT Then .DrawTextCell CenX - 50, CenY - 30, 100, 60, "LEVEL " & CStr(Level) & vbCrLf & vbCrLf & "Lifes " & LIFES, , vbCenter, , 444, 0.9, 111
 
                     .TextOut 5, 5, StrCaption
                     .DrawText MaxW - 300, 5, 400, 1000, StrScore
@@ -255,13 +262,11 @@ If CNT < LevelCNT Then .DrawTextCell CenX - 50, CenY - 30, 100, 60, "LEVEL " & C
                             .Rectangle MaxW - 305, 5 + (I + 2) * 15, 90, 14
                             .Stroke
                         End If
-                        
+
                     Next
                     .SetSourceRGBA 0, 1, 0, 0.3
                     .Rectangle MaxW - 305, 2, 90 * (1 - (NFood - MinFoodForLevelChange) * FoodDiv), 31
                     .Fill
-
-
 
 
 
@@ -282,7 +287,7 @@ If CNT < LevelCNT Then .DrawTextCell CenX - 50, CenY - 30, 100, 60, "LEVEL " & C
                 If SaveFrames Then
                     ' If CNT Mod JPGframeRate = 0 Then    'Multiple of 4 JPGframeRate
                     If DoLOOP Then
-                        vbDRAW.Srf.WriteContentToPngFile App.Path & "\Frames\" & format(Frame, "00000") & ".png" ', 100
+                        vbDRAW.Srf.WriteContentToPngFile App.Path & "\Frames\" & format(Frame, "00000") & ".png"    ', 100
                         Frame = Frame + 1
                     End If
                     ' End If
@@ -295,7 +300,7 @@ If CNT < LevelCNT Then .DrawTextCell CenX - 50, CenY - 30, 100, 60, "LEVEL " & C
             CNT = CNT + 1
 
 
-            If NFood <= MinFoodForLevelChange Then  '5 'Next Level '
+            If NFood <= MinFoodForLevelChange Then    '5 'Next Level '
                 InitPool NSnakes + 1, False    ' * 1.18    '1.2
                 InitFOOD NSnakes * FoodXSnake
                 Level = Level + 1
@@ -304,9 +309,9 @@ If CNT < LevelCNT Then .DrawTextCell CenX - 50, CenY - 30, 100, 60, "LEVEL " & C
             End If
 
 
-'            If CNT Mod 100 = 0 Then
-'            If (CNT And 31&) = 0& Then '63
-            If (CNT And 15&) = 0& Then '63
+            '            If CNT Mod 100 = 0 Then
+            '            If (CNT And 31&) = 0& Then '63
+            If (CNT And 15&) = 0& Then  '63
                 StrCaption = " Lifes: " & LIFES & "     SCORE: " & PlayerScore & "     Level: " & Level & "     Snakes: " & NSnakes & "     Food: " & NFood & "      FPS: " & FPS \ JPGframeRate & "     Length: " & Snake(PLAYER).GetSize & "                                   By MiorSoft"
                 UpdateSCORESString
             End If
