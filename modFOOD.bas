@@ -148,8 +148,7 @@ Public Sub DrawFOOD()
 
 '            .foodWHITE = .foodWHITE - 0.0015    '--2024
 '            If .foodWHITE < 0# Then .foodWHITE = 0#
-'            .foodWHITE = .foodWHITE * 0.996
-            .foodWHITE = .foodWHITE * 0.9965
+            .foodWHITE = .foodWHITE * 0.997 ' 0.9965
             
         End With
     Next
@@ -329,14 +328,17 @@ Public Function PointToNearestFood(Head As tPosAndVel, ByVal SnakeIDX As Long) A
             Direct = Direct + SFFM          '--2024
 
             ''D = D * Direct * (1# - FoodAge(I) * 0.95)
-            'D = D * Direct * (1# - FoodAge(I) * 0.98)
-            D = D * Direct * (1# - .foodWHITE * 0.99999)    '--2024
+            ''D = D * Direct * (1# - FoodAge(I) * 0.98)
+            
+           ' D = D * Direct * (1# - .foodWHITE * 0.99999)    '--2024
+           If .foodWHITE Then D = D * Direct * (1# - 0.8 * .foodWHITE) * (1# - 0.8 * .foodWHITE) '--2024 even more weight (Less vvirtual Distance to White ones)
 
 
             If .fromSnake = SnakeIDX Then 'Ignore fresh-Trail ones
                 Avoid = 300 - (CNT - .Born) '300=4 secs .. 200
                 If Avoid > 0 Then
-                    D = D * (1 + 5 * Avoid * 0.005)
+                    'D = D * (1 + 5 * Avoid * 0.005)
+                    D = D * (1 + 7 * Avoid * 0.005)
                 End If
             End If
 

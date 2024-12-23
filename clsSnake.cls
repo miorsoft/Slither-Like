@@ -631,45 +631,45 @@ Friend Sub DRAWFlag()
 
     '----------------------------
 End Sub
-Friend Sub DrawToMAP(CC As cCairoContext, MapS As Double)
+Friend Sub DRAWToMAP(CC As cCairoContext, MapS As Double)
     Dim I         As Double
-    Dim R         As Double
-    Dim IStep As Double
-    
-    R = Diam * MapS '* 1.25
-    
-'    IStep = R * 1.66
-'    CC.SetSourceRGB ColorR, ColorG, ColorB
-'    For I = 0 To Ntokens Step IStep
-'        CC.Arc (Token(I).POS.x - wMinX) * MapS, (Token(I).POS.y - wMinY) * MapS, R
-'        CC.Fill
-'    Next
-    
-    CC.SetLineWidth R * 2#
-    IStep = R * 2.5
-   If IsDying Then
-    CC.SetSourceRGB RndM, RndM, RndM
-   Else
-     CC.SetSourceRGB ColorR, ColorG, ColorB
+    Dim LW         As Double
+    Dim IStep     As Double
+
+    LW = Diam * MapS + 0.7
+
+    '    IStep = LW * 1.66
+    '    CC.SetSourceRGB ColorR, ColorG, ColorB
+    '    For I = 0 To Ntokens Step IStep
+    '        CC.Arc (Token(I).POS.x - wMinX) * MapS, (Token(I).POS.y - wMinY) * MapS, LW
+    '        CC.Fill
+    '    Next
+
+    CC.SetLineWidth LW
+    IStep = LW * 2.5
+    If IsDying Then
+        CC.SetSourceRGB RndM, RndM, RndM
+    Else
+        CC.SetSourceRGB ColorR, ColorG, ColorB
     End If
-    
+
     CC.MoveTo (Token(0).POS.x - wMinX) * MapS, (Token(0).POS.y - wMinY) * MapS
-       For I = IStep To Ntokens Step IStep
+    For I = IStep To Ntokens Step IStep
         CC.LineTo (Token(I).POS.x - wMinX) * MapS, (Token(I).POS.y - wMinY) * MapS
     Next
-           CC.LineTo (Token(Ntokens).POS.x - wMinX) * MapS, (Token(Ntokens).POS.y - wMinY) * MapS
- 
-CC.Stroke
+    CC.LineTo (Token(Ntokens).POS.x - wMinX) * MapS, (Token(Ntokens).POS.y - wMinY) * MapS
 
-    
-    
+    CC.Stroke
+
+
+
     If MyIDX = PLAYER Then
-    CC.SetLineWidth 1.25
-    CC.SetSourceColor vbYellow
-        CC.Arc (Token(0).POS.x - wMinX) * MapS, (Token(0).POS.y - wMinY) * MapS, R + 1
+        CC.SetLineWidth 1.25
+        CC.SetSourceColor vbYellow
+        CC.Arc (Token(0).POS.x - wMinX) * MapS, (Token(0).POS.y - wMinY) * MapS, LW * 0.5 + 1
         CC.Stroke
     End If
-    
+
 End Sub
 
 '''''
@@ -817,9 +817,9 @@ End Sub
 
 
 Friend Sub MOVE2()
-    Dim I         As Long
-    Dim J         As Long
-    Dim J2        As Long
+    Dim I      As Long
+    Dim J      As Long
+    Dim J2     As Long
 
 
     If IsDying Then
@@ -932,20 +932,23 @@ Friend Sub MOVE2()
     Token(tokIDX).POS = Head.POS
 
     '********************************************
-    '    For I = Ntokens To 1 Step -1
-    '        J = I - 1&
-    ''        Token(I).POS = VectorSUM(VectorMUL(Token(I).POS, 0.835), VectorMUL(Token(J).POS, 0.165))    '--2024
-    '        Token(I).POS.x = Token(I).POS.x * 0.835 + Token(J).POS.x * 0.165 '--2024
-    '        Token(I).POS.y = Token(I).POS.y * 0.835 + Token(J).POS.y * 0.165 '--2024
-    '    Next
-    '********************************************
+    '    '    For I = Ntokens To 1 Step -1
+    '    '        J = I - 1&
+    '    ''        Token(I).POS = VectorSUM(VectorMUL(Token(I).POS, 0.835), VectorMUL(Token(J).POS, 0.165))    '--2024
+    '    '        Token(I).POS.x = Token(I).POS.x * 0.835 + Token(J).POS.x * 0.165 '--2024
+    '    '        Token(I).POS.y = Token(I).POS.y * 0.835 + Token(J).POS.y * 0.165 '--2024
+    '    '    Next
+    '    '********************************************
     '        For I = 1 To Ntokens
-    For I = Ntokens To 1 Step -1
+    For I = Ntokens To 1 Step -1  'OK 2ND Video (primo 2024)
         J = I - 1&
         '        Token(I).POS = VectorSUM(VectorMUL(Token(I).POS, 0.835), VectorMUL(Token(J).POS, 0.165))    '--2024
-        Token(I).POS.x = Token(I).POS.x * 0.76 + Token(J).POS.x * 0.24    '--2024
-        Token(I).POS.y = Token(I).POS.y * 0.76 + Token(J).POS.y * 0.24    '--2024
+'        Token(I).POS.x = Token(I).POS.x * 0.76 + Token(J).POS.x * 0.24    '--2024
+'        Token(I).POS.y = Token(I).POS.y * 0.76 + Token(J).POS.y * 0.24    '--2024
+        Token(I).POS.x = Token(I).POS.x * 0.75 + Token(J).POS.x * 0.25
+        Token(I).POS.y = Token(I).POS.y * 0.75 + Token(J).POS.y * 0.25
     Next
+
     '********************************************
 
     If fLength \ 1 < Ntokens Then
@@ -990,35 +993,35 @@ Friend Sub MOVE2()
 
 
     '-------- FLAG --------------
-    Dim MZZ       As Double
-    Dim MMUL2     As Double
+    Dim MZZ    As Double
+    Dim MMUL2  As Double
     Dim dx#, dy#, DZ#
 
-    Const MULUP   As Double = 0.006 '0.007
-    Const DECAY   As Double = 0.99 '0.99      '0.95
+    Const MULUP As Double = 0.006    '0.007
+    Const DECAY As Double = 0.99    '0.99      '0.95
 
-If DoDrawFlags Then
-    FlagToken = STARTLENGTH
+    If DoDrawFlags Then
+        FlagToken = STARTLENGTH
 
-    If FlagToken > Ntokens Then FlagToken = Ntokens
+        If FlagToken > Ntokens Then FlagToken = Ntokens
 
-    MZZ = Diam * 2
+        MZZ = Diam * 2
 
 
-    dx = Token(FlagToken).POS.x - (FlagX + Token(FlagToken).Vel.x)
-    dy = Token(FlagToken).POS.y - (FlagY + Token(FlagToken).Vel.y)
-    DZ = MZZ - (FlagZ + FlagVelZ)
-    Token(FlagToken).Vel.x = Token(FlagToken).Vel.x + dx * MULUP
-    Token(FlagToken).Vel.y = Token(FlagToken).Vel.y + dy * MULUP
-    FlagVelZ = FlagVelZ + DZ * MULUP
-    FlagX = FlagX + Token(FlagToken).Vel.x
-    FlagY = FlagY + Token(FlagToken).Vel.y
-    FlagZ = FlagZ + FlagVelZ
+        dx = Token(FlagToken).POS.x - (FlagX + Token(FlagToken).Vel.x)
+        dy = Token(FlagToken).POS.y - (FlagY + Token(FlagToken).Vel.y)
+        DZ = MZZ - (FlagZ + FlagVelZ)
+        Token(FlagToken).Vel.x = Token(FlagToken).Vel.x + dx * MULUP
+        Token(FlagToken).Vel.y = Token(FlagToken).Vel.y + dy * MULUP
+        FlagVelZ = FlagVelZ + DZ * MULUP
+        FlagX = FlagX + Token(FlagToken).Vel.x
+        FlagY = FlagY + Token(FlagToken).Vel.y
+        FlagZ = FlagZ + FlagVelZ
 
-    Token(FlagToken).Vel.x = Token(FlagToken).Vel.x * DECAY
-    Token(FlagToken).Vel.y = Token(FlagToken).Vel.y * DECAY
-    FlagVelZ = FlagVelZ * DECAY
-End If
+        Token(FlagToken).Vel.x = Token(FlagToken).Vel.x * DECAY
+        Token(FlagToken).Vel.y = Token(FlagToken).Vel.y * DECAY
+        FlagVelZ = FlagVelZ * DECAY
+    End If
     '-------- -------------------
 
 

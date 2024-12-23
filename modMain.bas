@@ -456,7 +456,7 @@ Private Function UpdateMAPsrf()
     MapCC.RoundedRect 0, 0, MAPsrf.Width, MAPsrf.Height, 6: MapCC.Fill
     
     'FOOD
-    MapCC.SetSourceRGBA 0.1, 0.6, 0.1, 0.55
+    MapCC.SetSourceRGBA 0.1, 0.65, 0.1, 0.6
     For I = 0 To NFood
         MapCC.Rectangle (FOOD(I).POS.x - wMinX) * MapScale, (FOOD(I).POS.y - wMinY) * MapScale, 1, 1
     Next
@@ -464,7 +464,7 @@ Private Function UpdateMAPsrf()
 
     'SNAKES
     For I = NSnakes To 0 Step -1
-        Snake(I).DrawToMAP MapCC, MapScale
+        Snake(I).DRAWToMAP MapCC, MapScale
     Next
 
     'Visible Screen
